@@ -19,7 +19,24 @@ export const theme = createTheme({
                     fontSize: '16px'
                 }
             }
-        }
+        },
+        MuiListItem : {
+            styleOverrides: {
+                root : {
+                    paddingLeft : '0',
+                    paddingRight : '0',
+                    paddingTop : '0',
+                    paddingBottom : '0'
+                }
+            }
+        },
+        MuiListItemIcon : {
+            styleOverrides: {
+                root : {
+                    minWidth : '0'
+                }
+            }
+        },
     },
     typography:{
         fontFamily : 'inherit',
