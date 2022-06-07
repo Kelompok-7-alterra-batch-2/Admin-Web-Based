@@ -54,95 +54,95 @@ export default function TableBox() {
 
         <TableContainer>
 
-        <Table>
-            
-            <TableHead>
+            <Table>
+                
+                <TableHead>
 
-                <TableRow
-                sx={{
-                    bgcolor : 'neutral100',
-                    borderRadius : '8px',
-                }}
-                >
-                    <TableCell 
-                    align='center'
+                    <TableRow
                     sx={{
-                        color : 'primary.main',
-                        fontSize : '16px',
-                        fontWeight : '700'
-                    }}
-                    >Time</TableCell>
-                    <TableCell 
-                    align='center'
-                    sx={{
-                        color : 'primary.main',
-                        fontSize : '16px',
-                        fontWeight : '700'
-                    }}
-                    >Date</TableCell>
-                    <TableCell 
-                    align='center'
-                    sx={{
-                        color : 'primary.main',
-                        fontSize : '16px',
-                        fontWeight : '700'
-                    }}
-                    >Patient</TableCell>
-                    <TableCell 
-                    align='center'
-                    sx={{
-                        color : 'primary.main',
-                        fontSize : '16px',
-                        fontWeight : '700'
-                    }}
-                    >Department</TableCell>
-                    <TableCell 
-                    align='center'
-                    sx={{
-                        color : 'primary.main',
-                        fontSize : '16px',
-                        fontWeight : '700'
-                    }}
-                    >Doctor</TableCell>
-                    <TableCell align='center'
-                    sx={{
-                        color : 'primary.main',
-                        fontSize : '16px',
-                        fontWeight : '700'
-                    }}
-                    >Status</TableCell>
-                    <TableCell align='center'
-                    sx={{
-                        color : 'primary.main',
-                        fontSize : '16px',
-                        fontWeight : '700'
-                    }}
-                    >Edit</TableCell>
-                </TableRow>
-
-            </TableHead>
-
-
-            <TableBody>
-
-                {data.map((item,index)=>(
-                    
-                    <TableRow 
-                    key={index}
-                    sx={{
-                        borderBottom : '1px solid black'
+                        bgcolor : 'neutral100',
+                        borderRadius : '8px',
                     }}
                     >
-
-                        <RowTable item={item}/>
-
+                        <TableCell 
+                        align='center'
+                        sx={{
+                            color : 'primary.main',
+                            fontSize : '16px',
+                            fontWeight : '700'
+                        }}
+                        >Time</TableCell>
+                        <TableCell 
+                        align='center'
+                        sx={{
+                            color : 'primary.main',
+                            fontSize : '16px',
+                            fontWeight : '700'
+                        }}
+                        >Date</TableCell>
+                        <TableCell 
+                        align='center'
+                        sx={{
+                            color : 'primary.main',
+                            fontSize : '16px',
+                            fontWeight : '700'
+                        }}
+                        >Patient</TableCell>
+                        <TableCell 
+                        align='center'
+                        sx={{
+                            color : 'primary.main',
+                            fontSize : '16px',
+                            fontWeight : '700'
+                        }}
+                        >Department</TableCell>
+                        <TableCell 
+                        align='center'
+                        sx={{
+                            color : 'primary.main',
+                            fontSize : '16px',
+                            fontWeight : '700'
+                        }}
+                        >Doctor</TableCell>
+                        <TableCell align='center'
+                        sx={{
+                            color : 'primary.main',
+                            fontSize : '16px',
+                            fontWeight : '700'
+                        }}
+                        >Status</TableCell>
+                        <TableCell align='center'
+                        sx={{
+                            color : 'primary.main',
+                            fontSize : '16px',
+                            fontWeight : '700'
+                        }}
+                        >Edit</TableCell>
                     </TableRow>
+
+                </TableHead>
+
+
+                <TableBody>
+
+                    {data.map((item,index)=>(
+                        
+                        <TableRow 
+                        key={index}
+                        sx={{
+                            borderBottom : '1px solid black'
+                        }}
+                        >
+
+                            <RowTable item={item}/>
+
+                        </TableRow>
+                    
+                    ))}
                 
-                ))}
+                </TableBody>
             
-            </TableBody>
-        
-        </Table>
+            </Table>
 
         </TableContainer>
 
