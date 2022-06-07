@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 
 // components
@@ -16,16 +16,44 @@ import { Visibility, VisibilityOff } from "@mui/icons-material";
 // assets
 import Logo from "assets/svg/Logo2.svg";
 
-export default function Login() {
+export const Login = () => {
+  // States & Variable
   const [values, setValues] = useState({
     showPassword: false,
+    email: "",
+    password: "",
   });
 
-  const handleClickShowPassword = () => {
-    setValues({
-      ...values,
-      showPassword: !values.showPassword,
-    });
+  // Helper
+  const validateEmail = (value) => {
+    return value.match(
+      /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/g
+    );
+  };
+  const helper = useMemo(() => {
+    if (!values.email)
+      return {
+        text: " ",
+        error: false,
+      };
+    const isValid = validateEmail(values.email);
+    return {
+      text: isValid ? " " : "Enter a valid email",
+      error: isValid ? false : true,
+    };
+  }, [values.email]);
+
+  // Function
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!helper.error) {
+      console.log(values);
+      setValues({
+        showPassword: false,
+        email: "",
+        password: "",
+      });
+    }
   };
 
   return (
@@ -73,7 +101,7 @@ export default function Login() {
           </Box>
         </Box>
 
-        <Box component="form">
+        <Box component="form" onSubmit={handleSubmit}>
           <InputLabel
             shrink
             htmlFor="login-email"
@@ -81,9 +109,17 @@ export default function Login() {
           >
             Email
           </InputLabel>
-          <TextField fullWidth id="login-email" size="small" type="text" />
-          <br />
-          <br />
+          <TextField
+            fullWidth
+            required
+            id="login-email"
+            size="small"
+            type="text"
+            value={values.email}
+            onChange={(e) => setValues({ ...values, email: e.target.value })}
+            helperText={helper.text}
+            error={helper.error}
+          />
           <InputLabel
             shrink
             htmlFor="login-password"
@@ -93,14 +129,22 @@ export default function Login() {
           </InputLabel>
           <OutlinedInput
             fullWidth
+            required
             id="login-password"
             size="small"
             type={values.showPassword ? "text" : "password"}
+            value={values.password}
+            onChange={(e) => setValues({ ...values, password: e.target.value })}
             endAdornment={
               <InputAdornment position="end">
                 <IconButton
                   aria-label="toggle password visibility"
-                  onClick={handleClickShowPassword}
+                  onClick={(e) =>
+                    setValues({
+                      ...values,
+                      showPassword: !values.showPassword,
+                    })
+                  }
                   edge="end"
                 >
                   {values.showPassword ? <VisibilityOff /> : <Visibility />}
@@ -122,11 +166,18 @@ export default function Login() {
             </Link>
           </Box>
           <br />
-          <Button fullWidth variant="contained">
+          <Button
+            type="submit"
+            fullWidth
+            variant="contained"
+            disabled={helper.error}
+          >
             Sign in
           </Button>
         </Box>
       </Box>
     </Box>
   );
-}
+};
+
+export default Login;
