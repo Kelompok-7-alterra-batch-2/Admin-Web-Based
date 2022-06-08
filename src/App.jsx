@@ -1,4 +1,4 @@
-import { NextUIProvider } from '@nextui-org/react'
+import { ThemeProvider } from '@mui/material/styles';
 
 import { BrowserRouter } from 'react-router-dom';
 
@@ -10,11 +10,11 @@ function App() {
   return (
       <BrowserRouter>
         
-        <NextUIProvider theme={theme}>
+        <ThemeProvider theme={theme}>
           {/* put route in this component */}
           <RouteComponent/>    
 
-        </NextUIProvider>
+        </ThemeProvider>
       
       </BrowserRouter>
   );
