@@ -4,6 +4,7 @@ export const customPalette = {
        main : '#4E89A8',
    },
    neutral900 : '#060F1D',
+   neutral600 : '#204F6E',
    neutral500 : '#B3BDC9',
    neutral400 : '#CCD5DE',
    neutral300 : '#E2EAF2',

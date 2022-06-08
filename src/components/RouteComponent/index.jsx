@@ -18,7 +18,7 @@ export default function RouteComponent() {
         
         } />
       
-        <Route path="patient" element={
+        <Route path="appointment" element={
 
           <DefaultLayout>
 
