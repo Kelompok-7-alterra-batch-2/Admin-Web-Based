@@ -1,5 +1,6 @@
 import React from "react";
 import { Route, Routes } from "react-router-dom";
+
 import { Dashboard, Login, Patient } from "pages";
 import { DefaultLayout } from "components";
 
@@ -20,11 +21,7 @@ export default function RouteComponent() {
       
         <Route path="patient" element={
 
-          <DefaultLayout>
-
-            <Patient/>
-
-          </DefaultLayout>
+              <Patient/>
 
         }/>
 

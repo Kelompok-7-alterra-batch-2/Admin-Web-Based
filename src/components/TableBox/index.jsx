@@ -1,4 +1,4 @@
-import React from 'react'
+import React,{useState} from 'react'
 
 import { 
     Table, 
@@ -8,14 +8,39 @@ import {
     TableHead,
     TableRow, 
     Chip,
-    IconButton } from '@mui/material'
+    IconButton, 
+    Skeleton,
+    Box} from '@mui/material'
 
 import Edit from '@mui/icons-material/Edit'
-import Delete from '@mui/icons-material/Delete'    
+import Delete from '@mui/icons-material/Delete' 
+
+import ModalDelete from './ModalDelete'
 
 export default function TableBox(props) {
 
-    const { dataHead, dataBody } = props
+    const { dataHead, dataBody , isLoading} = props
+
+    const [openModal,setOpenModal] = useState({
+        edit : false,
+        delete : false
+    })
+
+    // const handleOpenEdit = () => {
+
+    //     setOpenModal((prev)=>{
+    //         return {...prev,edit : !prev.edit}
+    //     })
+
+    // }
+
+    const handleOpenDelete = () =>{
+
+        setOpenModal((prev)=>{
+            return {...prev,delete : !prev.delete}
+        })
+
+    }
 
   return (
 
@@ -52,8 +77,7 @@ export default function TableBox(props) {
 
                 </TableHead>
 
-
-                <TableBody>
+                {dataBody && <TableBody>
 
                     {dataBody.map((itemRow,indexRow)=>(
 
@@ -64,70 +88,110 @@ export default function TableBox(props) {
                             }}
                         >
                         
-                        {
-                            dataHead.map((itemCell,indexCell)=>{
+                            {
+                                dataHead.map((itemCell,indexCell)=>{
 
-                                if (itemCell.fieldname ==='status'){
+                                    if (itemCell.fieldname ==='status'){
 
-                                    return (
-                                        <TableCell align='center'>
-                                            <Chip 
-                                            label={itemRow[itemCell.fieldname]}
-                                            variant='outlined'
-                                            color={itemRow[itemCell.fieldname] === 'pending' ? 'warning' : 'primary'}
-                                            sx={{
-                                                borderRadius : '4px',
-                                                bgcolor : itemRow[itemCell.fieldname] === 'pending' ? 'bgWarning' : 'bgPrimary'
-                                            }}
-                                            />    
-                                        </TableCell> 
-                                    )
+                                        return (
+                                            <TableCell 
+                                            key={indexCell}
+                                            align='center'>
+                                                <Chip 
+                                                label={itemRow[itemCell.fieldname]}
+                                                variant='outlined'
+                                                color={itemRow[itemCell.fieldname] === 'pending' ? 'warning' : 'primary'}
+                                                sx={{
+                                                    borderRadius : '4px',
+                                                    bgcolor : itemRow[itemCell.fieldname] === 'pending' ? 'bgWarning' : 'bgPrimary'
+                                                }}
+                                                />    
+                                            </TableCell> 
+                                        )
 
-                                }
+                                    }
 
-                                if (itemCell.fieldname === 'edit') {
+                                    if (itemCell.fieldname === 'edit') {
+                                        
+                                        return (
+
+                                            <TableCell 
+                                            align='center'
+                                            key={indexCell}
+                                            >
+
+                                                <IconButton
+                                                // onClick={handleOpenEdit}
+                                                >
+                                                    <Edit/>
+                                                </IconButton>
+
+                                                <IconButton
+                                                onClick={handleOpenDelete}
+                                                >
+                                                    <Delete/>
+                                                </IconButton>
+
+                                            </TableCell>
+
+                                        )
+
+                                    }
                                     
                                     return (
 
-                                        <TableCell align='center'>
+                                    <TableCell 
+                                    key={indexCell}
+                                    align='center'
+                                    >
+                                        {itemRow[itemCell.fieldname]}
+                                    </TableCell>)
+                                    
+                                })
+                            }
 
-                                            <IconButton
-                                            // onClick={handleOpenEdit}
-                                            >
-                                                <Edit/>
-                                            </IconButton>
-
-                                            <IconButton
-                                            // onClick={handleOpenDelete}
-                                            >
-                                                <Delete/>
-                                            </IconButton>
-
-                                        </TableCell>
-
-                                    )
-
-                                }
-                                
-                                return (
-
-                                <TableCell 
-                                key={indexCell}
-                                align='center'
-                                >
-                                    {itemRow[itemCell.fieldname]}
-                                </TableCell>)
-                                
-                            })
-                        }
+                            <ModalDelete
+                            isOpen={openModal.delete}
+                            handleClose={handleOpenDelete}
+                            deleteParams={dataBody[indexRow].id}
+                            />
 
                         </TableRow>
                     
                     ))}
                 
-                </TableBody>
+                </TableBody> }
             
             </Table>
+
+            {isLoading && 
+                
+                <Box
+                sx={{
+                    width : "100%"
+                }}
+                >
+
+                    <Skeleton
+                    animation="wave"
+                    height={100}
+                    width="100%"/>
+                    
+                    <Skeleton
+                    animation="wave"
+                    height={100}
+                    width="100%"
+                    />
+
+                    <Skeleton
+                    animation="wave"
+                    height={100}
+                    width="100%"
+                    />
+                
+                </Box>
+
+            }
 
         </TableContainer>
 
