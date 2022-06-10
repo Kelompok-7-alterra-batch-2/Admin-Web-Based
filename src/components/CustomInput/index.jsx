@@ -11,7 +11,7 @@ const CustomStyle = styled(InputBase) (({ theme }) => ({
       position: 'relative',
       fontSize: 16,
       fontWeight : 'normal',
-      width: 'auto',
+      width: '100%',
       padding: '10px 12px',
       transition: theme.transitions.create([
         'border-color',
@@ -34,19 +34,25 @@ export default function CustomInput(props) {
       onChange , 
       value , 
       type,
-      errorMessage
+      errorMessage,
+      sx
     } = props
   
     return (
 
     <FormControl 
     variant="standard" 
-    error={isError}>
+    error={isError}
+    sx={sx}
+    >
 
       <InputLabel 
       shrink 
       htmlFor="custom-input" 
-      sx={{fontSize:'16px'}}>
+      sx={{
+        fontSize:'18px',
+        fontWeight : '700'
+      }}>
         {label}
       </InputLabel>
       
