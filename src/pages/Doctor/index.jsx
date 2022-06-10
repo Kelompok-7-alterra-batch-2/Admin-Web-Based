@@ -1,8 +1,18 @@
-import { Box } from "@mui/material";
-
 import React from "react";
 
+// MUI
+import { Autocomplete, Box, Grid, TextField } from "@mui/material";
 import { SearchBox, TableBox } from "components";
+import { FilterList } from "@mui/icons-material";
+
+const status = ["Pending", "Confirmed", "Cancelled"];
+const department = [
+  "Cardiology",
+  "Neurology",
+  "Oncology",
+  "Orthopedics",
+  "Radiology",
+];
 
 const dataHead = [
   {
@@ -69,6 +79,35 @@ const Doctor = () => {
         onChangeSearch={onChangeSearch}
         onClickSearch={handleSearch}
       />
+
+      <Grid container spacing={1} mt={2}>
+        <Grid item xs={1}>
+          <FilterList
+            color="primary"
+            sx={{ fontSize: "40px", padding: "10px", cursor: "pointer" }}
+          />
+        </Grid>
+        <Grid item xs={3}>
+          <Autocomplete
+            disablePortal
+            id="combo-box-demo"
+            options={status}
+            sx={{ width: "100%", height: "auto" }}
+            renderInput={(params) => <TextField {...params} label="STATUS" />}
+          />
+        </Grid>
+        <Grid item xs={3}>
+          <Autocomplete
+            disablePortal
+            id="combo-box-demo"
+            options={department}
+            sx={{ width: "100%", height: "auto" }}
+            renderInput={(params) => (
+              <TextField {...params} label="DEPARTEMENT" />
+            )}
+          />
+        </Grid>
+      </Grid>
 
       <Box
         sx={{
