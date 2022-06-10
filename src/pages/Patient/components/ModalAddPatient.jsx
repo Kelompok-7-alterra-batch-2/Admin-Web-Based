@@ -1,9 +1,10 @@
 import React, { useState } from 'react'
 
-import { Modal , Backdrop, Fade, Typography, Button, Snackbar, Alert , Box, FormControl, FormLabel, RadioGroup, FormControlLabel, Radio, IconButton, InputLabel, NativeSelect} from '@mui/material'
+import { Modal , Backdrop, Fade, Typography, Button, Snackbar, Alert , Box, FormControl, FormLabel, RadioGroup, FormControlLabel, Radio, IconButton, InputLabel, NativeSelect, CircularProgress} from '@mui/material'
+
+import axios from 'axios';
 
 import CloseIcon from '@mui/icons-material/Close';
-import axios from 'axios';
 
 import { CustomInput } from 'components'
 
@@ -15,7 +16,7 @@ export default function ModalAddPatient(props) {
 
     const initialFormPatient = {
         name : "",
-        dob : undefined,
+        dob : "",
         gender : "P",
         phone_number : "",
         blood_type : "A",
@@ -28,6 +29,8 @@ export default function ModalAddPatient(props) {
     const [isSuccess,setIsSuccess] = useState(false)
 
     const [isError,setIsError] = useState(false)
+
+    const [isLoading,setIsLoading] = useState(false)
 
     const handleCloseModal = () =>{
 
@@ -122,9 +125,10 @@ export default function ModalAddPatient(props) {
     }
 
 
-    const handleSubmitPatient = (e) =>{
+    const handleSubmitPatient = async (e) =>{
 
-        axios.post('https://62a18758cc8c0118ef4d691f.mockapi.io/patient',{
+        setIsLoading(true)
+        await axios.post('https://62a18758cc8c0118ef4d691f.mockapi.io/patient',{
             name : formPatient.name,
             gender : formPatient.gender,
             dob : formPatient.dob,
@@ -140,6 +144,7 @@ export default function ModalAddPatient(props) {
         }).catch((err)=>{
             setIsError(true)
         })
+        setIsLoading(false)
 
     }
 
@@ -272,14 +277,14 @@ export default function ModalAddPatient(props) {
                     <FormControl fullWidth>
 
                         <InputLabel
-                        labelId="select-blood-type" 
+                        labelid="select-blood-type" 
                         variant='standard'
                         >
                             Blood Type
                         </InputLabel>
 
                         <NativeSelect
-                        labelId="select-blood-type"
+                        labelid="select-blood-type"
                         id="select-blood-type"
                         value={formPatient.blood_type}
                         onChange={handleChangeBlood}
@@ -324,11 +329,36 @@ export default function ModalAddPatient(props) {
                     onChange={handleChangeAddress}
                     />
 
-                    <Button
-                    variant='contained'
-                    onClick={handleSubmitPatient}
-                    >Submit
-                    </Button>
+                    <Box
+                    sx={{
+                        position : 'relative'
+                    }}
+                    >
+
+                        <Button
+                        disabled={isLoading}
+                        variant='contained'
+                        onClick={handleSubmitPatient}
+                        >Submit
+                        </Button>
+
+                        {isLoading &&
+                        
+                        <CircularProgress
+                        size={24}
+                        sx={{
+                          color: 'white',
+                          position: 'absolute',
+                          top: '50%',
+                          left: '50%',
+                          marginTop: '-12px',
+                          marginLeft: '-12px',
+                        }}
+                        />
+
+                        }
+                    
+                    </Box>
 
                 </Box>
 

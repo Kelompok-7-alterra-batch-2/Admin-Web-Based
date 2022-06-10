@@ -23,18 +23,20 @@ export default function ModalDelete(props) {
 
     const handleDeleteRow = () =>{
 
-        axios.delete(`https://62a18758cc8c0118ef4d691f.mockapi.io/patient/${deleteParams}`).then(()=>{
+        // axios.delete(`https://62a18758cc8c0118ef4d691f.mockapi.io/patient/${deleteParams}`).then(()=>{
 
-            handleClose()
-            setOpenSnackbar((prev)=>{
-                return {...prev,success : true}
-            })
-            setTimeout(()=>{window.location.reload(false)}, 1000)
-        }).catch(()=>{
-            setOpenSnackbar((prev)=>{
-                return {...prev,error : true}
-            })
-        })
+        //     handleClose()
+        //     setOpenSnackbar((prev)=>{
+        //         return {...prev,success : true}
+        //     })
+        //     setTimeout(()=>{window.location.reload(false)}, 1000)
+        // }).catch(()=>{
+        //     setOpenSnackbar((prev)=>{
+        //         return {...prev,error : true}
+        //     })
+        // })
+
+        console.log(deleteParams)
 
     }
 

@@ -64,13 +64,16 @@ export default function ModalSuccess(props) {
                 <Box
                 sx={{
                     display: 'flex',
-                    justifyContent : 'space-around'
+                    columnGap : '30px'
                 }}
                 >
 
                     <Button
                     variant='contained'
                     onClick={handleToAppoinment}
+                    sx={{
+                        width : '50%'
+                    }}
                     >
                         Make a appointment
                     </Button>
@@ -78,6 +81,9 @@ export default function ModalSuccess(props) {
                     <Button
                     variant='contained'
                     onClick={handleNotAppoinment}
+                    sx={{
+                        width : '50%'
+                    }}
                     >
                         No
                     </Button>
