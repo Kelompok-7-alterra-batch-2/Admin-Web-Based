@@ -35,7 +35,12 @@ export default function CustomInput(props) {
       value , 
       type,
       errorMessage,
-      sx
+      sx,
+      name,
+      key,
+      endAdornment,
+      rows,
+      multiline
     } = props
   
     return (
@@ -44,6 +49,8 @@ export default function CustomInput(props) {
     variant="standard" 
     error={isError}
     sx={sx}
+    key={key}
+    fullWidth
     >
 
       <InputLabel 
@@ -57,15 +64,19 @@ export default function CustomInput(props) {
       </InputLabel>
       
       <CustomStyle
+      endAdornment={endAdornment}
+      name={name}
       value={value} 
       sx={{
         border:'1px solid',
         borderColor: isError? 'red' : 'neutral500',
         borderRadius:'4px'
       }} 
-      onChange={(e)=>onChange(e.target.value)} 
+      onChange={(e)=>onChange(e)} 
       id="custom-input"
       type={type}
+      multiline={multiline}
+      rows={rows}
       />
 
       {isError && 

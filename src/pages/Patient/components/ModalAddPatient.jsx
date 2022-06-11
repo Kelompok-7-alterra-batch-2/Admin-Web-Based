@@ -44,7 +44,7 @@ export default function ModalAddPatient(props) {
         setFormPatient((prev)=>{
             return {
                 ...prev,
-                name : e
+                name : e.target.value
             }
         })
 
@@ -55,7 +55,7 @@ export default function ModalAddPatient(props) {
         setFormPatient((prev)=>{
             return {
                 ...prev,
-                dob : e
+                dob : e.target.value
             }
         })
 
@@ -78,7 +78,7 @@ export default function ModalAddPatient(props) {
 
             return {
                 ...prev,
-                phone_number : e
+                phone_number : e.target.value
             }
 
         })
@@ -104,7 +104,7 @@ export default function ModalAddPatient(props) {
 
             return {
                 ...prev,
-                city : e
+                city : e.target.value
             }
 
         })
@@ -117,7 +117,7 @@ export default function ModalAddPatient(props) {
 
             return {
                 ...prev,
-                address : e
+                address : e.target.value
             }
 
         })

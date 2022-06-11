@@ -13,8 +13,6 @@ export default function Patient() {
 
     const [data,setData] = useState(null)
 
-    const [user,setUser] = useState(null)
-
     const [isLoading,setIsLoading] = useState(true)
 
     const [openModal,setOpenModal ] = useState({
@@ -53,17 +51,6 @@ export default function Patient() {
     ]
 
     useEffect(()=>{
-
-      axios({
-        method : 'get',
-        url : 'https://62a18758cc8c0118ef4d691f.mockapi.io/user/2',
-        data : {},
-        headers : {
-          'Content-Type' : 'application/json'
-        }
-      }).then((res)=>{
-        setUser(res.data)
-      })
 
       axios({
         method : 'get',
@@ -112,10 +99,7 @@ export default function Patient() {
 
   return (
 
-    <DefaultLayout
-    user={user}
-    isLoading={isLoading}
-    >
+    <DefaultLayout>
 
       <Box>
 
@@ -142,6 +126,7 @@ export default function Patient() {
               dataHead={dataHead}
               dataBody={data}
               isLoading={isLoading}
+              endPoint='patient'
               />  
 
           </Box>

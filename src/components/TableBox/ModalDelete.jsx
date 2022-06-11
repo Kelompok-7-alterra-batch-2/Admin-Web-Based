@@ -6,7 +6,7 @@ import React, { useState } from 'react'
 
 export default function ModalDelete(props) {
 
-    const {isOpen,handleClose,deleteParams} = props
+    const {isOpen,handleClose,deleteParams,endPoint} = props
 
     const [openSnackbar,setOpenSnackbar] = useState(
         {
@@ -23,7 +23,7 @@ export default function ModalDelete(props) {
 
     const handleDeleteRow = () =>{
 
-        axios.delete(`https://62a18758cc8c0118ef4d691f.mockapi.io/patient/${deleteParams}`).then(()=>{
+        axios.delete(`https://62a18758cc8c0118ef4d691f.mockapi.io/${endPoint}/${deleteParams}`).then(()=>{
 
             handleClose()
             setOpenSnackbar((prev)=>{
