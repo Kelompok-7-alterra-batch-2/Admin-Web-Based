@@ -210,6 +210,7 @@ export default function Patient() {
               dataBody={data}
               isLoading={isLoading}
               endPoint='patient'
+              fieldEdit={field}
               />  
 
           </Box>

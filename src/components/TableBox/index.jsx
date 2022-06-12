@@ -13,35 +13,44 @@ import {
     Typography} from '@mui/material'
 
 import Edit from '@mui/icons-material/Edit'
-import Delete from '@mui/icons-material/Delete' 
+import Delete from '@mui/icons-material/Delete'
+
+import { ModalInput } from 'components'
 
 import ModalDelete from './ModalDelete'
 import CustomChip from './CustomChip'
 
+import { toCapitalize } from 'helpers/function/toCapitalize'
+
 export default function TableBox(props) {
 
-    const { dataHead, dataBody , isLoading , endPoint } = props
+    const { dataHead, dataBody , isLoading , endPoint , fieldEdit} = props
 
     const [openModal,setOpenModal] = useState({
         edit : false,
         delete : false
     })
 
-    const [param,setParam] = useState(null)
+    const [param,setParam] = useState({
+        delete : null,
+        edit : null
+    })
 
-    // const handleOpenEdit = () => {
+    const handleOpenEdit = (item) => {
 
-    //     setOpenModal((prev)=>{
-    //         return {...prev,edit : !prev.edit}
-    //     })
+        setOpenModal((prev)=>{
+            return {...prev,edit : !prev.edit}
+        })
 
-    // }
+        setParam((prev)=>{return {...prev,edit : item}})
+
+    }
 
     const handleOpenDelete = (id) =>{
         
-        setParam(id)
-
-        console.log(id)
+        setParam((prev)=>{
+            return {...prev, delete : id}
+        })
 
         setOpenModal((prev)=>{
             return {...prev,delete : !prev.delete}
@@ -140,7 +149,7 @@ export default function TableBox(props) {
                                             >
 
                                                 <IconButton
-                                                // onClick={handleOpenEdit}
+                                                onClick={()=>{handleOpenEdit(itemRow)}}
                                                 >
                                                     <Edit/>
                                                 </IconButton>
@@ -220,10 +229,24 @@ export default function TableBox(props) {
         <ModalDelete
         isOpen={openModal.delete}
         handleClose={handleOpenDelete}
-        deleteParams={param}
+        deleteParams={param.delete}
         endPoint={endPoint}
         />
         }
+
+        {openModal.edit &&
+        <ModalInput
+        isOpen={openModal.edit}
+        handleClose={handleOpenEdit}
+        field={fieldEdit}
+        initialData={param.edit}
+        title={('Edit ' + toCapitalize(endPoint))}
+        endPoint={endPoint}
+        methodSubmit='put'
+        />
+        }
+
         </>
+
   )
 }

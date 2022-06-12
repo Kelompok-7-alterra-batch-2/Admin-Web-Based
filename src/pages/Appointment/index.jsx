@@ -1,3 +1,4 @@
+// eslint-disable-next-line
 import { Box, Grid, Autocomplete, TextField, Typography, Link, InputAdornment, TablePagination } from '@mui/material'
 import React, { useState ,useEffect} from 'react'
 // import { FilterList , ChevronRight } from '@mui/icons-material';
@@ -35,6 +36,38 @@ const dataHead = [
     fieldname : 'edit'
   }
 ]
+
+const field = [
+  {
+      title : 'Patient',
+      fieldname : 'patient',
+      type : 'search'
+  },
+  {
+      title : 'Department',
+      fieldname : 'department',
+  },
+  {
+      title : 'Appointment Date',
+      fieldname : 'date',
+      type : 'date'
+  },
+  {
+      title : 'Appointment Time',
+      fieldname : 'time',
+      type : 'time'
+  },
+  {
+      title : 'Doctor',
+      fieldname : 'doctor',
+  },
+  {
+      title : 'Appointment Reason',
+      fieldname : 'reason',
+      type : 'area',
+      rows : 3
+  }
+  ]
 
 export default function Appointment() {
 
@@ -204,6 +237,7 @@ export default function Appointment() {
                 dataBody={item.field}
                 isLoading={isLoading}
                 endPoint='appointment'
+                fieldEdit={field}
                 />
 
               </Box>
@@ -225,6 +259,7 @@ export default function Appointment() {
           <ModalConfirm
           isOpen={openConfirm}
           handleClose={()=>{setOpenConfirm(false)}}
+          fieldInput={field}
           />
 
       </Box>

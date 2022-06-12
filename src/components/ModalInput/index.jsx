@@ -157,7 +157,9 @@ export default function ModalInput(props) {
         setIsLoading(true)
         await axios({
             method : methodSubmit,
-            url : `https://62a18758cc8c0118ef4d691f.mockapi.io/${endPoint}`,
+            url : methodSubmit === 'put' ? 
+            `https://62a18758cc8c0118ef4d691f.mockapi.io/${endPoint}/${form.id}` : 
+            `https://62a18758cc8c0118ef4d691f.mockapi.io/${endPoint}`,
             data : {
             ...form },
             headers : {
@@ -378,6 +380,10 @@ export default function ModalInput(props) {
                                     value={form[item.fieldname]}
                                     onChange={handleChangeDepartment}
                                     size='small'
+                                    sx={{
+                                        fontSize : '16px',
+                                        fontWeight : 'normal'
+                                    }}
                                     >
                                         
                                         <MenuItem
@@ -451,12 +457,26 @@ export default function ModalInput(props) {
                                     value={form[item.fieldname]}
                                     onChange={handleChangeDepartment}
                                     size='small'
+                                    sx={{
+                                        fontSize : '16px',
+                                        fontWeight : 'normal'
+                                    }}
                                     >   
                                         
                                         <MenuItem
                                         value=''>
                                             None
                                         </MenuItem>
+
+                                        {(initialData.department && 
+                                        (initialData.department !== '' || initialData.department !== null)) &&
+
+                                        <MenuItem
+                                        value={initialData.doctor}>
+                                            {initialData.doctor}
+                                        </MenuItem>
+
+                                        }
 
                                         { listDoctor &&
                                             listDoctor.map((option,indexDoctor)=>(
@@ -521,6 +541,10 @@ export default function ModalInput(props) {
                                     value={form[item.fieldname]}
                                     onChange={handleChange}
                                     size='small'
+                                    sx={{
+                                        fontSize : '16px',
+                                        fontWeight : 'normal'
+                                    }}
                                     >   
                                         
                                         <MenuItem
