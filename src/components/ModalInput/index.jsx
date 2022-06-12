@@ -86,6 +86,13 @@ export default function ModalInput(props) {
 
     }
 
+    const handleCancelSearch = () => {
+
+        setOpenPopper(false)
+        setListPatient(null)
+
+    }
+
     const handleSubmitSearch = (e) => {
 
         setForm((prev)=>{
@@ -100,8 +107,6 @@ export default function ModalInput(props) {
     }
 
     const handleChangeDepartment = (e) => {
-
-        console.log(e.target)
 
         axios({
             method : 'get',
@@ -249,7 +254,8 @@ export default function ModalInput(props) {
                                     sx={{
                                         position : 'absolute',
                                         width : '100%',
-                                        zIndex : 1
+                                        zIndex : 1,
+                                        padding : '5px'
                                     }}
                                     >
                                         <List>
@@ -265,7 +271,7 @@ export default function ModalInput(props) {
                                                             display : 'flex',
                                                             flexDirection : 'column',
                                                             boxShadow : '1',
-                                                            margin : '5px',
+                                                            my : '5px',
                                                             alignItems : 'baseline'
                                                         }}
                                                         >
@@ -288,6 +294,19 @@ export default function ModalInput(props) {
                                                 ))
                                             }
                                         </List>
+
+                                        <Button
+                                        variant='outlined'
+                                        color='error'
+                                        onClick={handleCancelSearch}
+                                        size='small'
+                                        sx={{
+                                            float : 'right'
+                                        }}
+                                        >
+                                            Cancel
+                                        </Button>
+                                    
                                     </Paper>}
 
                                 </Box>
@@ -500,7 +519,7 @@ export default function ModalInput(props) {
                                     </FormLabel>
 
                                     <RadioGroup
-                                    aria-labelledby="radio-button-group-labe"
+                                    aria-labelledby="radio-button-group-label"
                                     name={item.fieldname}
                                     value={form[item.fieldname]}
                                     onChange={handleChange}

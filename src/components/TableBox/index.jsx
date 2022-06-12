@@ -7,7 +7,6 @@ import {
     TableContainer, 
     TableHead,
     TableRow, 
-    Chip,
     IconButton, 
     Skeleton,
     Box,
@@ -17,6 +16,7 @@ import Edit from '@mui/icons-material/Edit'
 import Delete from '@mui/icons-material/Delete' 
 
 import ModalDelete from './ModalDelete'
+import CustomChip from './CustomChip'
 
 export default function TableBox(props) {
 
@@ -120,15 +120,11 @@ export default function TableBox(props) {
                                             <TableCell 
                                             key={indexCell}
                                             align='center'>
-                                                <Chip 
-                                                label={itemRow[itemCell.fieldname]}
-                                                variant='outlined'
-                                                color={itemRow[itemCell.fieldname] === 'pending' ? 'warning' : 'primary'}
-                                                sx={{
-                                                    borderRadius : '4px',
-                                                    bgcolor : itemRow[itemCell.fieldname] === 'pending' ? 'bgWarning' : 'bgPrimary'
-                                                }}
-                                                />    
+
+                                                <CustomChip
+                                                params={itemRow[itemCell.fieldname]}
+                                                />
+
                                             </TableCell> 
                                         )
 

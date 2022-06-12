@@ -70,6 +70,9 @@ export default function ModalSuccess(props) {
                 <Typography
                 id = "modal-success-description"
                 variant='body4'
+                sx= {{
+                    marginBottom : '30px'
+                }}
                 >
                 {descTitle} has been added
                 </Typography>
