@@ -4,10 +4,83 @@ import React, { useEffect, useState } from 'react'
 
 import axios from 'axios'
 
-import { SearchBox, TableBox , DefaultLayout } from 'components'
+import { SearchBox, TableBox , DefaultLayout , ModalInput } from 'components'
 
-import ModalAddPatient from './components/ModalAddPatient'
+const field = [
+  {
+    title : 'Name',
+    fieldname : 'name',
+    type : 'text'
+  },
+  {
+    title : 'Date of Birth',
+    fieldname : 'dob',
+    type : 'date'
+  },
+  {
+    title : 'Gender',
+    fieldname : 'gender',
+    type : 'radio',
+    option : [
+      {
+        title : 'Male',
+        value : 'Male'
+      },
+      {
+        title : 'Female',
+        value : 'Female'
+      }
+    ]
+  },
+  {
+    title : 'Phone Number',
+    fieldname : 'phone_number',
+    type : 'text'
+  },
+  {
+    title : 'Blood Type',
+    fieldname : 'blood_type',
+    type : 'select',
+    option : [
+      {
+        title : 'A',
+        value : 'A',
+      },
+      {
+        title : 'AB',
+        value : 'AB'
+      },
+      {
+        title : 'B',
+        value : 'B'
+      },
+      {
+        title : 'O',
+        value : 'O'
+      }
+    ]
+  },
+  {
+    title : 'City',
+    fieldname : 'city',
+    type : 'text'
+  },
+  {
+    title : 'Address',
+    fieldname : 'address',
+    type : 'text'
+  }
+]
 
+const initialData = {
+  name : '',
+  dob : '',
+  gender : '',
+  phone_number : '',
+  blood_type : '',
+  city : '',
+  address : ''
+}
 
 export default function Patient() {
 
@@ -84,13 +157,13 @@ export default function Patient() {
 
       axios({
         method : 'get',
-        url : `https://62a18758cc8c0118ef4d691f.mockapi.io/patient/${searchPatient}`,
+        url : `https://62a18758cc8c0118ef4d691f.mockapi.io/patient?search=${searchPatient}`,
         data : {},
         headers : {
           'Content-Type' : 'application/json'
         }
       }).then((res)=>{
-        setData([res.data])
+        setData(res.data)
       }).catch(()=>{
         setIsError(true)
       })
@@ -111,9 +184,19 @@ export default function Patient() {
           onClickSearch={handleSearch}
           />
 
-          <ModalAddPatient
+          {/* <ModalAddPatient
           isOpen={openModal.patient}
           handleClose={handleOpenPatient}
+          /> */}
+
+          <ModalInput
+          isOpen={openModal.patient}
+          handleClose={handleOpenPatient}
+          field={field}
+          initialData={initialData}
+          title='New Patient'
+          endPoint='patient'
+          methodSubmit='post'
           />
 
           <Box
@@ -127,6 +210,7 @@ export default function Patient() {
               dataBody={data}
               isLoading={isLoading}
               endPoint='patient'
+              fieldEdit={field}
               />  
 
           </Box>

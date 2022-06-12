@@ -70,9 +70,6 @@ export default function ModalSuccess(props) {
                 <Typography
                 id = "modal-success-description"
                 variant='body4'
-                sx= {{
-                    marginBottom : '30px'
-                }}
                 >
                 {descTitle} has been added
                 </Typography>
@@ -80,7 +77,8 @@ export default function ModalSuccess(props) {
                 <Box
                 sx={{
                     display: 'flex',
-                    justifyContent : 'center'
+                    justifyContent : 'center',
+                    marginTop : '30px'
                 }}
                 >
 

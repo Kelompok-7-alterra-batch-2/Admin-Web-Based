@@ -10,39 +10,7 @@ import { ModalInput } from 'components'
 
 export default function ModalConfirm(props) {
 
-    const {isOpen,handleClose} = props
-
-    const field = [
-    {
-        title : 'Patient',
-        fieldname : 'patient',
-        type : 'search'
-    },
-    {
-        title : 'Department',
-        fieldname : 'department',
-    },
-    {
-        title : 'Appointment Date',
-        fieldname : 'date',
-        type : 'date'
-    },
-    {
-        title : 'Appointment Time',
-        fieldname : 'time',
-        type : 'time'
-    },
-    {
-        title : 'Doctor',
-        fieldname : 'doctor',
-    },
-    {
-        title : 'Appointment Reason',
-        fieldname : 'reason',
-        type : 'area',
-        rows : 3
-    }
-    ]
+    const {isOpen,handleClose,fieldInput} = props
 
     const initialData = {
         patient : '',
@@ -50,7 +18,8 @@ export default function ModalConfirm(props) {
         date : '',
         time : '',
         doctor : '',
-        reason : ''
+        reason : '',
+        status : 'pending'
     }
 
     const [openAppointment,setOpenAppointment ] = useState(false)
@@ -177,10 +146,11 @@ export default function ModalConfirm(props) {
     <ModalInput
     isOpen={openAppointment}
     handleClose={()=>{setOpenAppointment(false)}}
-    field={field}
+    field={fieldInput}
     initialData={initialData}
-    title="New Appointment"
-    endPoint="appointment"
+    title='New Appointment'
+    endPoint='appointment'
+    methodSubmit='post'
     />
 
     </>
