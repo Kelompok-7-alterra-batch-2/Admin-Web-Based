@@ -12,6 +12,10 @@ export const customTyphography = {
         fontWeight: '600',
         fontSize : '24px'
     },
+    body0 : {
+        fontSize : '20px',
+        fontWeight : '700'
+    },
     body1 : {
         fontSize : '18px',
         fontWeight : '700'

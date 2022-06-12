@@ -1,24 +1,26 @@
 import { Box, Grid, Autocomplete, TextField, Typography, Link, InputAdornment, TablePagination } from '@mui/material'
-import React, { useState } from 'react'
-import { FilterList , ChevronRight } from '@mui/icons-material';
+import React, { useState ,useEffect} from 'react'
+// import { FilterList , ChevronRight } from '@mui/icons-material';
 import { SearchBox, TableBox } from 'components'
 
+import axios from 'axios';
+
+import { DefaultLayout } from 'components';
+
+import ModalConfirm from './components/ModalConfirm';
+
 const dataHead = [
+  {
+    headerName : 'Queue',
+    fieldname : 'queue'
+  },
   {
     headerName : 'Time',
     fieldname : 'time'
   },
   {
-    headerName : 'Date',
-    fieldname : 'date'
-  },
-  {
     headerName : 'Patient',
     fieldname : 'patient'
-  },
-  {
-    headerName : 'Department',
-    fieldname : 'department'
   },
   {
     headerName : 'Doctor',
@@ -34,94 +36,102 @@ const dataHead = [
   }
 ]
 
-const status = ["Pending", "Confirmed", "Cancelled"]
-const department = ["Cardiology", "Neurology", "Oncology", "Orthopedics", "Radiology"]
-
-
-const dataBody = [
-  {
-      time : '07.00',
-      date : '02-05-2022',
-      patient : 'Wanda Scarlett',
-      department : 'Neurology',
-      doctor : 'Dr.Mantis Rachel',
-      status : 'pending'
-  },
-  {
-      time : '07.00',
-      date : '02-05-2022',
-      patient : 'Wanda Scarlett',
-      department : 'Neurology',
-      doctor : 'Dr.Mantis Rachel',
-      status : 'pending'
-  },
-  {
-      time : '07.00',
-      date : '02-05-2022',
-      patient : 'Wanda Scarlett',
-      department : 'Neurology',
-      doctor : 'Dr.Mantis Rachel',
-      status : 'pending'
-  },
-  {
-      time : '07.00',
-      date : '02-05-2022',
-      patient : 'Wanda Scarlett',
-      department : 'Neurology',
-      doctor : 'Dr.Mantis Rachel',
-      status : 'process'
-  },
-  {
-    time : '07.00',
-    date : '02-05-2022',
-    patient : 'Wanda Scarlett',
-    department : 'Neurology',
-    doctor : 'Dr.Mantis Rachel',
-    status : 'pending'
-  },
-  {
-    time : '07.00',
-    date : '02-05-2022',
-    patient : 'Wanda Scarlett',
-    department : 'Neurology',
-    doctor : 'Dr.Mantis Rachel',
-    status : 'pending'
-  },
-  {
-    time : '07.00',
-    date : '02-05-2022',
-    patient : 'Wanda Scarlett',
-    department : 'Neurology',
-    doctor : 'Dr.Mantis Rachel',
-    status : 'pending'
-  },
-  {
-    time : '07.00',
-    date : '02-05-2022',
-    patient : 'Wanda Scarlett',
-    department : 'Neurology',
-    doctor : 'Dr.Mantis Rachel',
-    status : 'process'
-  }
-]
 
 export default function Appointment() {
 
-  const [page, setPage] = useState(1);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
+  // const [page, setPage] = useState(1);
 
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage);
-  };
+  // const [rowsPerPage, setRowsPerPage] = useState(5);
 
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(parseInt(event.target.value, 1));
-    setPage(0);
-  };
+  const [data,setData] = useState([
+    {
+      title : 'General',
+      field : []
+    },
+    {
+      title : 'Neurology',
+      field : []
+    },
+    {
+      title : 'Cardiology',
+      field : []
+    },
+    {
+      title : 'Pediatric',
+      field : []
+    },
+    {
+      title : 'Gynecology',
+      field : []
+    }
+  ])  
+
+  const [isLoading,setIsLoading] = useState(true)
+  
+  const [openConfirm ,setOpenConfirm] = useState(false)
+
+  useEffect(()=>{
+
+    axios({
+      method : 'get',
+      url : 'https://62a18758cc8c0118ef4d691f.mockapi.io/appointment',
+      data : {},
+      headers : {
+        'Content-Type' : 'application/json'
+      }
+    }).then((res)=>{
+
+      const dataNeurology = res.data.filter(item => item.department === 'neurology')
+
+      const dataGeneral = res.data.filter(item => item.department === 'general')
+
+      const dataCardiology = res.data.filter(item => item.department === 'cardiology')
+
+      const dataPediatric = res.data.filter(item => item.department === 'pediatric')
+
+      const dataGynecology = res.data.filter(item => item.department === 'gynecology')
+
+      setData([
+        {
+          title : 'General',
+          field : dataGeneral
+        },
+        {
+          title : 'Neurology',
+          field : dataNeurology
+        },
+        {
+          title : 'Cardiology',
+          field : dataCardiology
+        },
+        {
+          title : 'Pediatric',
+          field : dataPediatric
+        },
+        {
+          title : 'Gynecology',
+          field : dataGynecology
+        }
+      ])
+
+      setIsLoading(false)
+
+    })
+
+  },[])
+
+  // const handleChangePage = (event, newPage) => {
+  //   setPage(newPage);
+  // };
+
+  // const handleChangeRowsPerPage = (event) => {
+  //   setRowsPerPage(parseInt(event.target.value, 1));
+  //   setPage(0);
+  // };
 
     const handleOpenModal = () => {
 
-        console.log("open modal")
+        setOpenConfirm(true)
 
     }
 
@@ -138,84 +148,88 @@ export default function Appointment() {
     }
 
   return (
-    <Box>
 
-         <SearchBox 
-         labelLeftButton='Add new appointment'
-         onClickLeftButton={handleOpenModal}
-         placeholder='Search here...'
-         onChangeSearch={onChangeSearch}
-         onClickSearch={handleSearch}
-         />
-        <Grid container spacing={1} mt={2}>
-            <Grid item xs={1}>
-              <FilterList 
-                color='primary'
-                sx={{ fontSize: '40px', padding: '10px', cursor: 'pointer' }}
+    <DefaultLayout>
+
+      <Box
+      sx={{
+        mb : '30px'
+      }}
+      >
+
+          <SearchBox 
+          labelLeftButton='Add new appointment'
+          onClickLeftButton={handleOpenModal}
+          placeholder='Search here...'
+          onChangeSearch={onChangeSearch}
+          onClickSearch={handleSearch}
+          />
+
+          <Box
+          sx={{
+            marginTop : '30px',
+            display : 'flex',
+            flexDirection : 'column',
+            rowGap : '30px'
+          }}
+          > 
+
+            <Typography
+            variant='h2'
+            >
+              Today Appointment
+            </Typography>
+
+            {data.map((item,index)=>(
+
+              <Box
+              key={index}
+              sx={{
+                display : 'flex',
+                flexDirection : 'column',
+                rowGap : '30px'
+              }}
+              >
+
+                <Typography
+                variant='h3'
+                sx={{
+                  textAlign : 'center'
+                }}
+                >
+                {item.title} Department  
+                </Typography>
                 
-              />
-            </Grid>
-            <Grid item xs={3}>
-              <Autocomplete
-                disablePortal
-                id="combo-box-demo"
-                options={status}
-                sx={{ width: '100%', height: "auto" }}
-                renderInput={(params) => <TextField {...params} label="STATUS" />}
-              />
-            </Grid>
-            <Grid item xs={3}>
-              <Autocomplete
-                disablePortal
-                id="combo-box-demo"
-                options={department}
-                sx={{ width: '100%', height: "auto"}}
-                renderInput={(params) => <TextField {...params} label="DEPARTEMENT"/>}
-              />
-            </Grid>
-          </Grid>
-         <Box
-         sx={{
-           marginTop : '30px'
-         }}
-         >
-          <Grid container spacing={1}>
-            <Grid item xs={11}>
-              <Typography variant='h3'mb={3}>
-                Appointment Today
-              </Typography>
-            </Grid>
-            <Grid item xs={1} >
-              <Link 
-              href='#' 
-              underline="none" 
-              color="neutral600"
-              InputProps={{
-                endAdornment: 
-                <InputAdornment position="end">
-                  <ChevronRight color="neutral600"/>
-                </InputAdornment>
-              }}>
-                See more
-              </Link>
-            </Grid>
-          </Grid>
-            <TableBox
-            dataHead={dataHead}
-            dataBody={dataBody}
-            />
-          
-          
+                <TableBox
+                dataHead={dataHead}
+                dataBody={item.field}
+                isLoading={isLoading}
+                endPoint='appointment'
+                />
 
-         </Box> 
-      <TablePagination
-        component="div"
-        count={13}
-        page={page}
-        onPageChange={handleChangePage}
-        rowsPerPage={rowsPerPage}
-        onRowsPerPageChange={handleChangeRowsPerPage}
-    />
-    </Box>
+              </Box>
+
+            ))}
+
+          </Box> 
+
+        {/* <TablePagination
+          component="div"
+          count={13}
+          page={page}
+          onPageChange={handleChangePage}
+          rowsPerPage={rowsPerPage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+      /> */}
+
+
+          <ModalConfirm
+          isOpen={openConfirm}
+          handleClose={()=>{setOpenConfirm(false)}}
+          />
+
+      </Box>
+
+    </DefaultLayout>
   )
 }

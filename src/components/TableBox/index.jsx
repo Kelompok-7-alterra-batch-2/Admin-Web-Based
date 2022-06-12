@@ -7,24 +7,27 @@ import {
     TableContainer, 
     TableHead,
     TableRow, 
-    Chip,
     IconButton, 
     Skeleton,
-    Box} from '@mui/material'
+    Box,
+    Typography} from '@mui/material'
 
 import Edit from '@mui/icons-material/Edit'
 import Delete from '@mui/icons-material/Delete' 
 
 import ModalDelete from './ModalDelete'
+import CustomChip from './CustomChip'
 
 export default function TableBox(props) {
 
-    const { dataHead, dataBody , isLoading} = props
+    const { dataHead, dataBody , isLoading , endPoint } = props
 
     const [openModal,setOpenModal] = useState({
         edit : false,
         delete : false
     })
+
+    const [param,setParam] = useState(null)
 
     // const handleOpenEdit = () => {
 
@@ -34,15 +37,22 @@ export default function TableBox(props) {
 
     // }
 
-    const handleOpenDelete = () =>{
+    const handleOpenDelete = (id) =>{
+        
+        setParam(id)
+
+        console.log(id)
 
         setOpenModal((prev)=>{
             return {...prev,delete : !prev.delete}
         })
 
+
     }
 
   return (
+
+    <>
 
         <TableContainer>
 
@@ -91,21 +101,30 @@ export default function TableBox(props) {
                             {
                                 dataHead.map((itemCell,indexCell)=>{
 
+                                    if (itemCell.fieldname === 'queue') {
+
+                                        return (
+                                            <TableCell
+                                            key={indexCell}
+                                            align='center'
+                                            >
+                                            {indexRow + 1}
+                                            </TableCell>
+                                        )
+
+                                    }
+
                                     if (itemCell.fieldname ==='status'){
 
                                         return (
                                             <TableCell 
                                             key={indexCell}
                                             align='center'>
-                                                <Chip 
-                                                label={itemRow[itemCell.fieldname]}
-                                                variant='outlined'
-                                                color={itemRow[itemCell.fieldname] === 'pending' ? 'warning' : 'primary'}
-                                                sx={{
-                                                    borderRadius : '4px',
-                                                    bgcolor : itemRow[itemCell.fieldname] === 'pending' ? 'bgWarning' : 'bgPrimary'
-                                                }}
-                                                />    
+
+                                                <CustomChip
+                                                params={itemRow[itemCell.fieldname]}
+                                                />
+
                                             </TableCell> 
                                         )
 
@@ -127,7 +146,7 @@ export default function TableBox(props) {
                                                 </IconButton>
 
                                                 <IconButton
-                                                onClick={handleOpenDelete}
+                                                onClick={()=>handleOpenDelete(itemRow.id)}
                                                 >
                                                     <Delete/>
                                                 </IconButton>
@@ -150,12 +169,6 @@ export default function TableBox(props) {
                                 })
                             }
 
-                            <ModalDelete
-                            isOpen={openModal.delete}
-                            handleClose={handleOpenDelete}
-                            deleteParams={dataBody[indexRow].id}
-                            />
-
                         </TableRow>
                     
                     ))}
@@ -176,24 +189,41 @@ export default function TableBox(props) {
                     animation="wave"
                     height={100}
                     width="100%"/>
-                    
-                    <Skeleton
-                    animation="wave"
-                    height={100}
-                    width="100%"
-                    />
-
-                    <Skeleton
-                    animation="wave"
-                    height={100}
-                    width="100%"
-                    />
                 
                 </Box>
 
             }
 
+            {(!isLoading && (!dataBody || dataBody.length === 0))  && 
+
+                <Box
+                sx={{
+                    width : '100%',
+                    textAlign : 'center',
+                    my : '30px'
+                }}
+                >
+
+                    <Typography
+                    variant='body1'
+                    color='neutral500'
+                    > No data in this table </Typography>
+
+                </Box>
+
+            }
+
+
         </TableContainer>
 
+        {openModal.delete &&
+        <ModalDelete
+        isOpen={openModal.delete}
+        handleClose={handleOpenDelete}
+        deleteParams={param}
+        endPoint={endPoint}
+        />
+        }
+        </>
   )
 }

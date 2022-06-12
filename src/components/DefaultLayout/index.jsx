@@ -9,7 +9,9 @@ import {
     Avatar,
     Container,
     Skeleton} from '@mui/material'
-import React from 'react'
+import React,{useState,useEffect} from 'react'
+
+import axios from 'axios';
 
 import { useLocation } from 'react-router-dom';
 
@@ -97,11 +99,28 @@ const listSideBar = [
 
 export default function DefaultLayout(props) {
      
-    const {user, children ,isLoading} = props
+    const {children ,isLoading} = props
+
+    const [user,setUser] = useState(null)
 
     const location = useLocation()
 
     const indexBar = listSideBar.findIndex((item)=>item.path === location.pathname)
+
+    useEffect(()=>{
+
+        axios({
+            method : 'get',
+            url : 'https://62a18758cc8c0118ef4d691f.mockapi.io/user/2',
+            data : {},
+            headers : {
+              'Content-Type' : 'application/json'
+            }
+          }).then((res)=>{
+            setUser(res.data)
+          })
+
+    },[])
 
   return (
 
