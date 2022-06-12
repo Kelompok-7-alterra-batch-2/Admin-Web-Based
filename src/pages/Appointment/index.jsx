@@ -36,7 +36,6 @@ const dataHead = [
   }
 ]
 
-
 export default function Appointment() {
 
   // const [page, setPage] = useState(1);

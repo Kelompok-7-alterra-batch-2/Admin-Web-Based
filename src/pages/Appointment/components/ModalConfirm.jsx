@@ -50,7 +50,8 @@ export default function ModalConfirm(props) {
         date : '',
         time : '',
         doctor : '',
-        reason : ''
+        reason : '',
+        status : 'pending'
     }
 
     const [openAppointment,setOpenAppointment ] = useState(false)
@@ -179,8 +180,9 @@ export default function ModalConfirm(props) {
     handleClose={()=>{setOpenAppointment(false)}}
     field={field}
     initialData={initialData}
-    title="New Appointment"
-    endPoint="appointment"
+    title='New Appointment'
+    endPoint='appointment'
+    methodSubmit='post'
     />
 
     </>

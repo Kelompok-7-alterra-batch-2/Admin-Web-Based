@@ -1,11 +1,21 @@
 export function toCapitalize(param) {
 
-    let split = param.split('')
+    let splitSpace = param.split(' ')
 
-    let upFirst = split[0].toUpperCase()
+    let result = []
+
+    for(let i = 0 ; i < splitSpace.length ; i++){
+
+        let splitChar = splitSpace[i].split('')
+
+        let upFirst = splitChar[0].toUpperCase()
     
-    split.splice(0,1,upFirst)
+        splitChar.splice(0,1,upFirst)
 
-    return split
+        result.push(splitChar.join(''))
+
+    }
+
+    return result.join(' ')
 
 }

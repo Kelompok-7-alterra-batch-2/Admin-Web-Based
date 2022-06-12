@@ -21,7 +21,8 @@ import {
     List, 
     ListItem, 
     ListItemButton,
-    MenuItem} from '@mui/material'
+    MenuItem,
+    FormHelperText} from '@mui/material'
 
 import axios from 'axios';
 
@@ -34,13 +35,19 @@ import ModalSuccess from './ModalSuccess';
 
 export default function ModalInput(props) {
 
-    const {isOpen,handleClose,field,initialData,title,endPoint} = props
+    const {isOpen,handleClose,field,initialData,title,endPoint,methodSubmit} = props
+
+    const initialError = {
+        search : false,
+        submit : false,
+        selectDoctor : false
+    }
 
     const [form,setForm] = useState(initialData)
 
     const [isSuccess,setIsSuccess] = useState(false)
 
-    const [isError,setIsError] = useState(false)
+    const [isError,setIsError] = useState(initialError)
 
     const [isLoading,setIsLoading] = useState(false)
 
@@ -71,7 +78,7 @@ export default function ModalInput(props) {
 
         axios({
             method : 'get',
-            url : ('https://62a18758cc8c0118ef4d691f.mockapi.io/' + param + '/' + form.patient),
+            url : ('https://62a18758cc8c0118ef4d691f.mockapi.io/' + param + '?search=' + form.patient),
             data : {},
             headers : {
               'Content-Type' : 'application/json'
@@ -80,7 +87,11 @@ export default function ModalInput(props) {
 
             setOpenPopper(true)
 
-            setListPatient([res.data])
+            setListPatient(res.data)
+
+          }).catch(()=>{
+
+            setIsError((prev)=>{ return {...prev,search : true}})
 
           })
 
@@ -110,7 +121,7 @@ export default function ModalInput(props) {
 
         axios({
             method : 'get',
-            url : 'https://62a18758cc8c0118ef4d691f.mockapi.io/doctor',
+            url : `https://62a18758cc8c0118ef4d691f.mockapi.io/doctor?filter=${e.target.value}`,
             data : {},
             headers : {
               'Content-Type' : 'application/json'
@@ -128,6 +139,15 @@ export default function ModalInput(props) {
     
             })
 
+          }).catch(()=>{
+
+            setIsError((prev)=>{
+                return {
+                    ...prev,
+                    selectDoctor : true
+                }
+            })
+
           })
 
     }
@@ -135,15 +155,21 @@ export default function ModalInput(props) {
     const handleSubmit = async () =>{
         
         setIsLoading(true)
-        await axios.post(`https://62a18758cc8c0118ef4d691f.mockapi.io/${endPoint}`,{
-            ...form
+        await axios({
+            method : methodSubmit,
+            url : `https://62a18758cc8c0118ef4d691f.mockapi.io/${endPoint}`,
+            data : {
+            ...form },
+            headers : {
+                'Content-Type' : 'application/json'
+            }
         }).then(()=>{
             
             handleCloseModal()
             setIsSuccess(true)
 
         }).catch((err)=>{
-            setIsError(true)
+            setIsError((prev)=>{ return {...prev,submit : true}})
         })
         setIsLoading(false)
 
@@ -259,7 +285,7 @@ export default function ModalInput(props) {
                                     }}
                                     >
                                         <List>
-                                            {listPatient &&
+                                            {(listPatient && listPatient.length > 0) &&
                                                 listPatient.map((itemPop,index)=>(
                                                     <ListItem
                                                     key={index}
@@ -293,7 +319,19 @@ export default function ModalInput(props) {
                                                     </ListItem>
                                                 ))
                                             }
+
                                         </List>
+
+                                        {(isError.search || listPatient.length === 0) &&
+                                            <Typography
+                                            sx={{
+                                                textAlign : 'center',
+                                                color : 'neutral500'
+                                            }}
+                                            variant='body2'>
+                                                {form[item.fieldname]} isn't in database
+                                            </Typography>
+                                        }
 
                                         <Button
                                         variant='outlined'
@@ -321,7 +359,9 @@ export default function ModalInput(props) {
 
                                 <FormControl
                                 key={index}
-                                fullWidth>
+                                fullWidth
+                                error={isError.selectDoctor || (listDoctor && listDoctor.length === 0)}
+                                >
 
 
                                     <Typography
@@ -377,6 +417,11 @@ export default function ModalInput(props) {
                                         </MenuItem>
 
                                     </Select>
+
+                                    {(isError.selectDoctor || (listDoctor && listDoctor.length === 0)) &&
+                                    <FormHelperText>
+                                        no doctor from {form[item.fieldname]} available at this time
+                                    </FormHelperText>}
 
                                 </FormControl>
 
@@ -487,8 +532,8 @@ export default function ModalInput(props) {
 
                                                 <MenuItem
                                                 key={indexSelect}
-                                                value={option.name}>
-                                                    {option.name}
+                                                value={option.value}>
+                                                    {option.title}
                                                 </MenuItem>
 
                                             ))
@@ -611,7 +656,7 @@ export default function ModalInput(props) {
 
         <Snackbar
         anchorOrigin={{vertical : 'bottom', horizontal : 'center'}}
-        open={isError}
+        open={isError.submit}
         onClose={()=>setIsError(false)}
         autoHideDuration={3000}
         >
