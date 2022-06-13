@@ -1,123 +1,214 @@
-import React from "react";
+import { Box , Snackbar, Alert} from '@mui/material'
 
-// MUI
-import { Autocomplete, Box, Grid, TextField } from "@mui/material";
-import { SearchBox, TableBox } from "components";
-import { FilterList } from "@mui/icons-material";
+import React, { useEffect, useState } from 'react'
 
-const status = ["Pending", "Confirmed", "Cancelled"];
-const department = [
-  "Cardiology",
-  "Neurology",
-  "Oncology",
-  "Orthopedics",
-  "Radiology",
-];
+import axios from 'axios'
 
-const dataHead = [
-  {
-    headerName: "Department",
-    fieldname: "department",
-  },
-  {
-    headerName: "Name",
-    fieldname: "name",
-  },
-  {
-    headerName: "Phone",
-    fieldname: "phone",
-  },
-  {
-    headerName: "Status",
-    fieldname: "status",
-  },
-  {
-    headerName: "Edit",
-    fieldname: "edit",
-  },
-];
+import { SearchBox, TableBox , DefaultLayout , ModalInput } from 'components'
 
-const dataBody = [
+const field = [
   {
-    department: "Neurology",
-    name: "Dami Sarah",
-    phone: "081928364756",
-    status: "Active",
+    title : 'Doctor Name',
+    fieldname : 'name',
+    type : 'text'
   },
   {
-    department: "Neurology",
-    name: "Dami Sarah",
-    phone: "081928364756",
-    status: "Active",
+    title : 'NID',
+    fieldname : 'nid',
+    type : 'text'
   },
   {
-    department: "Neurology",
-    name: "Dami Sarah",
-    phone: "081928364756",
-    status: "Active",
+    title : 'Department',
+    fieldname : 'department',
+    type : 'select',
+    option : [
+      {
+        title : 'General',
+        value : 'general'
+      },
+      {
+        title : 'Neurology',
+        value : 'neurology'
+      },
+      {
+        title : 'Cardiology',
+        value : 'cardiology'
+      },
+      {
+        title : 'Pediatric',
+        value : 'pediatric'
+      },
+      {
+        title : 'Gynecology',
+        value : 'gynecology'
+      },
+    ]
   },
-];
+  {
+    title : 'Email',
+    fieldname : 'email',
+    type : 'email'
+  },
+  {
+    title : 'Password',
+    fieldname : 'password',
+    type : 'password'
+  },
+  {
+    title : 'Phone Number',
+    fieldname : 'phone_number',
+    type : 'text'
+  }
+]
 
-const Doctor = () => {
-  const handleOpenModal = () => {
-    console.log("open modal");
-  };
+const initialData = {
+  name : '',
+  nid : '',
+  department : '',
+  email : '',
+  password : '',
+  phone_number : '',
+}
 
-  const onChangeSearch = (e) => {
-    console.log(e.target.value);
-  };
+export default function Doctor() {
 
-  const handleSearch = () => {
-    console.log("click");
-  };
+    const [data,setData] = useState(null)
+
+    const [isLoading,setIsLoading] = useState(true)
+
+    const [openModal,setOpenModal ] = useState({
+      doctor : false
+    })
+
+    const [searchDoctor,setSearchDoctor] = useState(null)
+
+    const [isError,setIsError] = useState(false)
+
+    const dataHead = [
+      {
+        headerName : 'NID',
+        fieldname : 'id'
+      },
+      {
+        headerName : 'Department',
+        fieldname : 'department'
+      },
+      {
+        headerName : 'Doctor Name',
+        fieldname : 'name'
+      },
+      {
+        headerName : 'Phone Number',
+        fieldname : 'phone_number'
+      },
+      {
+        headerName : 'Edit',
+        fieldname : 'edit'
+      }
+    ]
+
+    useEffect(()=>{
+
+      axios({
+        method : 'get',
+        url : 'https://62a18758cc8c0118ef4d691f.mockapi.io/doctor',
+        data : {},
+        headers : {
+          'Content-Type' : 'application/json'
+        }
+      }).then((res)=>{
+        setData(res.data)
+        setIsLoading(false)
+      })
+
+    },[])
+
+    const handleOpenDoctor = () => {
+
+        setOpenModal((prev)=>{
+          return {...prev,patient : !prev.patient}
+        })
+
+    }
+
+    const onChangeSearch = (e) => {
+
+        setSearchDoctor(e.target.value)
+
+    }
+
+    const handleSearch = () => {
+
+      axios({
+        method : 'get',
+        url : `https://62a18758cc8c0118ef4d691f.mockapi.io/doctor?search=${searchDoctor}`,
+        data : {},
+        headers : {
+          'Content-Type' : 'application/json'
+        }
+      }).then((res)=>{
+        setData(res.data)
+      }).catch(()=>{
+        setIsError(true)
+      })
+
+    }
+
   return (
-    <Box>
-      <SearchBox
-        labelLeftButton="Add New Doctor"
-        onClickLeftButton={handleOpenModal}
-        placeholder="Search doctor here..."
-        onChangeSearch={onChangeSearch}
-        onClickSearch={handleSearch}
-      />
 
-      <Grid container spacing={1} mt={2}>
-        <Grid item xs={1}>
-          <FilterList
-            color="primary"
-            sx={{ fontSize: "40px", padding: "10px", cursor: "pointer" }}
-          />
-        </Grid>
-        <Grid item xs={3}>
-          <Autocomplete
-            disablePortal
-            id="combo-box-demo"
-            options={status}
-            sx={{ width: "100%", height: "auto" }}
-            renderInput={(params) => <TextField {...params} label="STATUS" />}
-          />
-        </Grid>
-        <Grid item xs={3}>
-          <Autocomplete
-            disablePortal
-            id="combo-box-demo"
-            options={department}
-            sx={{ width: "100%", height: "auto" }}
-            renderInput={(params) => (
-              <TextField {...params} label="DEPARTEMENT" />
-            )}
-          />
-        </Grid>
-      </Grid>
+    <DefaultLayout>
 
-      <Box
-        sx={{
-          marginTop: "30px",
-        }}
-      >
-        <TableBox dataHead={dataHead} dataBody={dataBody} />
+      <Box>
+
+          <SearchBox 
+          labelLeftButton='Add New Doctor'
+          onClickLeftButton={handleOpenDoctor}
+          placeholder='Search doctor here...'
+          onChangeSearch={onChangeSearch}
+          onClickSearch={handleSearch}
+          />
+
+          <ModalInput
+          isOpen={openModal.patient}
+          handleClose={handleOpenDoctor}
+          field={field}
+          initialData={initialData}
+          title='New Doctor'
+          endPoint='doctor'
+          methodSubmit='post'
+          />
+
+          <Box
+          sx={{
+            marginTop : '30px'
+          }}
+          >
+            
+              <TableBox
+              dataHead={dataHead}
+              dataBody={data}
+              isLoading={isLoading}
+              endPoint='doctor'
+              fieldEdit={field}
+              />  
+
+          </Box>
+
+          <Snackbar
+          anchorOrigin={{vertical : 'bottom', horizontal : 'center'}}
+          open={isError}
+          onClose={()=>setIsError(false)}
+          autoHideDuration={3000}
+          >
+              <Alert severity='error'>
+                  Sorry, can't find your search, please try another again
+              </Alert>
+
+          </Snackbar>
+
       </Box>
-    </Box>
-  );
-};
 
-export default Doctor;
+    </DefaultLayout>
+  
+  )
+}

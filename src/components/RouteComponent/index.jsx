@@ -32,14 +32,11 @@ export default function RouteComponent() {
 
         }/>
           
-        <Route
-        path="doctor"
-        element={
-            <DefaultLayout>
+        <Route path="doctor" element={
+          
               <Doctor />
-            </DefaultLayout>
-          }
-        />
+              
+        }/>
 
 
         <Route path="login" element={<Login />} />
