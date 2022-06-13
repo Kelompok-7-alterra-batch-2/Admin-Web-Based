@@ -1,18 +1,29 @@
 import React from 'react'
 
-import { Button, Input, Text } from '@nextui-org/react'
+import { Box } from '@mui/material'
+
+import WelcomeBox from './components/WelcomeBox'
+import OverviewBox from './components/OverviewBox'
+import TableBox from './components/TableBox'
 
 export default function Dashboard() {
+
   return (
-    <>
-    {/* example next ui*/}
-    <Button color='primary'>default</Button>
-    <Text css={{background : '$neutral200'}}>Halo</Text>
-    <Input 
-    bordered
-    label='Email'
-    placeholder='email@carehospital.com'
-    />
-    </>
+    
+    <Box
+    sx={{
+      display : 'flex',
+      flexDirection : 'column',
+      gap : '30px'
+    }}
+    >
+
+      <WelcomeBox/>
+
+      <OverviewBox/>
+
+      <TableBox/>
+
+    </Box>
   )
 }
