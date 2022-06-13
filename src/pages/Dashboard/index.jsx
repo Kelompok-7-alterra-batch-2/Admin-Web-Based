@@ -1,39 +1,29 @@
-import React, { useState } from "react";
+import React from 'react'
 
-import { Button, TextField, Typography } from "@mui/material";
+import { Box } from '@mui/material'
 
-import { CustomInput } from "components";
+import WelcomeBox from './components/WelcomeBox'
+import OverviewBox from './components/OverviewBox'
+import TableBox from './components/TableBox'
 
 export default function Dashboard() {
-  const [input, setInput] = useState("");
-
-  console.log(input);
 
   return (
-    <>
-      {/* example material ui*/}
-      <Button variant="contained">default</Button>
+    
+    <Box
+    sx={{
+      display : 'flex',
+      flexDirection : 'column',
+      gap : '30px'
+    }}
+    >
 
-      <Typography variant="body2">Halo</Typography>
-      <Typography variant="body3">Halo</Typography>
+      <WelcomeBox/>
 
-      <TextField label="halo@gmail.com" placeholder="hlo" />
+      <OverviewBox/>
 
-      <CustomInput
-        label="Email"
-        isError={true}
-        onChange={(e) => setInput(e)}
-        value={input}
-        type="date"
-        errorMessage="Email is Not Valid"
-      />
+      <TableBox/>
 
-      <CustomInput
-        label="Password"
-        onChange={(e) => setInput(e)}
-        value={input}
-        type="password"
-      />
-    </>
-  );
+    </Box>
+  )
 }
