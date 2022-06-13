@@ -151,7 +151,6 @@ export default function ModalConfirm(props) {
     title='New Appointment'
     endPoint='appointment'
     methodSubmit='post'
-    paddingOverflow='165px'
     />
 
     </>

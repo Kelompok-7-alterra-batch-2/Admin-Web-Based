@@ -35,7 +35,7 @@ import ModalSuccess from './ModalSuccess';
 
 export default function ModalInput(props) {
 
-    const {isOpen,handleClose,field,initialData,title,endPoint,methodSubmit,paddingOverflow} = props
+    const {isOpen,handleClose,field,initialData,title,endPoint,methodSubmit} = props
 
     const initialError = {
         search : false,
@@ -218,7 +218,7 @@ export default function ModalInput(props) {
                         sx={{
                             right : '0',
                             position : 'absolute',
-                            transform : 'translateY(-15%)'
+                            transform : 'translate(-50%,-15%)'
                         }}
                         >
 
@@ -241,13 +241,11 @@ export default function ModalInput(props) {
                     <Box
                     sx={{
                         display: 'flex',
-                        justifyContent : 'space-around',
+                        justifyContent : 'flex-start',
                         flexDirection : 'column',
                         rowGap : '30px',
-                        maxHeight : '300px',
+                        maxHeight : '400px',
                         overflowY : 'scroll',
-                        pt : paddingOverflow,
-                        pb : '30px',
                         px : '30px' 
                     }}
                     >

@@ -192,7 +192,6 @@ export default function Patient() {
           title='New Patient'
           endPoint='patient'
           methodSubmit='post'
-          paddingOverflow='200px'
           />
 
           <Box
@@ -207,7 +206,6 @@ export default function Patient() {
               isLoading={isLoading}
               endPoint='patient'
               fieldEdit={field}
-              paddingOverflow='200px'
               />  
 
           </Box>
