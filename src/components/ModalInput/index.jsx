@@ -35,7 +35,7 @@ import ModalSuccess from './ModalSuccess';
 
 export default function ModalInput(props) {
 
-    const {isOpen,handleClose,field,initialData,title,endPoint,methodSubmit} = props
+    const {isOpen,handleClose,field,initialData,title,endPoint,methodSubmit,paddingOverflow} = props
 
     const initialError = {
         search : false,
@@ -167,10 +167,9 @@ export default function ModalInput(props) {
             }
         }).then(()=>{
             
-            handleCloseModal()
-            setIsSuccess(true)
+            setIsSuccess((prev)=>{return !prev})
 
-        }).catch((err)=>{
+        }).catch(()=>{
             setIsError((prev)=>{ return {...prev,submit : true}})
         })
         setIsLoading(false)
@@ -202,14 +201,14 @@ export default function ModalInput(props) {
                     width: 472,
                     bgcolor: 'white',
                     boxShadow: 24,
-                    p: '30px',
-                    borderRadius : '8px'
+                    borderRadius : '8px',
                 }}
                 >
 
                     <Box
                     sx={{
-                        position : 'relative'
+                        position : 'relative',
+                        p: '30px 30px 0 30px',
                     }}
                     >
 
@@ -244,7 +243,12 @@ export default function ModalInput(props) {
                         display: 'flex',
                         justifyContent : 'space-around',
                         flexDirection : 'column',
-                        rowGap : '30px'
+                        rowGap : '30px',
+                        maxHeight : '300px',
+                        overflowY : 'scroll',
+                        pt : paddingOverflow,
+                        pb : '30px',
+                        px : '30px' 
                     }}
                     >
 
@@ -575,7 +579,9 @@ export default function ModalInput(props) {
 
                             return (
 
-                                <FormControl>
+                                <FormControl
+                                key={index}
+                                >
 
                                     <FormLabel 
                                     id="radio-button-group-label"
@@ -632,6 +638,14 @@ export default function ModalInput(props) {
                         )
                         })}
 
+                    </Box>
+
+                    <Box
+                    px={{
+                      padding : '30px'
+                    }}
+                    >
+
                         <Box
                         sx={{
                             position : 'relative'
@@ -651,16 +665,16 @@ export default function ModalInput(props) {
                             <CircularProgress
                             size={24}
                             sx={{
-                            color: 'white',
-                            position: 'absolute',
-                            top: '50%',
-                            left: '50%',
-                            marginTop: '-12px',
-                            marginLeft: '-12px',
+                                color: 'white',
+                                position: 'absolute',
+                                top: '50%',
+                                left: '50%',
+                                marginTop: '-12px',
+                                marginLeft: '-12px',
                             }}
                             />
-
-                            }
+                            
+                        }
                         
                         </Box>
 
