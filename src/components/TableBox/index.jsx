@@ -24,7 +24,7 @@ import { toCapitalize } from 'helpers/function/toCapitalize'
 
 export default function TableBox(props) {
 
-    const { dataHead, dataBody , isLoading , endPoint , fieldEdit} = props
+    const { dataHead, dataBody , isLoading , endPoint , fieldEdit , paddingOverflow} = props
 
     const [openModal,setOpenModal] = useState({
         edit : false,
@@ -243,6 +243,7 @@ export default function TableBox(props) {
         title={('Edit ' + toCapitalize(endPoint))}
         endPoint={endPoint}
         methodSubmit='put'
+        paddingOverflow={paddingOverflow}
         />
         }
 

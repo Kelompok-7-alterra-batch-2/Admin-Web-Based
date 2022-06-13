@@ -238,6 +238,7 @@ export default function Appointment() {
                 isLoading={isLoading}
                 endPoint='appointment'
                 fieldEdit={field}
+                paddingOverflow='165px'
                 />
 
               </Box>
