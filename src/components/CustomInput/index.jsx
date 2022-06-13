@@ -11,7 +11,7 @@ const CustomStyle = styled(InputBase) (({ theme }) => ({
       position: 'relative',
       fontSize: 16,
       fontWeight : 'normal',
-      width: 'auto',
+      width: '100%',
       padding: '10px 12px',
       transition: theme.transitions.create([
         'border-color',
@@ -34,32 +34,49 @@ export default function CustomInput(props) {
       onChange , 
       value , 
       type,
-      errorMessage
+      errorMessage,
+      sx,
+      name,
+      key,
+      endAdornment,
+      rows,
+      multiline
     } = props
   
     return (
 
     <FormControl 
     variant="standard" 
-    error={isError}>
+    error={isError}
+    sx={sx}
+    key={key}
+    fullWidth
+    >
 
       <InputLabel 
       shrink 
       htmlFor="custom-input" 
-      sx={{fontSize:'16px'}}>
+      sx={{
+        fontSize:'18px',
+        fontWeight : '700'
+      }}>
         {label}
       </InputLabel>
       
       <CustomStyle
+      endAdornment={endAdornment}
+      name={name}
       value={value} 
       sx={{
         border:'1px solid',
         borderColor: isError? 'red' : 'neutral500',
         borderRadius:'4px'
       }} 
-      onChange={(e)=>onChange(e.target.value)} 
+      onChange={(e)=>onChange(e)} 
       id="custom-input"
       type={type}
+      multiline={multiline}
+      rows={rows}
       />
 
       {isError && 

@@ -13,5 +13,6 @@ export const customPalette = {
         main : '#FFCF42'
     },
     bgPrimary : '#F4FBFF',
-    bgWarning : '#FAFBBF'
+    bgWarning : '#FAFBBF',
+    bgSuccess : '#F0FCD9'
 }

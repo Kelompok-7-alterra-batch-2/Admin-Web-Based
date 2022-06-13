@@ -6,8 +6,15 @@ import {
     Toolbar,
     ListItem,
     Typography,
-    Container} from '@mui/material'
-import React from 'react'
+    Avatar,
+    Container,
+    Skeleton} from '@mui/material'
+import React,{useState,useEffect} from 'react'
+
+import axios from 'axios';
+
+import { useLocation } from 'react-router-dom';
+
 //Dashboard Icon
 import Dashboard from '@mui/icons-material/Dashboard';
 import DashboardOutlined from '@mui/icons-material/DashboardOutlined';
@@ -33,7 +40,6 @@ import SettingsOutlined from '@mui/icons-material/SettingsOutlined';
 import LogoutIcon from '@mui/icons-material/Logout';
 
 import ItemList from './components/ItemList';
-import HeaderBox from './components/HeaderBox';
 
 import Logo from 'assets/svg/Logo.svg'
 
@@ -91,7 +97,30 @@ const listSideBar = [
 
 ]
 
-export default function DefaultLayout({children}) {
+export default function DefaultLayout(props) {
+     
+    const {children ,isLoading} = props
+
+    const [user,setUser] = useState(null)
+
+    const location = useLocation()
+
+    const indexBar = listSideBar.findIndex((item)=>item.path === location.pathname)
+
+    useEffect(()=>{
+
+        axios({
+            method : 'get',
+            url : 'https://62a18758cc8c0118ef4d691f.mockapi.io/user/2',
+            data : {},
+            headers : {
+              'Content-Type' : 'application/json'
+            }
+          }).then((res)=>{
+            setUser(res.data)
+          })
+
+    },[])
 
   return (
 
@@ -155,9 +184,71 @@ export default function DefaultLayout({children}) {
 
         <Container maxWidth='xl'>
 
-          <HeaderBox
-          listBar={listSideBar}
-          />
+        <Box
+        sx={{
+        display : 'flex',
+        height: '88px',
+        padding : '0 40px',
+        bgcolor : 'neutral200',
+        justifyContent : 'space-between',
+        alignItems : 'center',
+        borderRadius : '0 0 8px 8px',
+        marginBottom : '30px'
+        }}
+        maxWidth='xl'
+        >
+
+        <Typography variant='h3'>
+            {listSideBar[indexBar].title}
+        </Typography>
+        
+        {isLoading &&
+
+        <Box
+        sx={{
+            display: 'flex',
+            gap : '20px'
+        }}
+        >
+
+            <Skeleton
+            variant='circular'
+            animation='wave'
+            width={48}
+            height={48}/>
+
+            <Skeleton
+            animation='wave'
+            width={100}
+            height={48}/>
+        
+        </Box>
+        }
+
+        {user &&
+        <Box
+        sx={{
+            display: 'flex',
+            gap : '20px'
+        }}
+        >
+            <Avatar
+            sx={{
+            width : '48px',
+            height : '48px'
+            }}
+            src={user.avatar_url}
+            />
+            
+            <Box>
+            <Typography variant='body2'>{user.username}</Typography>
+            <Typography variant='body5'>{user.role}</Typography>
+            </Box>
+        
+        </Box>
+        }
+
+        </Box>
         
           {children}
         
