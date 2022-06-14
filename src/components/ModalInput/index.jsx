@@ -428,7 +428,7 @@ export default function ModalInput(props) {
 
                                     {(isError.selectDoctor || (listDoctor && listDoctor.length === 0)) &&
                                     <FormHelperText>
-                                        no doctor from {form[item.fieldname]} available at this time
+                                        No doctor from {form[item.fieldname]} available at this time
                                     </FormHelperText>}
 
                                 </FormControl>

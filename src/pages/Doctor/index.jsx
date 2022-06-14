@@ -126,7 +126,7 @@ export default function Doctor() {
     const handleOpenDoctor = () => {
 
         setOpenModal((prev)=>{
-          return {...prev,patient : !prev.patient}
+          return {...prev, doctor : !prev.patient}
         })
 
     }
@@ -169,7 +169,7 @@ export default function Doctor() {
           />
 
           <ModalInput
-          isOpen={openModal.patient}
+          isOpen={openModal.doctor}
           handleClose={handleOpenDoctor}
           field={field}
           initialData={initialData}
