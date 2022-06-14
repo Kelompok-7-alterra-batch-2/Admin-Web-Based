@@ -49,13 +49,17 @@ export default function ModalInput(props) {
 
     const [isError,setIsError] = useState(initialError)
 
-    const [isLoading,setIsLoading] = useState(false)
+    const [isLoading,setIsLoading] = useState({
+        search : false,
+        submit : false
+    })
 
     const [listDoctor,setListDoctor] = useState(null)
 
     const [listPatient,setListPatient] = useState(null)
 
     const [openPopper,setOpenPopper] = useState(false)
+
 
     const handleCloseModal = () =>{
 
@@ -74,9 +78,12 @@ export default function ModalInput(props) {
 
     }
 
-    const handleSearch = (param) => {
+    const handleSearch = async(param) => {
 
-        axios({
+        setIsLoading((prev)=>{
+            return {...prev,search : true}
+        })
+        await axios({
             method : 'get',
             url : ('https://62a18758cc8c0118ef4d691f.mockapi.io/' + param + '?search=' + form.patient),
             data : {},
@@ -94,6 +101,10 @@ export default function ModalInput(props) {
             setIsError((prev)=>{ return {...prev,search : true}})
 
           })
+
+        setIsLoading((prev)=>{
+            return {...prev,search : false}
+        })
 
     }
 
@@ -154,7 +165,9 @@ export default function ModalInput(props) {
 
     const handleSubmit = async () =>{
         
-        setIsLoading(true)
+        setIsLoading((prev)=>{
+            return {...prev,submit : true}
+        })
         await axios({
             method : methodSubmit,
             url : methodSubmit === 'put' ? 
@@ -172,7 +185,9 @@ export default function ModalInput(props) {
         }).catch(()=>{
             setIsError((prev)=>{ return {...prev,submit : true}})
         })
-        setIsLoading(false)
+        setIsLoading((prev)=>{
+            return {...prev,submit : false}
+        })
 
     }
 
@@ -271,11 +286,32 @@ export default function ModalInput(props) {
                                     type='text'
                                     multiline={false}
                                     endAdornment={
-                                        <IconButton
-                                        onClick={()=>{handleSearch(item.fieldname)}}
-                                        >
-                                            <Search/>
-                                        </IconButton>
+                                        <Box>
+                                            <IconButton
+                                            onClick={()=>{handleSearch(item.fieldname)}}
+                                            sx={{
+                                                position : 'relative'
+                                            }}
+                                            >
+                                                <Search/>
+
+                                                {isLoading.search &&
+                            
+                                                <CircularProgress
+                                                size={24}
+                                                sx={{
+                                                    color: 'primary.main',
+                                                    position: 'absolute',
+                                                    top: '50%',
+                                                    left: '50%',
+                                                    marginTop: '-12px',
+                                                    marginLeft: '-12px',
+                                                }}
+                                                />}
+
+                                            </IconButton>
+
+                                        </Box>
                                     }
                                     />
                                     
@@ -651,14 +687,14 @@ export default function ModalInput(props) {
                         >
 
                             <Button
-                            disabled={isLoading}
+                            disabled={isLoading.submit}
                             variant='contained'
                             onClick={handleSubmit}
                             fullWidth
                             >Submit
                             </Button>
 
-                            {isLoading &&
+                            {isLoading.submit &&
                             
                             <CircularProgress
                             size={24}
@@ -672,7 +708,7 @@ export default function ModalInput(props) {
                             }}
                             />
                             
-                        }
+                            }
                         
                         </Box>
 

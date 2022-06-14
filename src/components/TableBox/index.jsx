@@ -96,7 +96,7 @@ export default function TableBox(props) {
 
                 </TableHead>
 
-                {dataBody && <TableBody>
+                {(dataBody && !isLoading) && <TableBody>
 
                     {dataBody.map((itemRow,indexRow)=>(
 

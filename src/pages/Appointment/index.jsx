@@ -2,13 +2,11 @@ import { Box, Typography } from '@mui/material'
 
 import React, { useState ,useEffect} from 'react'
 
-import { SearchBox, TableBox } from 'components'
-
-import FilterListIcon from '@mui/icons-material/FilterList';
-
 import axios from 'axios';
 
-import { DefaultLayout , CustomFilter } from 'components';
+import { DefaultLayout , CustomFilter , SearchBox, TableBox } from 'components';
+
+import FilterListIcon from '@mui/icons-material/FilterList';
 
 import { toCapitalize } from 'helpers/function/toCapitalize';
 
@@ -258,7 +256,7 @@ export default function Appointment() {
             placeholder='DEPARTMENT'
             filters={filterItem}
             sx={{
-              width : '150px'
+              width : '175px'
             }}
             />
 

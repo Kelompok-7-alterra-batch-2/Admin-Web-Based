@@ -2,9 +2,11 @@ import { Box , Snackbar, Alert} from '@mui/material'
 
 import React, { useEffect, useState } from 'react'
 
-import axios from 'axios'
+import axios from 'axios';
 
-import { SearchBox, TableBox , DefaultLayout , ModalInput } from 'components'
+import FilterListIcon from '@mui/icons-material/FilterList';
+
+import { SearchBox, TableBox , DefaultLayout , ModalInput , CustomFilter } from 'components'
 
 const field = [
   {
@@ -70,6 +72,57 @@ const initialData = {
   phone_number : '',
 }
 
+const filterItem = [
+  {
+    title : 'All',
+    value : 'all'
+  },
+  {
+    title : 'General',
+    value : 'general'
+  },
+  {
+    title : 'Neurology',
+    value : 'neurology'
+  },
+  {
+    title : 'Cardiology',
+    value : 'cardiology'
+  },
+  {
+    title : 'Pediatric',
+    value : 'pediatric'
+  },
+  {
+    title : 'Gynecology',
+    value : 'gynecology'
+  }
+]
+
+const dataHead = [
+  {
+    headerName : 'NID',
+    fieldname : 'id'
+  },
+  {
+    headerName : 'Department',
+    fieldname : 'department'
+  },
+  {
+    headerName : 'Doctor Name',
+    fieldname : 'name'
+  },
+  {
+    headerName : 'Phone Number',
+    fieldname : 'phone_number'
+  },
+  {
+    headerName : 'Edit',
+    fieldname : 'edit'
+  }
+]
+
+
 export default function Doctor() {
 
     const [data,setData] = useState(null)
@@ -84,28 +137,9 @@ export default function Doctor() {
 
     const [isError,setIsError] = useState(false)
 
-    const dataHead = [
-      {
-        headerName : 'NID',
-        fieldname : 'id'
-      },
-      {
-        headerName : 'Department',
-        fieldname : 'department'
-      },
-      {
-        headerName : 'Doctor Name',
-        fieldname : 'name'
-      },
-      {
-        headerName : 'Phone Number',
-        fieldname : 'phone_number'
-      },
-      {
-        headerName : 'Edit',
-        fieldname : 'edit'
-      }
-    ]
+    const [filterParam,setFilterParam] = useState('')
+
+    const [dataFilter,setDataFilter] = useState(null)
 
     useEffect(()=>{
 
@@ -119,14 +153,44 @@ export default function Doctor() {
       }).then((res)=>{
         setData(res.data)
         setIsLoading(false)
+      }).catch(()=>{
+
       })
 
     },[])
 
+    const handleChangeDepartment = async(e) => {
+
+      setFilterParam(e.target.value)
+      
+      if(e.target.value === 'all') {
+        
+        return setDataFilter(null)
+        
+      }
+      
+      setIsLoading(true)
+
+      await axios({
+        method : 'get',
+        url : `https://62a18758cc8c0118ef4d691f.mockapi.io/doctor?filter=${e.target.value}`,
+        data : {},
+        headers : {
+          'Content-Type' : 'application/json'
+        }
+      }).then((res)=>{
+        setDataFilter(res.data)
+      }).catch(()=>{
+        setIsError(true)
+      })
+      setIsLoading(false)
+    
+    }
+
     const handleOpenDoctor = () => {
 
         setOpenModal((prev)=>{
-          return {...prev, doctor : !prev.patient}
+          return {...prev, doctor : !prev.doctor}
         })
 
     }
@@ -137,9 +201,10 @@ export default function Doctor() {
 
     }
 
-    const handleSearch = () => {
+    const handleSearch = async() => {
 
-      axios({
+      setIsLoading(true)
+      await axios({
         method : 'get',
         url : `https://62a18758cc8c0118ef4d691f.mockapi.io/doctor?search=${searchDoctor}`,
         data : {},
@@ -151,6 +216,7 @@ export default function Doctor() {
       }).catch(()=>{
         setIsError(true)
       })
+      setIsLoading(false)
 
     }
 
@@ -168,6 +234,34 @@ export default function Doctor() {
           onClickSearch={handleSearch}
           />
 
+          <Box
+          sx={{
+            display : 'flex',
+            gap : '30px',
+            mt : '30px'
+          }}
+          >
+
+            <FilterListIcon
+            sx={{
+              height : '32px',
+              width : '32px',
+              color : 'primary.main'   
+            }}
+            />
+
+            <CustomFilter
+            value={filterParam}
+            onChange={handleChangeDepartment}
+            placeholder='DEPARTMENT'
+            filters={filterItem}
+            sx={{
+              width : '175px'
+            }}
+            />
+
+          </Box>
+
           <ModalInput
           isOpen={openModal.doctor}
           handleClose={handleOpenDoctor}
@@ -183,14 +277,24 @@ export default function Doctor() {
             marginTop : '30px'
           }}
           >
-            
+              {!dataFilter &&
               <TableBox
               dataHead={dataHead}
               dataBody={data}
               isLoading={isLoading}
               endPoint='doctor'
               fieldEdit={field}
-              />  
+              />}
+
+              {dataFilter &&
+              <TableBox
+              dataHead={dataHead}
+              dataBody={dataFilter}
+              endPoint='doctor'
+              fieldEdit={field}
+              isLoading={isLoading}
+              />
+              }  
 
           </Box>
 
