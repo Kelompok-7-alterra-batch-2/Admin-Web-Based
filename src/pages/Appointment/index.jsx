@@ -1,12 +1,14 @@
-// eslint-disable-next-line
-import { Box, Grid, Autocomplete, TextField, Typography, Link, InputAdornment, TablePagination } from '@mui/material'
+import { Box, Typography } from '@mui/material'
+
 import React, { useState ,useEffect} from 'react'
-// import { FilterList , ChevronRight } from '@mui/icons-material';
-import { SearchBox, TableBox } from 'components'
 
 import axios from 'axios';
 
-import { DefaultLayout } from 'components';
+import { DefaultLayout , CustomFilter , SearchBox, TableBox } from 'components';
+
+import FilterListIcon from '@mui/icons-material/FilterList';
+
+import { toCapitalize } from 'helpers/function/toCapitalize';
 
 import ModalConfirm from './components/ModalConfirm';
 
@@ -67,13 +69,37 @@ const field = [
       type : 'area',
       rows : 3
   }
-  ]
+]
+
+const filterItem = [
+  {
+    title : 'All',
+    value : 'all'
+  },
+  {
+    title : 'General',
+    value : 'general'
+  },
+  {
+    title : 'Neurology',
+    value : 'neurology'
+  },
+  {
+    title : 'Cardiology',
+    value : 'cardiology'
+  },
+  {
+    title : 'Pediatric',
+    value : 'pediatric'
+  },
+  {
+    title : 'Gynecology',
+    value : 'gynecology'
+  }
+]
+
 
 export default function Appointment() {
-
-  // const [page, setPage] = useState(1);
-
-  // const [rowsPerPage, setRowsPerPage] = useState(5);
 
   const [data,setData] = useState([
     {
@@ -102,6 +128,10 @@ export default function Appointment() {
   
   const [openConfirm ,setOpenConfirm] = useState(false)
 
+  const [filterParam,setFilterParam] = useState('')
+
+  const [dataFilter,setDataFilter] = useState(null)
+
   useEffect(()=>{
 
     axios({
@@ -125,41 +155,48 @@ export default function Appointment() {
 
       setData([
         {
-          title : 'General',
+          title : 'general',
           field : dataGeneral
         },
         {
-          title : 'Neurology',
+          title : 'neurology',
           field : dataNeurology
         },
         {
-          title : 'Cardiology',
+          title : 'cardiology',
           field : dataCardiology
         },
         {
-          title : 'Pediatric',
+          title : 'pediatric',
           field : dataPediatric
         },
         {
-          title : 'Gynecology',
+          title : 'gynecology',
           field : dataGynecology
         }
       ])
 
       setIsLoading(false)
 
+    }).catch(()=>{
+      
     })
 
   },[])
 
-  // const handleChangePage = (event, newPage) => {
-  //   setPage(newPage);
-  // };
+    const handleChangeDepartment = (e) => {
 
-  // const handleChangeRowsPerPage = (event) => {
-  //   setRowsPerPage(parseInt(event.target.value, 1));
-  //   setPage(0);
-  // };
+      setFilterParam(e.target.value)
+
+      if(e.target.value === 'all') {
+
+        return setDataFilter(null)
+
+      }
+      
+      return setDataFilter(data.filter(item=>item.title === e.target.value))
+    
+    }
 
     const handleOpenModal = () => {
 
@@ -199,6 +236,34 @@ export default function Appointment() {
 
           <Box
           sx={{
+            display : 'flex',
+            gap : '30px',
+            mt : '30px'
+          }}
+          >
+
+            <FilterListIcon
+            sx={{
+              height : '32px',
+              width : '32px',
+              color : 'primary.main'   
+            }}
+            />
+
+            <CustomFilter
+            value={filterParam}
+            onChange={handleChangeDepartment}
+            placeholder='DEPARTMENT'
+            filters={filterItem}
+            sx={{
+              width : '175px'
+            }}
+            />
+
+          </Box>
+
+          <Box
+          sx={{
             marginTop : '30px',
             display : 'flex',
             flexDirection : 'column',
@@ -212,7 +277,7 @@ export default function Appointment() {
               Today Appointment
             </Typography>
 
-            {data.map((item,index)=>(
+            {!dataFilter && data.map((item,index)=>(
 
               <Box
               key={index}
@@ -229,7 +294,7 @@ export default function Appointment() {
                   textAlign : 'center'
                 }}
                 >
-                {item.title} Department  
+                {toCapitalize(item.title)} Department  
                 </Typography>
                 
                 <TableBox
@@ -244,17 +309,40 @@ export default function Appointment() {
 
             ))}
 
-          </Box> 
 
-        {/* <TablePagination
-          component="div"
-          count={13}
-          page={page}
-          onPageChange={handleChangePage}
-          rowsPerPage={rowsPerPage}
-          onRowsPerPageChange={handleChangeRowsPerPage}
-      /> */}
+            {dataFilter && dataFilter.map((item,index)=>(
 
+            <Box
+            key={index}
+            sx={{
+              display : 'flex',
+              flexDirection : 'column',
+              rowGap : '30px'
+            }}
+            >
+
+              <Typography
+              variant='h3'
+              sx={{
+                textAlign : 'center'
+              }}
+              >
+              {toCapitalize(item.title)} Department  
+              </Typography>
+              
+              <TableBox
+              dataHead={dataHead}
+              dataBody={item.field}
+              isLoading={isLoading}
+              endPoint='appointment'
+              fieldEdit={field}
+              />
+
+            </Box>
+
+            ))}
+
+          </Box>
 
           <ModalConfirm
           isOpen={openConfirm}
