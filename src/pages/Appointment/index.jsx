@@ -2,7 +2,7 @@ import { Box, Typography } from '@mui/material'
 
 import React, { useState, useEffect } from 'react'
 
-import axios from 'axios'
+import { useQuery } from 'react-query'
 
 import { DefaultLayout, CustomFilter, SearchBox, TableBox } from 'components'
 
@@ -10,119 +10,37 @@ import FilterListIcon from '@mui/icons-material/FilterList'
 
 import { toCapitalize } from 'helpers/function/toCapitalize'
 
+import { dataHead, field, filterItem } from 'constants/appointment'
+
+import { fetchAppointment } from 'api/get'
+
 import ModalConfirm from './components/ModalConfirm'
 
-const dataHead = [
+const dataDeparment = [
   {
-    headerName: 'Queue',
-    fieldname: 'queue',
+    title: 'general',
+    field: [],
   },
   {
-    headerName: 'Time',
-    fieldname: 'time',
+    title: 'neurology',
+    field: [],
   },
   {
-    headerName: 'Patient',
-    fieldname: 'patient',
+    title: 'cardiology',
+    field: [],
   },
   {
-    headerName: 'Doctor',
-    fieldname: 'doctor',
+    title: 'pediatric',
+    field: [],
   },
   {
-    headerName: 'Status',
-    fieldname: 'status',
-  },
-  {
-    headerName: 'Edit',
-    fieldname: 'edit',
-  },
-]
-
-const field = [
-  {
-    title: 'Patient',
-    fieldname: 'patient',
-    type: 'search',
-  },
-  {
-    title: 'Department',
-    fieldname: 'department',
-  },
-  {
-    title: 'Appointment Date',
-    fieldname: 'date',
-    type: 'date',
-  },
-  {
-    title: 'Appointment Time',
-    fieldname: 'time',
-    type: 'time',
-  },
-  {
-    title: 'Doctor',
-    fieldname: 'doctor',
-  },
-  {
-    title: 'Appointment Reason',
-    fieldname: 'reason',
-    type: 'area',
-    rows: 3,
-  },
-]
-
-const filterItem = [
-  {
-    title: 'All',
-    value: 'all',
-  },
-  {
-    title: 'General',
-    value: 'general',
-  },
-  {
-    title: 'Neurology',
-    value: 'neurology',
-  },
-  {
-    title: 'Cardiology',
-    value: 'cardiology',
-  },
-  {
-    title: 'Pediatric',
-    value: 'pediatric',
-  },
-  {
-    title: 'Gynecology',
-    value: 'gynecology',
+    title: 'gynecology',
+    field: [],
   },
 ]
 
 export default function Appointment() {
-  const [data, setData] = useState([
-    {
-      title: 'General',
-      field: [],
-    },
-    {
-      title: 'Neurology',
-      field: [],
-    },
-    {
-      title: 'Cardiology',
-      field: [],
-    },
-    {
-      title: 'Pediatric',
-      field: [],
-    },
-    {
-      title: 'Gynecology',
-      field: [],
-    },
-  ])
-
-  const [isLoading, setIsLoading] = useState(true)
+  const [data, setData] = useState(null)
 
   const [openConfirm, setOpenConfirm] = useState(false)
 
@@ -130,63 +48,23 @@ export default function Appointment() {
 
   const [dataFilter, setDataFilter] = useState(null)
 
+  const { data: dataAppointment, isLoading: isLoad } = useQuery(
+    'appointment',
+    fetchAppointment
+  )
+
   useEffect(() => {
-    axios({
-      method: 'get',
-      url: 'https://62a18758cc8c0118ef4d691f.mockapi.io/appointment',
-      data: {},
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
-      .then((res) => {
-        const dataNeurology = res.data.filter(
-          (item) => item.department === 'neurology'
+    if (!isLoad) {
+      let totalFilter = []
+      for (let i = 0; i < dataDeparment.length; i++) {
+        let filter = dataAppointment.filter(
+          (item) => item.department === dataDeparment[i].title
         )
-
-        const dataGeneral = res.data.filter(
-          (item) => item.department === 'general'
-        )
-
-        const dataCardiology = res.data.filter(
-          (item) => item.department === 'cardiology'
-        )
-
-        const dataPediatric = res.data.filter(
-          (item) => item.department === 'pediatric'
-        )
-
-        const dataGynecology = res.data.filter(
-          (item) => item.department === 'gynecology'
-        )
-
-        setData([
-          {
-            title: 'general',
-            field: dataGeneral,
-          },
-          {
-            title: 'neurology',
-            field: dataNeurology,
-          },
-          {
-            title: 'cardiology',
-            field: dataCardiology,
-          },
-          {
-            title: 'pediatric',
-            field: dataPediatric,
-          },
-          {
-            title: 'gynecology',
-            field: dataGynecology,
-          },
-        ])
-
-        setIsLoading(false)
-      })
-      .catch(() => {})
-  }, [])
+        totalFilter.push({ title: dataDeparment[i].title, field: filter })
+      }
+      setData(totalFilter)
+    }
+  }, [isLoad, dataAppointment])
 
   const handleChangeDepartment = (e) => {
     setFilterParam(e.target.value)
@@ -261,7 +139,8 @@ export default function Appointment() {
         >
           <Typography variant='h2'>Today Appointment</Typography>
 
-          {!dataFilter &&
+          {data &&
+            !dataFilter &&
             data.map((item, index) => (
               <Box
                 key={index}
@@ -283,7 +162,7 @@ export default function Appointment() {
                 <TableBox
                   dataHead={dataHead}
                   dataBody={item.field}
-                  isLoading={isLoading}
+                  isLoading={isLoad}
                   endPoint='appointment'
                   fieldEdit={field}
                 />
@@ -312,7 +191,7 @@ export default function Appointment() {
                 <TableBox
                   dataHead={dataHead}
                   dataBody={item.field}
-                  isLoading={isLoading}
+                  isLoading={isLoad}
                   endPoint='appointment'
                   fieldEdit={field}
                 />

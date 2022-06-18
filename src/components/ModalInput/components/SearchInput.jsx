@@ -14,9 +14,9 @@ import {
 
 import Search from '@mui/icons-material/Search'
 
-import axios from 'axios'
-
 import { CustomInput } from 'components'
+
+import { fetchSearch } from 'api/get'
 
 const SearchInput = (props) => {
   const { onChange, value, item, onSubmit, error } = props
@@ -31,26 +31,14 @@ const SearchInput = (props) => {
 
   const handleSearch = async (param) => {
     setIsLoading(true)
-    await axios({
-      method: 'get',
-      url:
-        'https://62a18758cc8c0118ef4d691f.mockapi.io/' +
-        param +
-        '?search=' +
-        value,
-      data: {},
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
-      .then((res) => {
-        setOpenPopper(true)
-        setList(res.data)
-      })
-      .catch(() => {
-        setIsError(true)
-      })
 
+    const { data, error } = await fetchSearch(param, value)
+
+    if (data) {
+      setOpenPopper(true)
+      setList(data)
+    }
+    setIsError(error)
     setIsLoading(false)
   }
 

@@ -13,9 +13,13 @@ import {
   CircularProgress,
 } from '@mui/material'
 
-import axios from 'axios'
-
 import CloseIcon from '@mui/icons-material/Close'
+
+import { fetchFilter } from 'api/get'
+
+import { updateData } from 'api/put'
+
+import { postData } from 'api/post'
 
 import { CustomInput } from 'components'
 
@@ -76,7 +80,7 @@ export default function ModalInput(props) {
     })
   }
 
-  const handleChangeDepartment = (e) => {
+  const handleChangeDepartment = async (e) => {
     if (e.target.value === '') {
       setIsError((prev) => {
         return { ...prev, [e.target.name]: true }
@@ -87,32 +91,21 @@ export default function ModalInput(props) {
         return { ...prev, [e.target.name]: false }
       })
     }
-    axios({
-      method: 'get',
-      url: `https://62a18758cc8c0118ef4d691f.mockapi.io/doctor?filter=${e.target.value}`,
-      data: {},
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
-      .then((res) => {
-        setListDoctor(res.data)
+    const { data, error } = await fetchFilter('doctor', e.target.value)
 
-        setForm((prev) => {
-          return {
-            ...prev,
-            [e.target.name]: e.target.value,
-          }
-        })
+    if (data) {
+      setListDoctor(data)
+
+      setForm((prev) => {
+        return {
+          ...prev,
+          [e.target.name]: e.target.value,
+        }
       })
-      .catch(() => {
-        setIsError((prev) => {
-          return {
-            ...prev,
-            selectDoctor: true,
-          }
-        })
-      })
+    }
+    setIsError((prev) => {
+      return { ...prev, selectDoctor: error }
+    })
   }
 
   const handleSubmit = async () => {
@@ -130,32 +123,27 @@ export default function ModalInput(props) {
         })
       }
     }
+
     if (!paramError) {
-      setIsLoading(true)
-      await axios({
-        method: methodSubmit,
-        url:
-          methodSubmit === 'put'
-            ? `https://62a18758cc8c0118ef4d691f.mockapi.io/${endPoint}/${form.id}`
-            : `https://62a18758cc8c0118ef4d691f.mockapi.io/${endPoint}`,
-        data: {
-          ...form,
-        },
-        headers: {
-          'Content-Type': 'application/json',
-        },
+      let result
+      if (methodSubmit === 'post') {
+        const { error } = postData(endPoint, form)
+        result = error
+      }
+      if (methodSubmit === 'put') {
+        const { error } = updateData(endPoint, form.id, form)
+        result = error
+      }
+
+      if (result) {
+        return setIsError((prev) => {
+          return { ...prev, submit: true }
+        })
+      }
+
+      setIsSuccess((prev) => {
+        return !prev
       })
-        .then(() => {
-          setIsSuccess((prev) => {
-            return !prev
-          })
-        })
-        .catch(() => {
-          setIsError((prev) => {
-            return { ...prev, submit: true }
-          })
-        })
-      setIsLoading(false)
     }
   }
 

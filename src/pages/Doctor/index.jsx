@@ -1,318 +1,163 @@
-import { Box , Snackbar, Alert} from '@mui/material'
+import { Box, Snackbar, Alert } from '@mui/material'
 
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 
-import axios from 'axios';
+import { useQuery } from 'react-query'
 
-import FilterListIcon from '@mui/icons-material/FilterList';
+import FilterListIcon from '@mui/icons-material/FilterList'
 
-import { SearchBox, TableBox , DefaultLayout , ModalInput , CustomFilter } from 'components'
+import {
+  SearchBox,
+  TableBox,
+  DefaultLayout,
+  ModalInput,
+  CustomFilter,
+} from 'components'
 
-const field = [
-  {
-    title : 'Doctor Name',
-    fieldname : 'name',
-    type : 'text'
-  },
-  {
-    title : 'NID',
-    fieldname : 'nid',
-    type : 'text'
-  },
-  {
-    title : 'Department',
-    fieldname : 'department',
-    type : 'select',
-    option : [
-      {
-        title : 'General',
-        value : 'general'
-      },
-      {
-        title : 'Neurology',
-        value : 'neurology'
-      },
-      {
-        title : 'Cardiology',
-        value : 'cardiology'
-      },
-      {
-        title : 'Pediatric',
-        value : 'pediatric'
-      },
-      {
-        title : 'Gynecology',
-        value : 'gynecology'
-      },
-    ]
-  },
-  {
-    title : 'Email',
-    fieldname : 'email',
-    type : 'email'
-  },
-  {
-    title : 'Password',
-    fieldname : 'password',
-    type : 'password'
-  },
-  {
-    title : 'Phone Number',
-    fieldname : 'phone_number',
-    type : 'text'
-  }
-]
+import { fetchDoctor, fetchSearch, fetchFilter } from 'api/get'
 
-const initialData = {
-  name : '',
-  nid : '',
-  department : '',
-  email : '',
-  password : '',
-  phone_number : '',
-}
-
-const filterItem = [
-  {
-    title : 'All',
-    value : 'all'
-  },
-  {
-    title : 'General',
-    value : 'general'
-  },
-  {
-    title : 'Neurology',
-    value : 'neurology'
-  },
-  {
-    title : 'Cardiology',
-    value : 'cardiology'
-  },
-  {
-    title : 'Pediatric',
-    value : 'pediatric'
-  },
-  {
-    title : 'Gynecology',
-    value : 'gynecology'
-  }
-]
-
-const dataHead = [
-  {
-    headerName : 'NID',
-    fieldname : 'id'
-  },
-  {
-    headerName : 'Department',
-    fieldname : 'department'
-  },
-  {
-    headerName : 'Doctor Name',
-    fieldname : 'name'
-  },
-  {
-    headerName : 'Phone Number',
-    fieldname : 'phone_number'
-  },
-  {
-    headerName : 'Edit',
-    fieldname : 'edit'
-  }
-]
-
+import { dataHead, field, filterItem, initialData } from 'constants/doctor'
 
 export default function Doctor() {
+  const [openModal, setOpenModal] = useState(false)
 
-    const [data,setData] = useState(null)
+  const [searchDoctor, setSearchDoctor] = useState(null)
 
-    const [isLoading,setIsLoading] = useState(true)
+  const [isError, setIsError] = useState(false)
 
-    const [openModal,setOpenModal ] = useState({
-      doctor : false
-    })
+  const [isLoading, setIsLoading] = useState(false)
 
-    const [searchDoctor,setSearchDoctor] = useState(null)
+  const [filterParam, setFilterParam] = useState('')
 
-    const [isError,setIsError] = useState(false)
+  const [dataFilter, setDataFilter] = useState(null)
 
-    const [filterParam,setFilterParam] = useState('')
+  const {
+    data,
+    isError: isErr,
+    isLoading: isLoad,
+  } = useQuery('doctor', fetchDoctor)
 
-    const [dataFilter,setDataFilter] = useState(null)
+  if (isErr) {
+    setIsError(true)
+  }
 
-    useEffect(()=>{
+  const handleChangeDepartment = async (e) => {
+    setIsLoading(true)
+    setFilterParam(e.target.value)
 
-      axios({
-        method : 'get',
-        url : 'https://62a18758cc8c0118ef4d691f.mockapi.io/doctor',
-        data : {},
-        headers : {
-          'Content-Type' : 'application/json'
-        }
-      }).then((res)=>{
-        setData(res.data)
-        setIsLoading(false)
-      }).catch(()=>{
-
-      })
-
-    },[])
-
-    const handleChangeDepartment = async(e) => {
-
-      setFilterParam(e.target.value)
-      
-      if(e.target.value === 'all') {
-        
-        return setDataFilter(null)
-        
-      }
-      
-      setIsLoading(true)
-
-      await axios({
-        method : 'get',
-        url : `https://62a18758cc8c0118ef4d691f.mockapi.io/doctor?filter=${e.target.value}`,
-        data : {},
-        headers : {
-          'Content-Type' : 'application/json'
-        }
-      }).then((res)=>{
-        setDataFilter(res.data)
-      }).catch(()=>{
-        setIsError(true)
-      })
-      setIsLoading(false)
-    
+    if (e.target.value === 'all') {
+      return setDataFilter(null)
     }
 
-    const handleOpenDoctor = () => {
+    const { data, error } = await fetchFilter('doctor', e.target.value)
 
-        setOpenModal((prev)=>{
-          return {...prev, doctor : !prev.doctor}
-        })
+    setDataFilter(data)
 
-    }
+    setIsError(error)
 
-    const onChangeSearch = (e) => {
+    setIsLoading(false)
+  }
 
-        setSearchDoctor(e.target.value)
+  const handleOpenDoctor = () => {
+    setOpenModal(true)
+  }
 
-    }
+  const onChangeSearch = (e) => {
+    setSearchDoctor(e.target.value)
+  }
 
-    const handleSearch = async() => {
+  const handleSearch = async () => {
+    const { data, error } = await fetchSearch('doctor', searchDoctor)
 
-      setIsLoading(true)
-      await axios({
-        method : 'get',
-        url : `https://62a18758cc8c0118ef4d691f.mockapi.io/doctor?search=${searchDoctor}`,
-        data : {},
-        headers : {
-          'Content-Type' : 'application/json'
-        }
-      }).then((res)=>{
-        setData(res.data)
-      }).catch(()=>{
-        setIsError(true)
-      })
-      setIsLoading(false)
+    setDataFilter(data)
 
-    }
+    setIsError(error)
+  }
 
   return (
-
     <DefaultLayout>
-
       <Box>
-
-          <SearchBox 
+        <SearchBox
           labelLeftButton='Add New Doctor'
           onClickLeftButton={handleOpenDoctor}
           placeholder='Search doctor here...'
           onChangeSearch={onChangeSearch}
           onClickSearch={handleSearch}
+        />
+
+        <Box
+          sx={{
+            display: 'flex',
+            gap: '30px',
+            mt: '30px',
+          }}
+        >
+          <FilterListIcon
+            sx={{
+              height: '32px',
+              width: '32px',
+              color: 'primary.main',
+            }}
           />
 
-          <Box
-          sx={{
-            display : 'flex',
-            gap : '30px',
-            mt : '30px'
-          }}
-          >
-
-            <FilterListIcon
-            sx={{
-              height : '32px',
-              width : '32px',
-              color : 'primary.main'   
-            }}
-            />
-
-            <CustomFilter
+          <CustomFilter
             value={filterParam}
             onChange={handleChangeDepartment}
             placeholder='DEPARTMENT'
             filters={filterItem}
             sx={{
-              width : '175px'
+              width: '175px',
             }}
-            />
+          />
+        </Box>
 
-          </Box>
-
-          <ModalInput
-          isOpen={openModal.doctor}
+        <ModalInput
+          isOpen={openModal}
           handleClose={handleOpenDoctor}
           field={field}
           initialData={initialData}
           title='New Doctor'
           endPoint='doctor'
           methodSubmit='post'
-          />
+        />
 
-          <Box
+        <Box
           sx={{
-            marginTop : '30px'
+            marginTop: '30px',
           }}
-          >
-              {!dataFilter &&
-              <TableBox
+        >
+          {!dataFilter && (
+            <TableBox
               dataHead={dataHead}
               dataBody={data}
-              isLoading={isLoading}
+              isLoading={isLoad}
               endPoint='doctor'
               fieldEdit={field}
-              />}
+            />
+          )}
 
-              {dataFilter &&
-              <TableBox
+          {dataFilter && (
+            <TableBox
               dataHead={dataHead}
               dataBody={dataFilter}
               endPoint='doctor'
               fieldEdit={field}
               isLoading={isLoading}
-              />
-              }  
+            />
+          )}
+        </Box>
 
-          </Box>
-
-          <Snackbar
-          anchorOrigin={{vertical : 'bottom', horizontal : 'center'}}
+        <Snackbar
+          anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
           open={isError}
-          onClose={()=>setIsError(false)}
+          onClose={() => setIsError(false)}
           autoHideDuration={3000}
-          >
-              <Alert severity='error'>
-                  Sorry, can't find your search, please try another again
-              </Alert>
-
-          </Snackbar>
-
+        >
+          <Alert severity='error'>
+            Sorry, can't find your search, please try another again
+          </Alert>
+        </Snackbar>
       </Box>
-
     </DefaultLayout>
-  
   )
 }
