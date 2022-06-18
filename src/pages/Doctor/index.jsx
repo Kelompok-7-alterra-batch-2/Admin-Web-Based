@@ -59,7 +59,9 @@ export default function Doctor() {
   }
 
   const handleOpenDoctor = () => {
-    setOpenModal(true)
+    setOpenModal((prev) => {
+      return !prev
+    })
   }
 
   const onChangeSearch = (e) => {

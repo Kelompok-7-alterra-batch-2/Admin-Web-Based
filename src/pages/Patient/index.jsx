@@ -33,7 +33,7 @@ export default function Patient() {
 
   const handleOpenPatient = () => {
     setOpenModal((prev) => {
-      return { ...prev, patient: !prev.patient }
+      return !prev
     })
   }
 
