@@ -1,0 +1,6 @@
+export { default as fetchDoctor } from './fetchDoctor'
+export { default as fetchSearch } from './fetchSearch'
+export { default as fetchFilter } from './fetchFilter'
+export { default as fetchPatient } from './fetchPatient'
+export { default as fetchData } from './fetchData'
+export { default as fetchAppointment } from './fetchAppointment'

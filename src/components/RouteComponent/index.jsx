@@ -3,8 +3,6 @@ import { Route, Routes } from "react-router-dom";
 
 import { Dashboard, Login, Patient , Appointment , Doctor} from "pages";
 
-import { DefaultLayout } from "components";
-
 export default function RouteComponent() {
   return (
     <Routes>
@@ -12,11 +10,7 @@ export default function RouteComponent() {
 
         <Route index element={
         
-        <DefaultLayout>
-        
           <Dashboard />
-
-        </DefaultLayout>
         
         } />
       
