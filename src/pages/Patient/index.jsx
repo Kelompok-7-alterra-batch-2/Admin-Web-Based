@@ -1,230 +1,112 @@
-import { Box , Snackbar, Alert} from '@mui/material'
+import { Box, Snackbar, Alert } from '@mui/material'
 
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 
-import axios from 'axios'
+import { useQuery } from 'react-query'
 
-import { SearchBox, TableBox , DefaultLayout , ModalInput } from 'components'
+import { dataHead, initialData, field } from 'constants/patient'
 
-const field = [
-  {
-    title : 'Name',
-    fieldname : 'name',
-    type : 'text'
-  },
-  {
-    title : 'Date of Birth',
-    fieldname : 'dob',
-    type : 'date'
-  },
-  {
-    title : 'Gender',
-    fieldname : 'gender',
-    type : 'radio',
-    option : [
-      {
-        title : 'Male',
-        value : 'Male'
-      },
-      {
-        title : 'Female',
-        value : 'Female'
-      }
-    ]
-  },
-  {
-    title : 'Phone Number',
-    fieldname : 'phone_number',
-    type : 'text'
-  },
-  {
-    title : 'Blood Type',
-    fieldname : 'blood_type',
-    type : 'select',
-    option : [
-      {
-        title : 'A',
-        value : 'A',
-      },
-      {
-        title : 'AB',
-        value : 'AB'
-      },
-      {
-        title : 'B',
-        value : 'B'
-      },
-      {
-        title : 'O',
-        value : 'O'
-      }
-    ]
-  },
-  {
-    title : 'City',
-    fieldname : 'city',
-    type : 'text'
-  },
-  {
-    title : 'Address',
-    fieldname : 'address',
-    type : 'text'
-  }
-]
+import { fetchPatient, fetchSearch } from 'api/get'
 
-const initialData = {
-  name : '',
-  dob : '',
-  gender : '',
-  phone_number : '',
-  blood_type : '',
-  city : '',
-  address : ''
-}
+import { SearchBox, TableBox, DefaultLayout, ModalInput } from 'components'
 
 export default function Patient() {
+  const [dataFilter, setDataFilter] = useState(null)
 
-    const [data,setData] = useState(null)
+  const [isLoading, setIsLoading] = useState(false)
 
-    const [isLoading,setIsLoading] = useState(true)
+  const [openModal, setOpenModal] = useState(false)
 
-    const [openModal,setOpenModal ] = useState({
-      patient : false
+  const [searchPatient, setSearchPatient] = useState(null)
+
+  const [isError, setIsError] = useState(false)
+
+  const {
+    data,
+    isLoading: isLoad,
+    isError: isErr,
+  } = useQuery('patient', fetchPatient)
+
+  if (isErr) {
+    setIsError(true)
+  }
+
+  const handleOpenPatient = () => {
+    setOpenModal((prev) => {
+      return !prev
     })
+  }
 
-    const [searchPatient,setSearchPatient] = useState(null)
+  const onChangeSearch = (e) => {
+    setSearchPatient(e.target.value)
+  }
 
-    const [isError,setIsError] = useState(false)
-
-    const dataHead = [
-      {
-        headerName : 'Patient ID',
-        fieldname : 'id'
-      },
-      {
-        headerName : 'Name',
-        fieldname : 'name'
-      },
-      {
-        headerName : 'Date of Birth',
-        fieldname : 'dob'
-      },
-      {
-        headerName : 'Gender',
-        fieldname : 'gender'
-      },
-      {
-        headerName : 'Blood Type',
-        fieldname : 'blood_type'
-      },
-      {
-        headerName : 'Edit',
-        fieldname : 'edit'
-      }
-    ]
-
-    useEffect(()=>{
-
-      axios({
-        method : 'get',
-        url : 'https://62a18758cc8c0118ef4d691f.mockapi.io/patient',
-        data : {},
-        headers : {
-          'Content-Type' : 'application/json'
-        }
-      }).then((res)=>{
-        setData(res.data)
-        setIsLoading(false)
-      })
-
-    },[])
-
-    const handleOpenPatient = () => {
-
-        setOpenModal((prev)=>{
-          return {...prev,patient : !prev.patient}
-        })
-
-    }
-
-    const onChangeSearch = (e) => {
-
-        setSearchPatient(e.target.value)
-
-    }
-
-    const handleSearch = () => {
-
-      axios({
-        method : 'get',
-        url : `https://62a18758cc8c0118ef4d691f.mockapi.io/patient?search=${searchPatient}`,
-        data : {},
-        headers : {
-          'Content-Type' : 'application/json'
-        }
-      }).then((res)=>{
-        setData(res.data)
-      }).catch(()=>{
-        setIsError(true)
-      })
-
-    }
+  const handleSearch = async () => {
+    setIsLoading(true)
+    const { data, error } = await fetchSearch('patient', searchPatient)
+    setDataFilter(data)
+    setIsError(error)
+    setIsLoading(false)
+  }
 
   return (
-
     <DefaultLayout>
-
       <Box>
-
-          <SearchBox 
+        <SearchBox
           labelLeftButton='Add New Patient'
           onClickLeftButton={handleOpenPatient}
           placeholder='Search patient here...'
           onChangeSearch={onChangeSearch}
           onClickSearch={handleSearch}
-          />
+        />
 
-          <ModalInput
-          isOpen={openModal.patient}
+        <ModalInput
+          isOpen={openModal}
           handleClose={handleOpenPatient}
           field={field}
           initialData={initialData}
           title='New Patient'
           endPoint='patient'
           methodSubmit='post'
-          />
+        />
 
-          <Box
+        <Box
           sx={{
-            marginTop : '30px'
+            marginTop: '30px',
           }}
-          >
-            
-              <TableBox
+        >
+          {!dataFilter && (
+            <TableBox
               dataHead={dataHead}
               dataBody={data}
-              isLoading={isLoading}
+              isLoading={isLoad}
               endPoint='patient'
               fieldEdit={field}
-              />  
+            />
+          )}
+        </Box>
 
-          </Box>
+        {dataFilter && (
+          <TableBox
+            dataHead={dataHead}
+            dataBody={dataFilter}
+            isLoading={isLoading}
+            endPoint='patient'
+            fieldEdit={field}
+          />
+        )}
 
-          <Snackbar
-          anchorOrigin={{vertical : 'bottom', horizontal : 'center'}}
+        <Snackbar
+          anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
           open={isError}
-          onClose={()=>setIsError(false)}
+          onClose={() => setIsError(false)}
           autoHideDuration={3000}
-          >
-              <Alert severity='error'>
-                  Sorry, can't find your search, please try another again
-              </Alert>
-
-          </Snackbar>
-
+        >
+          <Alert severity='error'>
+            Sorry, can't find your search, please try another again
+          </Alert>
+        </Snackbar>
       </Box>
-
     </DefaultLayout>
-  
   )
 }

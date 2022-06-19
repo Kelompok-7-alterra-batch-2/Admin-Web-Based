@@ -12,7 +12,7 @@ export default function OverviewBox() {
     <Box>
         
         <Typography 
-        variant='body1'
+        variant='h3'
         sx={{
           marginBottom : '30px'
         }}

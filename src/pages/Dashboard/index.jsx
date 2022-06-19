@@ -2,28 +2,36 @@ import React from 'react'
 
 import { Box } from '@mui/material'
 
+import { DefaultLayout } from 'components'
+
 import WelcomeBox from './components/WelcomeBox'
 import OverviewBox from './components/OverviewBox'
-import TableBox from './components/TableBox'
+import DoctorBox from './components/DoctorBox'
 
 export default function Dashboard() {
 
   return (
     
-    <Box
-    sx={{
-      display : 'flex',
-      flexDirection : 'column',
-      gap : '30px'
-    }}
-    >
+    <DefaultLayout>
 
-      <WelcomeBox/>
+      <Box
+      sx={{
+        display : 'flex',
+        flexDirection : 'column',
+        gap : '30px',
+        pb : '50px'
+      }}
+      >
 
-      <OverviewBox/>
+        <WelcomeBox/>
 
-      <TableBox/>
+        <OverviewBox/>
 
-    </Box>
+        <DoctorBox/>
+
+      </Box>
+    
+    </DefaultLayout>
+  
   )
 }
