@@ -81,34 +81,28 @@ export default function ModalInput(props) {
   }
 
   const handleChangeDepartment = async (e) => {
-    if (e.target.value === '') {
-      setIsError((prev) => {
-        return { ...prev, [e.target.name]: true }
-      })
-    }
-    if (e.target.value !== '') {
-      setIsError((prev) => {
-        return { ...prev, [e.target.name]: false }
-      })
-    }
-    const { data, error } = await fetchFilter('doctor', e.target.value)
+    handleChange(e)
 
-    if (data) {
-      setListDoctor(data)
-
+    if (form.doctor || form.doctor === '') {
       setForm((prev) => {
-        return {
-          ...prev,
-          [e.target.name]: e.target.value,
-        }
+        return { ...prev, doctor: '' }
+      })
+      if (listDoctor) {
+        setListDoctor(null)
+      }
+      const { data, error } = await fetchFilter('doctor', e.target.value)
+
+      if (data) {
+        setListDoctor(data)
+      }
+      setIsError((prev) => {
+        return { ...prev, selectDoctor: error }
       })
     }
-    setIsError((prev) => {
-      return { ...prev, selectDoctor: error }
-    })
   }
 
   const handleSubmit = async () => {
+    setIsLoading(true)
     let paramError
     for (let i = 0; i < field.length; i++) {
       if (form[field[i].fieldname] === '') {
@@ -127,24 +121,23 @@ export default function ModalInput(props) {
     if (!paramError) {
       let result
       if (methodSubmit === 'post') {
-        const { error } = postData(endPoint, form)
+        const { error } = await postData(endPoint, form)
         result = error
       }
       if (methodSubmit === 'put') {
-        const { error } = updateData(endPoint, form.id, form)
+        const { error } = await updateData(endPoint, form.id, form)
         result = error
       }
 
-      if (result) {
-        return setIsError((prev) => {
-          return { ...prev, submit: true }
-        })
+      if (!result) {
+        return setIsSuccess(true)
       }
 
-      setIsSuccess((prev) => {
-        return !prev
+      setIsError((prev) => {
+        return { ...prev, submit: result }
       })
     }
+    setIsLoading(false)
   }
 
   return (
@@ -362,8 +355,12 @@ export default function ModalInput(props) {
 
       <ModalSuccess
         isOpen={isSuccess}
-        onClose={() => setIsSuccess(false)}
+        onClose={() => {
+          setIsSuccess(false)
+          handleClose()
+        }}
         descTitle={title}
+        keyQuery={endPoint}
       />
 
       <Snackbar

@@ -5,7 +5,7 @@ const updateData = async (endPoint, param, dataPost) => {
   let error = false
 
   await axios({
-    method: 'post',
+    method: 'put',
     url: `https://62a18758cc8c0118ef4d691f.mockapi.io/${endPoint}/${param}`,
     data: {
       ...dataPost,
@@ -15,7 +15,7 @@ const updateData = async (endPoint, param, dataPost) => {
     },
   })
     .then((res) => {
-      data = res.postData
+      data = res.data
     })
     .catch(() => {
       error = true

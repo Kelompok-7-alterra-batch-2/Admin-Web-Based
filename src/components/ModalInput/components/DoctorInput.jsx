@@ -35,11 +35,9 @@ const DoctorInput = (props) => {
       >
         <MenuItem value=''>None</MenuItem>
 
-        {initialData.department &&
-          (initialData.department !== '' ||
-            initialData.department !== null) && (
-            <MenuItem value={initialData.doctor}>{initialData.doctor}</MenuItem>
-          )}
+        {initialData.doctor && initialData.doctor !== '' && !list && (
+          <MenuItem value={initialData.doctor}>{initialData.doctor}</MenuItem>
+        )}
 
         {list &&
           list.map((option, index) => (
