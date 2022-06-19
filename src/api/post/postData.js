@@ -15,7 +15,7 @@ const postData = async (endPoint, dataPost) => {
     },
   })
     .then((res) => {
-      data = res.postData
+      data = res.data
     })
     .catch(() => {
       error = true
