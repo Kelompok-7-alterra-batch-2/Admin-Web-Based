@@ -4,8 +4,8 @@ import { Box, Typography, Divider } from '@mui/material'
 
 import BgWelcome from 'assets/image/bg_welcome.jpg'
 
-export default function WelcomeBox() {
-  
+export default function WelcomeBox(props) {
+  const { user, isLoading } = props
   let moment = require('moment')
 
   return (
@@ -37,9 +37,22 @@ export default function WelcomeBox() {
             justifyContent: 'center',
           }}
         >
-          <Typography variant='body1'>Welcome</Typography>
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'row-reverse',
+              justifyContent: 'space-between',
+            }}
+          >
+            <Typography variant='h3'>
+              {moment().format('MMMM[ ]DD[, ]YYYY')}
+            </Typography>
 
-          <Typography variant='h3'>Hai, Kevin</Typography>
+            <Typography variant='body1'>Welcome</Typography>
+          </Box>
+          <Typography variant='h3'>
+            {user && !isLoading && user !== undefined ? user.username : ''}
+          </Typography>
 
           <Divider
             sx={{
@@ -48,8 +61,6 @@ export default function WelcomeBox() {
           />
 
           <Typography variant='body1'>Stay safe and wash your hand</Typography>
-
-          <Typography variant='body1'>{moment().format('HH[:]mm')}</Typography>
         </Box>
       </Box>
     </Box>
