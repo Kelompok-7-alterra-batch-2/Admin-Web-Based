@@ -1,7 +1,7 @@
 import React from "react";
 import { Route, Routes } from "react-router-dom";
 
-import { Dashboard, Login, Patient , Appointment , Doctor} from "pages";
+import { Dashboard, Login, Patient , Appointment , Doctor, ForgotPassword} from "pages";
 
 export default function RouteComponent() {
   return (
@@ -34,6 +34,7 @@ export default function RouteComponent() {
 
 
         <Route path="login" element={<Login />} />
+        <Route path="forgotpassword" element={<ForgotPassword />} />
       </Route>
     </Routes>
   );

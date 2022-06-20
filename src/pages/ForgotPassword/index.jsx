@@ -17,7 +17,7 @@ import { Visibility, VisibilityOff } from "@mui/icons-material";
 // assets
 import Logo from "assets/svg/Logo2.svg";
 
-export const Login = () => {
+export const ForgotPassword = () => {
   // States & Variable
   const [values, setValues] = useState({
     showPassword: false,
@@ -44,27 +44,10 @@ export const Login = () => {
     };
   }, [values.email]);
 
-  // Helper Password
-  const validatePassword = (value) => {
-    return value.match(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/gm);
-  };
-  const helperPassword = useMemo(() => {
-    if (!values.password)
-      return {
-        text: " ",
-        error: false,
-      };
-    const isValid = validatePassword(values.password);
-    return {
-      text: isValid ? " " : "Enter a valid password",
-      error: isValid ? false : true,
-    };
-  }, [values.password]);
-
   // Function
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!helperEmail.error || !helperPassword.error) {
+    if (!helperEmail.error) {
       console.log(values);
       setValues({
         showPassword: false,
@@ -137,49 +120,6 @@ export const Login = () => {
             onChange={(e) => setValues({ ...values, email: e.target.value })}
             error={helperEmail.error}
           />
-          {helperEmail.error ? (
-            <FormHelperText error>{helperEmail.text}</FormHelperText>
-          ) : (
-            <FormHelperText> </FormHelperText>
-          )}
-          <InputLabel
-            shrink
-            htmlFor="login-password"
-            sx={{ fontSize: "18px", color: "black" }}
-          >
-            Password
-          </InputLabel>
-          <OutlinedInput
-            fullWidth
-            required
-            id="login-password"
-            size="small"
-            type={values.showPassword ? "text" : "password"}
-            value={values.password}
-            onChange={(e) => setValues({ ...values, password: e.target.value })}
-            error={helperPassword.error}
-            endAdornment={
-              <InputAdornment position="end">
-                <IconButton
-                  aria-label="toggle password visibility"
-                  onClick={(e) =>
-                    setValues({
-                      ...values,
-                      showPassword: !values.showPassword,
-                    })
-                  }
-                  edge="end"
-                >
-                  {values.showPassword ? <VisibilityOff /> : <Visibility />}
-                </IconButton>
-              </InputAdornment>
-            }
-          />
-          {helperPassword.error ? (
-            <FormHelperText error>{helperPassword.text}</FormHelperText>
-          ) : (
-            <></>
-          )}
           <Box
             sx={{
               display: "flex",
@@ -188,8 +128,8 @@ export const Login = () => {
               paddingTop: "0.3rem",
             }}
           >
-            <Link style={{ textDecoration: "none", color: "#B3BDC9" }} to="/forgotpassword">
-              Forget password?
+            <Link style={{ textDecoration: "none", color: "#B3BDC9" }} to="/login">
+              Remember your password?
             </Link>
           </Box>
           <br />
@@ -197,9 +137,9 @@ export const Login = () => {
             type="submit"
             fullWidth
             variant="contained"
-            disabled={helperEmail.error || helperPassword.error}
+            disabled={helperEmail.error}
           >
-            Sign in
+            Reset Password
           </Button>
         </Box>
       </Box>
@@ -207,4 +147,4 @@ export const Login = () => {
   );
 };
 
-export default Login;
+export default ForgotPassword;
