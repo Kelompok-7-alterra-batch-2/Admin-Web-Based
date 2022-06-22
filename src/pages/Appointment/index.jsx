@@ -1,269 +1,212 @@
-// eslint-disable-next-line
-import { Box, Grid, Autocomplete, TextField, Typography, Link, InputAdornment, TablePagination } from '@mui/material'
-import React, { useState ,useEffect} from 'react'
-// import { FilterList , ChevronRight } from '@mui/icons-material';
-import { SearchBox, TableBox } from 'components'
+import { Box, Typography } from '@mui/material'
 
-import axios from 'axios';
+import React, { useState, useEffect } from 'react'
 
-import { DefaultLayout } from 'components';
+import { useQuery } from 'react-query'
 
-import ModalConfirm from './components/ModalConfirm';
+import { DefaultLayout, CustomFilter, SearchBox, TableBox } from 'components'
 
-const dataHead = [
+import FilterListIcon from '@mui/icons-material/FilterList'
+
+import { toCapitalize } from 'helpers/function/toCapitalize'
+
+import { dataHead, field, filterItem } from 'constants/appointment'
+
+import { fetchAppointment } from 'api/get'
+
+import ModalConfirm from './components/ModalConfirm'
+
+const dataDeparment = [
   {
-    headerName : 'Queue',
-    fieldname : 'queue'
+    title: 'general',
+    field: [],
   },
   {
-    headerName : 'Time',
-    fieldname : 'time'
+    title: 'neurology',
+    field: [],
   },
   {
-    headerName : 'Patient',
-    fieldname : 'patient'
+    title: 'cardiology',
+    field: [],
   },
   {
-    headerName : 'Doctor',
-    fieldname : 'doctor'
+    title: 'pediatric',
+    field: [],
   },
   {
-    headerName : 'Status',
-    fieldname : 'status'
+    title: 'gynecology',
+    field: [],
   },
-  {
-    headerName : 'Edit',
-    fieldname : 'edit'
-  }
 ]
 
-const field = [
-  {
-      title : 'Patient',
-      fieldname : 'patient',
-      type : 'search'
-  },
-  {
-      title : 'Department',
-      fieldname : 'department',
-  },
-  {
-      title : 'Appointment Date',
-      fieldname : 'date',
-      type : 'date'
-  },
-  {
-      title : 'Appointment Time',
-      fieldname : 'time',
-      type : 'time'
-  },
-  {
-      title : 'Doctor',
-      fieldname : 'doctor',
-  },
-  {
-      title : 'Appointment Reason',
-      fieldname : 'reason',
-      type : 'area',
-      rows : 3
-  }
-  ]
-
 export default function Appointment() {
+  const [data, setData] = useState(null)
 
-  // const [page, setPage] = useState(1);
+  const [openConfirm, setOpenConfirm] = useState(false)
 
-  // const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [filterParam, setFilterParam] = useState('')
 
-  const [data,setData] = useState([
-    {
-      title : 'General',
-      field : []
-    },
-    {
-      title : 'Neurology',
-      field : []
-    },
-    {
-      title : 'Cardiology',
-      field : []
-    },
-    {
-      title : 'Pediatric',
-      field : []
-    },
-    {
-      title : 'Gynecology',
-      field : []
-    }
-  ])  
+  const [dataFilter, setDataFilter] = useState(null)
 
-  const [isLoading,setIsLoading] = useState(true)
-  
-  const [openConfirm ,setOpenConfirm] = useState(false)
+  const { data: dataAppointment, isLoading: isLoad } = useQuery(
+    'appointment',
+    fetchAppointment
+  )
 
-  useEffect(()=>{
-
-    axios({
-      method : 'get',
-      url : 'https://62a18758cc8c0118ef4d691f.mockapi.io/appointment',
-      data : {},
-      headers : {
-        'Content-Type' : 'application/json'
+  useEffect(() => {
+    if (!isLoad) {
+      let totalFilter = []
+      for (let i = 0; i < dataDeparment.length; i++) {
+        let filter = dataAppointment.filter(
+          (item) => item.department === dataDeparment[i].title
+        )
+        totalFilter.push({ title: dataDeparment[i].title, field: filter })
       }
-    }).then((res)=>{
+      setData(totalFilter)
+    }
+  }, [isLoad, dataAppointment])
 
-      const dataNeurology = res.data.filter(item => item.department === 'neurology')
+  const handleChangeDepartment = (e) => {
+    setFilterParam(e.target.value)
 
-      const dataGeneral = res.data.filter(item => item.department === 'general')
-
-      const dataCardiology = res.data.filter(item => item.department === 'cardiology')
-
-      const dataPediatric = res.data.filter(item => item.department === 'pediatric')
-
-      const dataGynecology = res.data.filter(item => item.department === 'gynecology')
-
-      setData([
-        {
-          title : 'General',
-          field : dataGeneral
-        },
-        {
-          title : 'Neurology',
-          field : dataNeurology
-        },
-        {
-          title : 'Cardiology',
-          field : dataCardiology
-        },
-        {
-          title : 'Pediatric',
-          field : dataPediatric
-        },
-        {
-          title : 'Gynecology',
-          field : dataGynecology
-        }
-      ])
-
-      setIsLoading(false)
-
-    })
-
-  },[])
-
-  // const handleChangePage = (event, newPage) => {
-  //   setPage(newPage);
-  // };
-
-  // const handleChangeRowsPerPage = (event) => {
-  //   setRowsPerPage(parseInt(event.target.value, 1));
-  //   setPage(0);
-  // };
-
-    const handleOpenModal = () => {
-
-        setOpenConfirm(true)
-
+    if (e.target.value === 'all') {
+      return setDataFilter(null)
     }
 
-    const onChangeSearch = (e) => {
+    return setDataFilter(data.filter((item) => item.title === e.target.value))
+  }
 
-        console.log(e.target.value)
+  const handleOpenModal = () => {
+    setOpenConfirm(true)
+  }
 
-    }
+  const onChangeSearch = (e) => {
+    console.log(e.target.value)
+  }
 
-    const handleSearch = () => {
-
-        console.log("click")
-
-    }
+  const handleSearch = () => {
+    console.log('click')
+  }
 
   return (
-
     <DefaultLayout>
-
       <Box
-      sx={{
-        mb : '30px'
-      }}
+        sx={{
+          mb: '30px',
+        }}
       >
-
-          <SearchBox 
+        <SearchBox
           labelLeftButton='Add new appointment'
           onClickLeftButton={handleOpenModal}
           placeholder='Search here...'
           onChangeSearch={onChangeSearch}
           onClickSearch={handleSearch}
+        />
+
+        <Box
+          sx={{
+            display: 'flex',
+            gap: '30px',
+            mt: '30px',
+          }}
+        >
+          <FilterListIcon
+            sx={{
+              height: '32px',
+              width: '32px',
+              color: 'primary.main',
+            }}
           />
 
-          <Box
+          <CustomFilter
+            value={filterParam}
+            onChange={handleChangeDepartment}
+            placeholder='DEPARTMENT'
+            filters={filterItem}
+            sx={{
+              width: '175px',
+            }}
+          />
+        </Box>
+
+        <Box
           sx={{
-            marginTop : '30px',
-            display : 'flex',
-            flexDirection : 'column',
-            rowGap : '30px'
+            marginTop: '30px',
+            display: 'flex',
+            flexDirection: 'column',
+            rowGap: '30px',
           }}
-          > 
+        >
+          <Typography variant='h2'>Today Appointment</Typography>
 
-            <Typography
-            variant='h2'
-            >
-              Today Appointment
-            </Typography>
-
-            {data.map((item,index)=>(
-
+          {data &&
+            !dataFilter &&
+            data.map((item, index) => (
               <Box
-              key={index}
-              sx={{
-                display : 'flex',
-                flexDirection : 'column',
-                rowGap : '30px'
-              }}
-              >
-
-                <Typography
-                variant='h3'
+                key={index}
                 sx={{
-                  textAlign : 'center'
+                  display: 'flex',
+                  flexDirection: 'column',
+                  rowGap: '30px',
                 }}
+              >
+                <Typography
+                  variant='h3'
+                  sx={{
+                    textAlign: 'center',
+                  }}
                 >
-                {item.title} Department  
+                  {toCapitalize(item.title)} Department
                 </Typography>
-                
+
                 <TableBox
-                dataHead={dataHead}
-                dataBody={item.field}
-                isLoading={isLoading}
-                endPoint='appointment'
-                fieldEdit={field}
+                  dataHead={dataHead}
+                  dataBody={item.field}
+                  isLoading={isLoad}
+                  endPoint='appointment'
+                  fieldEdit={field}
                 />
-
               </Box>
-
             ))}
 
-          </Box> 
+          {dataFilter &&
+            dataFilter.map((item, index) => (
+              <Box
+                key={index}
+                sx={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  rowGap: '30px',
+                }}
+              >
+                <Typography
+                  variant='h3'
+                  sx={{
+                    textAlign: 'center',
+                  }}
+                >
+                  {toCapitalize(item.title)} Department
+                </Typography>
 
-        {/* <TablePagination
-          component="div"
-          count={13}
-          page={page}
-          onPageChange={handleChangePage}
-          rowsPerPage={rowsPerPage}
-          onRowsPerPageChange={handleChangeRowsPerPage}
-      /> */}
+                <TableBox
+                  dataHead={dataHead}
+                  dataBody={item.field}
+                  isLoading={isLoad}
+                  endPoint='appointment'
+                  fieldEdit={field}
+                />
+              </Box>
+            ))}
+        </Box>
 
-
-          <ModalConfirm
+        <ModalConfirm
           isOpen={openConfirm}
-          handleClose={()=>{setOpenConfirm(false)}}
+          handleClose={() => {
+            setOpenConfirm(false)
+          }}
           fieldInput={field}
-          />
-
+        />
       </Box>
-
     </DefaultLayout>
   )
 }

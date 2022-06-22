@@ -1,8 +1,7 @@
 import React from "react";
 import { Route, Routes } from "react-router-dom";
 
-import { Dashboard, Login, Patient , Appointment} from "pages";
-import { DefaultLayout } from "components";
+import { Dashboard, Login, Patient , Appointment , Doctor} from "pages";
 
 export default function RouteComponent() {
   return (
@@ -11,11 +10,7 @@ export default function RouteComponent() {
 
         <Route index element={
         
-        <DefaultLayout>
-        
           <Dashboard />
-
-        </DefaultLayout>
         
         } />
       
@@ -29,7 +24,14 @@ export default function RouteComponent() {
 
               <Appointment/>
 
-        }/> 
+        }/>
+          
+        <Route path="doctor" element={
+          
+              <Doctor />
+              
+        }/>
+
 
         <Route path="login" element={<Login />} />
       </Route>
