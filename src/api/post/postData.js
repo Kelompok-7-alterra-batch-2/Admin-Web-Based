@@ -1,12 +1,14 @@
 import axios from 'axios'
 
+import host from 'api'
+
 const postData = async (endPoint, dataPost) => {
   let data
   let error = false
 
   await axios({
     method: 'post',
-    url: `https://62a18758cc8c0118ef4d691f.mockapi.io/${endPoint}`,
+    url: `${host}/${endPoint}`,
     data: {
       ...dataPost,
     },

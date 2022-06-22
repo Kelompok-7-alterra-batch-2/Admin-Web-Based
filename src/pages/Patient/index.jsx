@@ -1,4 +1,4 @@
-import { Box, Snackbar, Alert } from '@mui/material'
+import { Box, Snackbar, Alert, TablePagination } from '@mui/material'
 
 import React, { useState } from 'react'
 
@@ -11,6 +11,11 @@ import { fetchPatient, fetchSearch } from 'api/get'
 import { SearchBox, TableBox, DefaultLayout, ModalInput } from 'components'
 
 export default function Patient() {
+  const initialPagination = {
+    row: 5,
+    page: 0,
+  }
+
   const [dataFilter, setDataFilter] = useState(null)
 
   const [isLoading, setIsLoading] = useState(false)
@@ -21,15 +26,17 @@ export default function Patient() {
 
   const [isError, setIsError] = useState(false)
 
+  const [pagination, setPagination] = useState(initialPagination)
+
   const {
     data,
-    isLoading: isLoad,
+    isFetching: isLoad,
     isError: isErr,
-  } = useQuery('patient', fetchPatient)
-
-  if (isErr) {
-    setIsError(true)
-  }
+  } = useQuery(
+    ['patients', pagination],
+    () => fetchPatient(pagination.page, pagination.row),
+    { keepPreviousData: true }
+  )
 
   const handleOpenPatient = () => {
     setOpenModal((prev) => {
@@ -43,10 +50,20 @@ export default function Patient() {
 
   const handleSearch = async () => {
     setIsLoading(true)
-    const { data, error } = await fetchSearch('patient', searchPatient)
+    const { data, error } = await fetchSearch('patients', searchPatient)
     setDataFilter(data)
     setIsError(error)
     setIsLoading(false)
+  }
+
+  const handlePageChange = (event, newPage) => {
+    setPagination((prev) => {
+      return { ...prev, page: newPage }
+    })
+  }
+
+  const handleChangeRowsPerPage = (e) => {
+    setPagination({ row: parseInt(e.target.value, 10), page: 0 })
   }
 
   return (
@@ -66,7 +83,7 @@ export default function Patient() {
           field={field}
           initialData={initialData}
           title='New Patient'
-          endPoint='patient'
+          endPoint='patients'
           methodSubmit='post'
         />
 
@@ -78,11 +95,24 @@ export default function Patient() {
           {!dataFilter && (
             <TableBox
               dataHead={dataHead}
-              dataBody={data}
+              dataBody={data?.content}
               isLoading={isLoad}
-              endPoint='patient'
+              endPoint='patients'
               fieldEdit={field}
-            />
+            >
+              <TablePagination
+                sx={{
+                  mt: '30px',
+                }}
+                onRowsPerPageChange={handleChangeRowsPerPage}
+                onPageChange={handlePageChange}
+                page={pagination.page}
+                rowsPerPage={pagination.row}
+                count={data !== undefined ? data.totalElements : 0}
+                component='div'
+                rowsPerPageOptions={[5, 10]}
+              />
+            </TableBox>
           )}
         </Box>
 
@@ -91,14 +121,27 @@ export default function Patient() {
             dataHead={dataHead}
             dataBody={dataFilter}
             isLoading={isLoading}
-            endPoint='patient'
+            endPoint='patients'
             fieldEdit={field}
-          />
+          >
+            <TablePagination
+              sx={{
+                mt: '30px',
+              }}
+              onRowsPerPageChange={handleChangeRowsPerPage}
+              onPageChange={handlePageChange}
+              page={pagination.page}
+              rowsPerPage={pagination.row}
+              count={dataFilter.length}
+              component='div'
+              rowsPerPageOptions={[5, 10]}
+            />
+          </TableBox>
         )}
 
         <Snackbar
           anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-          open={isError}
+          open={isError || isErr}
           onClose={() => setIsError(false)}
           autoHideDuration={3000}
         >

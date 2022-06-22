@@ -11,46 +11,22 @@ export const field = [
   },
   {
     title: 'Gender',
-    fieldname: 'gender',
-    type: 'radio',
-    option: [
-      {
-        title: 'Male',
-        value: 'Male',
-      },
-      {
-        title: 'Female',
-        value: 'Female',
-      },
-    ],
+    fieldname: 'gender_id',
+    type: 'radio-with-api',
+    endPoint: 'genders',
   },
   {
     title: 'Phone Number',
-    fieldname: 'phone_number',
+    fieldname: 'phoneNumber',
     type: 'text',
   },
   {
     title: 'Blood Type',
-    fieldname: 'blood_type',
-    type: 'select',
-    option: [
-      {
-        title: 'A',
-        value: 'A',
-      },
-      {
-        title: 'AB',
-        value: 'AB',
-      },
-      {
-        title: 'B',
-        value: 'B',
-      },
-      {
-        title: 'O',
-        value: 'O',
-      },
-    ],
+    fieldname: 'blood_type_id',
+    type: 'select-with-api',
+    value: 'bloodType',
+    valueChild: 'id',
+    endPoint: 'bloods',
   },
   {
     title: 'City',
@@ -67,9 +43,9 @@ export const field = [
 export const initialData = {
   name: '',
   dob: '',
-  gender: '',
-  phone_number: '',
-  blood_type: '',
+  gender_id: '',
+  phoneNumber: '',
+  blood_type_id: '',
   city: '',
   address: '',
 }
@@ -78,6 +54,7 @@ export const dataHead = [
   {
     headerName: 'Patient ID',
     fieldname: 'id',
+    noCap: true,
   },
   {
     headerName: 'Name',
@@ -86,17 +63,24 @@ export const dataHead = [
   {
     headerName: 'Date of Birth',
     fieldname: 'dob',
+    noCap: true,
   },
   {
     headerName: 'Gender',
-    fieldname: 'gender',
+    fieldname: `gender`,
+    noCap: true,
+    fieldChild: 'type',
   },
   {
     headerName: 'Blood Type',
-    fieldname: 'blood_type',
+    fieldname: `bloodType`,
+    noCap: true,
+    fieldChild: 'type',
   },
   {
     headerName: 'Edit',
     fieldname: 'edit',
+    redirect: true,
+    path: '/patient/edit/',
   },
 ]

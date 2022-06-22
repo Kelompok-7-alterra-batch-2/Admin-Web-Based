@@ -4,16 +4,11 @@ import { Box, Modal, Backdrop, Fade, Typography, Button } from '@mui/material'
 
 import SuccessIcon from 'assets/svg/SuccessIcon.svg'
 
-import { useQueryClient } from 'react-query'
-
 export default function ModalSuccess(props) {
-  const { isOpen, onClose, descTitle, keyQuery } = props
-
-  const queryClient = useQueryClient()
+  const { isOpen, onClose, descTitle } = props
 
   const handleDone = () => {
     onClose()
-    queryClient.invalidateQueries(keyQuery)
   }
   return (
     <Modal

@@ -29,6 +29,9 @@ import DoctorInput from './components/DoctorInput'
 import SearchInput from './components/SearchInput'
 import SelectModalInput from './components/SelectInput'
 import RadioModalInput from './components/RadioModalInput'
+import SelectWithApi from './components/SelectWithApi'
+import RadioWithApi from './components/RadioWithApi'
+import { useQueryClient } from 'react-query'
 
 export default function ModalInput(props) {
   const {
@@ -55,6 +58,8 @@ export default function ModalInput(props) {
   const [isLoading, setIsLoading] = useState(false)
 
   const [listDoctor, setListDoctor] = useState(null)
+
+  const queryClient = useQueryClient()
 
   const handleCloseModal = () => {
     handleClose()
@@ -110,6 +115,7 @@ export default function ModalInput(props) {
         setIsError((prev) => {
           return { ...prev, [field[i].fieldname]: true }
         })
+        setIsLoading(false)
       }
       if (form[field[i].fieldname] !== '') {
         setIsError((prev) => {
@@ -130,14 +136,16 @@ export default function ModalInput(props) {
       }
 
       if (!result) {
-        return setIsSuccess(true)
+        await queryClient.invalidateQueries(endPoint)
+        setIsSuccess(true)
+        setForm(initialData)
       }
 
+      setIsLoading(false)
       setIsError((prev) => {
         return { ...prev, submit: result }
       })
     }
-    setIsLoading(false)
   }
 
   return (
@@ -272,7 +280,32 @@ export default function ModalInput(props) {
                     </Box>
                   )
                 }
-
+                if (item.type === 'select-with-api') {
+                  if (initialData[item.value] === undefined) {
+                    return (
+                      <Box key={index}>
+                        <SelectWithApi
+                          onChange={handleChange}
+                          value={form[item.fieldname]}
+                          item={item}
+                          error={isError[item.fieldname]}
+                          endPoint={endPoint}
+                        />
+                      </Box>
+                    )
+                  }
+                  return (
+                    <Box key={index}>
+                      <SelectWithApi
+                        onChange={handleChange}
+                        value={form[item.value][item.valueChild]}
+                        item={item}
+                        error={isError[item.fieldname]}
+                        endPoint={endPoint}
+                      />
+                    </Box>
+                  )
+                }
                 if (item.type === 'select') {
                   return (
                     <Box key={index}>
@@ -281,6 +314,20 @@ export default function ModalInput(props) {
                         value={form[item.fieldname]}
                         item={item}
                         error={isError[item.fieldname]}
+                      />
+                    </Box>
+                  )
+                }
+
+                if (item.type === 'radio-with-api') {
+                  return (
+                    <Box key={index}>
+                      <RadioWithApi
+                        onChange={handleChange}
+                        value={form[item.fieldname]}
+                        item={item}
+                        error={isError[item.fieldname]}
+                        endPoint={endPoint}
                       />
                     </Box>
                   )
