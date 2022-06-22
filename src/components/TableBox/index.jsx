@@ -22,9 +22,10 @@ import ModalDelete from './ModalDelete'
 import CustomChip from './CustomChip'
 
 import { toCapitalize } from 'helpers/function/toCapitalize'
+import { useNavigate } from 'react-router-dom'
 
 export default function TableBox(props) {
-  const { dataHead, dataBody, isLoading, endPoint, fieldEdit } = props
+  const { dataHead, dataBody, isLoading, endPoint, fieldEdit, children } = props
 
   const [openModal, setOpenModal] = useState({
     edit: false,
@@ -35,6 +36,8 @@ export default function TableBox(props) {
     delete: null,
     edit: null,
   })
+
+  const navigate = useNavigate()
 
   const handleOpenEdit = (item) => {
     setOpenModal((prev) => {
@@ -58,114 +61,155 @@ export default function TableBox(props) {
 
   return (
     <>
-      <TableContainer>
-        <Table>
-          <TableHead>
-            <TableRow
+      <Box>
+        <TableContainer>
+          <Table>
+            <TableHead>
+              <TableRow
+                sx={{
+                  bgcolor: 'neutral100',
+                  borderRadius: '8px',
+                }}
+              >
+                {dataHead.map((item, index) => (
+                  <TableCell
+                    key={index}
+                    align='center'
+                    sx={{
+                      color: 'primary.main',
+                      fontSize: '16px',
+                      fontWeight: '700',
+                    }}
+                  >
+                    {item.headerName}
+                  </TableCell>
+                ))}
+              </TableRow>
+            </TableHead>
+
+            {dataBody && !isLoading && (
+              <TableBody>
+                {dataBody.map((itemRow, indexRow) => (
+                  <TableRow
+                    key={indexRow}
+                    sx={{
+                      borderBottom: '1px solid black',
+                    }}
+                  >
+                    {dataHead.map((itemCell, indexCell) => {
+                      if (itemCell.fieldname === 'queue') {
+                        return (
+                          <TableCell key={indexCell} align='center'>
+                            {indexRow + 1}
+                          </TableCell>
+                        )
+                      }
+
+                      if (itemCell.fieldname === 'status') {
+                        return (
+                          <TableCell key={indexCell} align='center'>
+                            <CustomChip params={itemRow[itemCell.fieldname]} />
+                          </TableCell>
+                        )
+                      }
+
+                      if (itemCell.fieldname === 'edit') {
+                        return (
+                          <TableCell align='center' key={indexCell}>
+                            {!itemCell.redirect && (
+                              <IconButton
+                                onClick={() => {
+                                  handleOpenEdit(itemRow)
+                                }}
+                              >
+                                <Edit />
+                              </IconButton>
+                            )}
+                            {itemCell.redirect && (
+                              <IconButton
+                                onClick={() => {
+                                  navigate(`${itemCell.path}${itemRow.id}`)
+                                }}
+                              >
+                                <Edit />
+                              </IconButton>
+                            )}
+                            <IconButton
+                              onClick={() => handleOpenDelete(itemRow.id)}
+                            >
+                              <Delete />
+                            </IconButton>
+                          </TableCell>
+                        )
+                      }
+
+                      if (itemCell.noCap) {
+                        if (itemCell.fieldChild) {
+                          return (
+                            <TableCell key={indexCell} align='center'>
+                              {itemRow[itemCell.fieldname][itemCell.fieldChild]}
+                            </TableCell>
+                          )
+                        }
+
+                        return (
+                          <TableCell key={indexCell} align='center'>
+                            {itemRow[itemCell.fieldname]}
+                          </TableCell>
+                        )
+                      }
+
+                      if (itemCell.fieldChild) {
+                        return (
+                          <TableCell key={indexCell} align='center'>
+                            {toCapitalize(
+                              itemRow[itemCell.fieldname][itemCell.fieldChild]
+                            )}
+                          </TableCell>
+                        )
+                      }
+
+                      return (
+                        <TableCell key={indexCell} align='center'>
+                          {itemRow
+                            ? toCapitalize(itemRow[itemCell.fieldname])
+                            : ''}
+                        </TableCell>
+                      )
+                    })}
+                  </TableRow>
+                ))}
+              </TableBody>
+            )}
+          </Table>
+
+          {isLoading && (
+            <Box
               sx={{
-                bgcolor: 'neutral100',
-                borderRadius: '8px',
+                width: '100%',
               }}
             >
-              {dataHead.map((item, index) => (
-                <TableCell
-                  key={index}
-                  align='center'
-                  sx={{
-                    color: 'primary.main',
-                    fontSize: '16px',
-                    fontWeight: '700',
-                  }}
-                >
-                  {item.headerName}
-                </TableCell>
-              ))}
-            </TableRow>
-          </TableHead>
-
-          {dataBody && !isLoading && (
-            <TableBody>
-              {dataBody.map((itemRow, indexRow) => (
-                <TableRow
-                  key={indexRow}
-                  sx={{
-                    borderBottom: '1px solid black',
-                  }}
-                >
-                  {dataHead.map((itemCell, indexCell) => {
-                    if (itemCell.fieldname === 'queue') {
-                      return (
-                        <TableCell key={indexCell} align='center'>
-                          {indexRow + 1}
-                        </TableCell>
-                      )
-                    }
-
-                    if (itemCell.fieldname === 'status') {
-                      return (
-                        <TableCell key={indexCell} align='center'>
-                          <CustomChip params={itemRow[itemCell.fieldname]} />
-                        </TableCell>
-                      )
-                    }
-
-                    if (itemCell.fieldname === 'edit') {
-                      return (
-                        <TableCell align='center' key={indexCell}>
-                          <IconButton
-                            onClick={() => {
-                              handleOpenEdit(itemRow)
-                            }}
-                          >
-                            <Edit />
-                          </IconButton>
-
-                          <IconButton
-                            onClick={() => handleOpenDelete(itemRow.id)}
-                          >
-                            <Delete />
-                          </IconButton>
-                        </TableCell>
-                      )
-                    }
-
-                    return (
-                      <TableCell key={indexCell} align='center'>
-                        {itemRow[itemCell.fieldname]}
-                      </TableCell>
-                    )
-                  })}
-                </TableRow>
-              ))}
-            </TableBody>
+              <Skeleton animation='wave' height={100} width='100%' />
+            </Box>
           )}
-        </Table>
 
-        {isLoading && (
-          <Box
-            sx={{
-              width: '100%',
-            }}
-          >
-            <Skeleton animation='wave' height={100} width='100%' />
-          </Box>
-        )}
-
-        {!isLoading && (!dataBody || dataBody.length === 0) && (
-          <Box
-            sx={{
-              width: '100%',
-              textAlign: 'center',
-              my: '30px',
-            }}
-          >
-            <Typography variant='body1' color='neutral500'>
-              {' '}
-              No data in this table{' '}
-            </Typography>
-          </Box>
-        )}
-      </TableContainer>
+          {!isLoading && (!dataBody || dataBody.length === 0) && (
+            <Box
+              sx={{
+                width: '100%',
+                textAlign: 'center',
+                my: '30px',
+              }}
+            >
+              <Typography variant='body1' color='neutral500'>
+                {' '}
+                No data in this table{' '}
+              </Typography>
+            </Box>
+          )}
+        </TableContainer>
+        {children}
+      </Box>
 
       <ModalDelete
         isOpen={openModal.delete}

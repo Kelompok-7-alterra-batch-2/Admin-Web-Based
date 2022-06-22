@@ -7,7 +7,13 @@ import { QueryClient, QueryClientProvider } from 'react-query'
 import '@fontsource/lato'
 import './index.css'
 
-const client = new QueryClient()
+const client = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+    },
+  },
+})
 
 const root = ReactDOM.createRoot(document.getElementById('root'))
 root.render(

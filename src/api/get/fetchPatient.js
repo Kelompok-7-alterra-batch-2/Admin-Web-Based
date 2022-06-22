@@ -1,9 +1,8 @@
+import host from 'api'
 import axios from 'axios'
 
-const fetchPatient = async () => {
-  let { data } = await axios.get(
-    'https://62a18758cc8c0118ef4d691f.mockapi.io/patient'
-  )
+const fetchPatient = async (page, row) => {
+  let { data } = await axios.get(`${host}/patients/page/${page}/${row}`)
 
   return data
 }

@@ -7,6 +7,7 @@ import {
   Button,
   Snackbar,
   Alert,
+  CircularProgress,
 } from '@mui/material'
 import { Box } from '@mui/system'
 import React, { useState } from 'react'
@@ -24,11 +25,14 @@ export default function ModalDelete(props) {
     error: false,
   })
 
+  const [isLoading, setIsLoading] = useState(false)
+
   const handleCloseModal = () => {
     handleClose()
   }
 
   const handleDeleteRow = async () => {
+    setIsLoading(true)
     const { data, error } = await deleteData(endPoint, deleteParams)
     if (data) {
       handleClose()
@@ -40,6 +44,7 @@ export default function ModalDelete(props) {
     setOpenSnackbar((prev) => {
       return { ...prev, error: error }
     })
+    setIsLoading(false)
   }
 
   return (
@@ -92,14 +97,34 @@ export default function ModalDelete(props) {
                 Cancel
               </Button>
 
-              <Button
-                variant='contained'
-                color='error'
-                endIcon={<Delete />}
-                onClick={handleDeleteRow}
+              <Box
+                sx={{
+                  position: 'relative',
+                }}
               >
-                Delete
-              </Button>
+                <Button
+                  variant='contained'
+                  color='error'
+                  endIcon={<Delete />}
+                  onClick={handleDeleteRow}
+                  disabled={isLoading}
+                >
+                  Delete
+                </Button>
+                {isLoading && (
+                  <CircularProgress
+                    size={24}
+                    sx={{
+                      color: 'white',
+                      position: 'absolute',
+                      top: '50%',
+                      left: '50%',
+                      marginTop: '-12px',
+                      marginLeft: '-12px',
+                    }}
+                  />
+                )}
+              </Box>
             </Box>
           </Box>
         </Fade>
