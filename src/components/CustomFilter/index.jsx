@@ -3,45 +3,32 @@ import React from 'react'
 import { FormControl, Select, MenuItem, OutlinedInput } from '@mui/material'
 
 export default function CustomFilter(props) {
-
-    const {onChange,value,placeholder,filters,sx} = props
+  const { onChange, value, placeholder, filters, sx, param } = props
 
   return (
-
-    <FormControl
-    size='small'
-    sx={sx}
-    >
-
-        <Select
+    <FormControl size='small' sx={sx}>
+      <Select
         value={value}
         onChange={onChange}
-        input={<OutlinedInput/>}
+        input={<OutlinedInput />}
         sx={{
-            fontSize : '16px',
-            fontWeight : 'normal'
+          fontSize: '16px',
+          fontWeight: 'normal',
         }}
         displayEmpty
-        >
-            
-            <MenuItem
-            disabled
-            value=''>
-            {placeholder}
-            </MenuItem>
+      >
+        <MenuItem disabled value=''>
+          {placeholder}
+        </MenuItem>
 
-            {filters.map((filter,index)=>(
+        <MenuItem value='all'>All</MenuItem>
 
-            <MenuItem
-            key={index}
-            value={filter.value}>
-                {filter.title}
-            </MenuItem>
-
-            ))}
-
-        </Select>
-
+        {filters.map((filter, index) => (
+          <MenuItem key={index} value={filter[param.value]}>
+            {filter[param.title]}
+          </MenuItem>
+        ))}
+      </Select>
     </FormControl>
   )
 }

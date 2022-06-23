@@ -42,14 +42,29 @@ export default function ModalInput(props) {
     title,
     endPoint,
     methodSubmit,
+    queryKey,
   } = props
 
   const initialError = {
     submit: false,
     selectDoctor: false,
   }
-
-  const [form, setForm] = useState(initialData)
+  let updateForm = {}
+  for (let i = 0; i < field.length; i++) {
+    if (initialData[field[i].value] !== undefined) {
+      updateForm = {
+        ...updateForm,
+        [field[i].fieldname]: initialData[field[i].value][field[i].valueChild],
+      }
+    }
+    if (initialData[field[i].value] === undefined) {
+      updateForm = {
+        ...updateForm,
+        [field[i].fieldname]: initialData[field[i].fieldname],
+      }
+    }
+  }
+  const [form, setForm] = useState(updateForm)
 
   const [isSuccess, setIsSuccess] = useState(false)
 
@@ -87,7 +102,6 @@ export default function ModalInput(props) {
 
   const handleChangeDepartment = async (e) => {
     handleChange(e)
-
     if (form.doctor || form.doctor === '') {
       setForm((prev) => {
         return { ...prev, doctor: '' }
@@ -95,7 +109,7 @@ export default function ModalInput(props) {
       if (listDoctor) {
         setListDoctor(null)
       }
-      const { data, error } = await fetchFilter('doctor', e.target.value)
+      const { data, error } = await fetchFilter('doctors', e.target.value)
 
       if (data) {
         setListDoctor(data)
@@ -107,7 +121,6 @@ export default function ModalInput(props) {
   }
 
   const handleSubmit = async () => {
-    setIsLoading(true)
     let paramError
     for (let i = 0; i < field.length; i++) {
       if (form[field[i].fieldname] === '') {
@@ -115,7 +128,6 @@ export default function ModalInput(props) {
         setIsError((prev) => {
           return { ...prev, [field[i].fieldname]: true }
         })
-        setIsLoading(false)
       }
       if (form[field[i].fieldname] !== '') {
         setIsError((prev) => {
@@ -125,20 +137,23 @@ export default function ModalInput(props) {
     }
 
     if (!paramError) {
+      setIsLoading(true)
       let result
       if (methodSubmit === 'post') {
         const { error } = await postData(endPoint, form)
         result = error
       }
       if (methodSubmit === 'put') {
-        const { error } = await updateData(endPoint, form.id, form)
+        const { error } = await updateData(endPoint, initialData.id, form)
         result = error
       }
 
       if (!result) {
-        await queryClient.invalidateQueries(endPoint)
+        await queryClient.invalidateQueries(queryKey)
         setIsSuccess(true)
-        setForm(initialData)
+        if (methodSubmit === 'post') {
+          setForm(initialData)
+        }
       }
 
       setIsLoading(false)
@@ -231,7 +246,7 @@ export default function ModalInput(props) {
                   )
                 }
 
-                if (item.fieldname === 'department') {
+                if (item.type === 'department') {
                   return (
                     <Box key={index}>
                       <DepartmentInput
@@ -407,7 +422,6 @@ export default function ModalInput(props) {
           handleClose()
         }}
         descTitle={title}
-        keyQuery={endPoint}
       />
 
       <Snackbar

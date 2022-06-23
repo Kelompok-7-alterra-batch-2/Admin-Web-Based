@@ -1,24 +1,17 @@
+import host from 'api'
 import axios from 'axios'
 
-const fetchFilter = async (endPoint, param) => {
-  let data
-  let error = false
-  await axios({
+const fetchFilter = async (endPoint, filter, param) => {
+  let data = await axios({
     method: 'get',
-    url: `https://62a18758cc8c0118ef4d691f.mockapi.io/${endPoint}?filter=${param}`,
+    url: `${host}/${endPoint}/${filter}/${param}`,
     data: {},
     headers: {
       'Content-Type': 'application/json',
     },
   })
-    .then((res) => {
-      return (data = res.data)
-    })
-    .catch(() => {
-      return (error = true)
-    })
 
-  return { data, error }
+  return data
 }
 
 export default fetchFilter
