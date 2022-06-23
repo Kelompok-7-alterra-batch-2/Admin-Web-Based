@@ -11,30 +11,10 @@ export const field = [
   },
   {
     title: 'Department',
-    fieldname: 'department',
-    type: 'select',
-    option: [
-      {
-        title: 'General',
-        value: 'general',
-      },
-      {
-        title: 'Neurology',
-        value: 'neurology',
-      },
-      {
-        title: 'Cardiology',
-        value: 'cardiology',
-      },
-      {
-        title: 'Pediatric',
-        value: 'pediatric',
-      },
-      {
-        title: 'Gynecology',
-        value: 'gynecology',
-      },
-    ],
+    fieldname: 'department_id',
+    type: 'department',
+    value: 'department',
+    valueChild: 'id',
   },
   {
     title: 'Email',
@@ -48,7 +28,7 @@ export const field = [
   },
   {
     title: 'Phone Number',
-    fieldname: 'phone_number',
+    fieldname: 'phoneNumber',
     type: 'text',
   },
 ]
@@ -56,47 +36,22 @@ export const field = [
 export const initialData = {
   name: '',
   nid: '',
-  department: '',
+  department_id: '',
   email: '',
   password: '',
-  phone_number: '',
+  phoneNumber: '',
 }
-
-export const filterItem = [
-  {
-    title: 'All',
-    value: 'all',
-  },
-  {
-    title: 'General',
-    value: 'general',
-  },
-  {
-    title: 'Neurology',
-    value: 'neurology',
-  },
-  {
-    title: 'Cardiology',
-    value: 'cardiology',
-  },
-  {
-    title: 'Pediatric',
-    value: 'pediatric',
-  },
-  {
-    title: 'Gynecology',
-    value: 'gynecology',
-  },
-]
 
 export const dataHead = [
   {
     headerName: 'NID',
-    fieldname: 'id',
+    fieldname: 'nid',
+    noCap: true,
   },
   {
     headerName: 'Department',
     fieldname: 'department',
+    fieldChild: 'name',
   },
   {
     headerName: 'Doctor Name',
@@ -104,7 +59,8 @@ export const dataHead = [
   },
   {
     headerName: 'Phone Number',
-    fieldname: 'phone_number',
+    fieldname: 'phoneNumber',
+    noCap: true,
   },
   {
     headerName: 'Edit',

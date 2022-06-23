@@ -8,7 +8,13 @@ import { dataHead, initialData, field } from 'constants/patient'
 
 import { fetchPatient, fetchSearch } from 'api/get'
 
-import { SearchBox, TableBox, DefaultLayout, ModalInput } from 'components'
+import {
+  SearchBox,
+  TableBox,
+  DefaultLayout,
+  ModalInput,
+  LoadingTable,
+} from 'components'
 
 export default function Patient() {
   const initialPagination = {
@@ -16,17 +22,18 @@ export default function Patient() {
     page: 0,
   }
 
-  const [dataFilter, setDataFilter] = useState(null)
-
-  const [isLoading, setIsLoading] = useState(false)
+  const initialSearch = {
+    value: '',
+    enabled: false,
+  }
 
   const [openModal, setOpenModal] = useState(false)
 
-  const [searchPatient, setSearchPatient] = useState(null)
-
-  const [isError, setIsError] = useState(false)
+  const [searchPatient, setSearchPatient] = useState(initialSearch)
 
   const [pagination, setPagination] = useState(initialPagination)
+
+  const [manual, setManual] = useState(initialPagination)
 
   const {
     data,
@@ -38,25 +45,35 @@ export default function Patient() {
     { keepPreviousData: true }
   )
 
+  const dataSearch = useQuery(
+    ['searchPatient', searchPatient],
+    () => fetchSearch('patients', searchPatient.value),
+    { enabled: searchPatient.enabled }
+  )
+
   const handleOpenPatient = () => {
+    setSearchPatient(initialSearch)
     setOpenModal((prev) => {
       return !prev
     })
   }
 
   const onChangeSearch = (e) => {
-    setSearchPatient(e.target.value)
+    setSearchPatient({ value: e.target.value, enabled: false })
   }
 
-  const handleSearch = async () => {
-    setIsLoading(true)
-    const { data, error } = await fetchSearch('patients', searchPatient)
-    setDataFilter(data)
-    setIsError(error)
-    setIsLoading(false)
+  const handleSearch = () => {
+    setSearchPatient((prev) => {
+      return { ...prev, enabled: true }
+    })
+    setManual(initialPagination)
   }
 
-  const handlePageChange = (event, newPage) => {
+  const handleResetSearch = () => {
+    setSearchPatient({ value: '', enabled: false })
+  }
+
+  const handlePageChange = (e, newPage) => {
     setPagination((prev) => {
       return { ...prev, page: newPage }
     })
@@ -64,6 +81,16 @@ export default function Patient() {
 
   const handleChangeRowsPerPage = (e) => {
     setPagination({ row: parseInt(e.target.value, 10), page: 0 })
+  }
+
+  const handleManualPage = (e, newPage) => {
+    setManual((prev) => {
+      return { ...prev, page: newPage }
+    })
+  }
+
+  const handleManualRow = (e) => {
+    setManual({ page: 0, row: parseInt(e.target.value, 10) })
   }
 
   return (
@@ -75,6 +102,8 @@ export default function Patient() {
           placeholder='Search patient here...'
           onChangeSearch={onChangeSearch}
           onClickSearch={handleSearch}
+          valueSearch={searchPatient.value}
+          onResetSearch={handleResetSearch}
         />
 
         <ModalInput
@@ -85,6 +114,7 @@ export default function Patient() {
           title='New Patient'
           endPoint='patients'
           methodSubmit='post'
+          queryKey='patients'
         />
 
         <Box
@@ -92,13 +122,12 @@ export default function Patient() {
             marginTop: '30px',
           }}
         >
-          {!dataFilter && (
+          {!searchPatient.enabled && !dataSearch.isFetching && (
             <TableBox
               dataHead={dataHead}
               dataBody={data?.content}
               isLoading={isLoad}
               endPoint='patients'
-              fieldEdit={field}
             >
               <TablePagination
                 sx={{
@@ -116,33 +145,37 @@ export default function Patient() {
           )}
         </Box>
 
-        {dataFilter && (
-          <TableBox
-            dataHead={dataHead}
-            dataBody={dataFilter}
-            isLoading={isLoading}
-            endPoint='patients'
-            fieldEdit={field}
-          >
-            <TablePagination
-              sx={{
-                mt: '30px',
-              }}
-              onRowsPerPageChange={handleChangeRowsPerPage}
-              onPageChange={handlePageChange}
-              page={pagination.page}
-              rowsPerPage={pagination.row}
-              count={dataFilter.length}
-              component='div'
-              rowsPerPageOptions={[5, 10]}
-            />
-          </TableBox>
-        )}
+        {dataSearch.isFetching && <LoadingTable />}
+
+        {searchPatient.enabled &&
+          dataSearch.data !== undefined &&
+          !dataSearch.isFetching && (
+            <TableBox
+              dataHead={dataHead}
+              dataBody={dataSearch.data.data.slice(
+                manual.page * manual.row,
+                manual.page * manual.row + manual.row
+              )}
+              endPoint='patients'
+            >
+              <TablePagination
+                sx={{
+                  mt: '30px',
+                }}
+                onRowsPerPageChange={handleManualRow}
+                onPageChange={handleManualPage}
+                page={manual.page}
+                rowsPerPage={manual.row}
+                count={dataSearch.data?.data.length}
+                component='div'
+                rowsPerPageOptions={[5, 10]}
+              />
+            </TableBox>
+          )}
 
         <Snackbar
           anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-          open={isError || isErr}
-          onClose={() => setIsError(false)}
+          open={dataSearch.isError || isErr}
           autoHideDuration={3000}
         >
           <Alert severity='error'>

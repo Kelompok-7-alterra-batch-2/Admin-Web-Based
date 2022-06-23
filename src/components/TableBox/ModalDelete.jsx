@@ -16,7 +16,7 @@ import { deleteData } from 'api/delete'
 import { useQueryClient } from 'react-query'
 
 export default function ModalDelete(props) {
-  const { isOpen, handleClose, deleteParams, endPoint } = props
+  const { isOpen, handleClose, deleteParams, endPoint, queryKey } = props
 
   const queryClient = useQueryClient()
 
@@ -39,7 +39,7 @@ export default function ModalDelete(props) {
       setOpenSnackbar((prev) => {
         return { ...prev, success: true }
       })
-      queryClient.invalidateQueries(endPoint)
+      queryClient.invalidateQueries(queryKey)
     }
     setOpenSnackbar((prev) => {
       return { ...prev, error: error }

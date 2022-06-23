@@ -2,18 +2,9 @@ import host from 'api'
 import axios from 'axios'
 
 const fetchSearch = async (endPoint, param) => {
-  let data
-  let error = false
-  await axios
-    .get(`${host}/${endPoint}/names/${param}`)
-    .then((res) => {
-      return (data = res.data)
-    })
-    .catch(() => {
-      return (error = true)
-    })
+  let data = await axios.get(`${host}/${endPoint}/names/${param}`)
 
-  return { data, error }
+  return data
 }
 
 export default fetchSearch

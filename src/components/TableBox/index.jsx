@@ -8,7 +8,6 @@ import {
   TableHead,
   TableRow,
   IconButton,
-  Skeleton,
   Box,
   Typography,
 } from '@mui/material'
@@ -16,7 +15,7 @@ import {
 import Edit from '@mui/icons-material/Edit'
 import Delete from '@mui/icons-material/Delete'
 
-import { ModalInput } from 'components'
+import { LoadingTable, ModalInput } from 'components'
 
 import ModalDelete from './ModalDelete'
 import CustomChip from './CustomChip'
@@ -25,7 +24,15 @@ import { toCapitalize } from 'helpers/function/toCapitalize'
 import { useNavigate } from 'react-router-dom'
 
 export default function TableBox(props) {
-  const { dataHead, dataBody, isLoading, endPoint, fieldEdit, children } = props
+  const {
+    dataHead,
+    dataBody,
+    isLoading,
+    endPoint,
+    fieldEdit,
+    queryKey,
+    children,
+  } = props
 
   const [openModal, setOpenModal] = useState({
     edit: false,
@@ -183,15 +190,7 @@ export default function TableBox(props) {
             )}
           </Table>
 
-          {isLoading && (
-            <Box
-              sx={{
-                width: '100%',
-              }}
-            >
-              <Skeleton animation='wave' height={100} width='100%' />
-            </Box>
-          )}
+          {isLoading && <LoadingTable />}
 
           {!isLoading && (!dataBody || dataBody.length === 0) && (
             <Box
@@ -216,6 +215,7 @@ export default function TableBox(props) {
         handleClose={handleOpenDelete}
         deleteParams={param.delete}
         endPoint={endPoint}
+        queryKey={queryKey}
       />
 
       {openModal.edit && (
@@ -227,6 +227,7 @@ export default function TableBox(props) {
           title={'Edit ' + toCapitalize(endPoint)}
           endPoint={endPoint}
           methodSubmit='put'
+          queryKey={queryKey}
         />
       )}
     </>

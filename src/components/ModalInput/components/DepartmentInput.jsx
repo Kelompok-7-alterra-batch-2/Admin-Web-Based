@@ -8,9 +8,13 @@ import {
 } from '@mui/material'
 
 import ErrorRounded from '@mui/icons-material/ErrorRounded'
+import { useQuery } from 'react-query'
+import { fetchData } from 'api/get'
 
 const DepartmentInput = (props) => {
   const { onChange, value, item, error, errorEmpty } = props
+
+  const department = useQuery('departments', () => fetchData('departments'))
 
   return (
     <FormControl fullWidth error={error || errorEmpty}>
@@ -37,16 +41,12 @@ const DepartmentInput = (props) => {
         <MenuItem disabled value=''>
           None
         </MenuItem>
-
-        <MenuItem value='general'>General</MenuItem>
-
-        <MenuItem value='neurology'>Neurology</MenuItem>
-
-        <MenuItem value='cardiology'>Cardiology</MenuItem>
-
-        <MenuItem value='pediatric'>Pediatric</MenuItem>
-
-        <MenuItem value='gynecology'>Gynecology</MenuItem>
+        {!department.isLoading &&
+          department.data.data.map((item, index) => (
+            <MenuItem value={item.id} key={index}>
+              {item.name}
+            </MenuItem>
+          ))}
       </Select>
 
       {error && (

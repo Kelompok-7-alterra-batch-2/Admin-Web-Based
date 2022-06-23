@@ -1,3 +1,4 @@
+import host from 'api'
 import axios from 'axios'
 
 const updateData = async (endPoint, param, dataPost) => {
@@ -6,7 +7,7 @@ const updateData = async (endPoint, param, dataPost) => {
 
   await axios({
     method: 'put',
-    url: `https://62a18758cc8c0118ef4d691f.mockapi.io/${endPoint}/${param}`,
+    url: `${host}/${endPoint}/${param}`,
     data: {
       ...dataPost,
     },
