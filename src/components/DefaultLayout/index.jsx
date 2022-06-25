@@ -9,7 +9,6 @@ import {
   ListItem,
   Typography,
   Avatar,
-  Container,
   Skeleton,
 } from '@mui/material'
 import React, { useState, useEffect } from 'react'
@@ -39,6 +38,7 @@ import ItemList from './components/ItemList'
 import Logo from 'assets/svg/Logo.svg'
 
 import { fetchUser } from 'api/get'
+import { Container } from '@mui/system'
 
 const drawerWidth = 272
 
@@ -160,16 +160,19 @@ export default function DefaultLayout(props) {
         </List>
       </Drawer>
 
-      <Container maxWidth='xl'>
+      <Box
+        sx={{
+          width: '100%',
+        }}
+      >
         <Box
           sx={{
             display: 'flex',
             height: '88px',
-            padding: '0 40px',
+            padding: '0 50px',
             bgcolor: 'neutral200',
             justifyContent: 'space-between',
             alignItems: 'center',
-            borderRadius: '0 0 8px 8px',
             marginBottom: '30px',
           }}
           maxWidth='xl'
@@ -220,9 +223,8 @@ export default function DefaultLayout(props) {
             </Box>
           )}
         </Box>
-
-        {children}
-      </Container>
+        <Container maxWidth='xl'>{children}</Container>
+      </Box>
       <Snackbar
         anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
         open={isError}

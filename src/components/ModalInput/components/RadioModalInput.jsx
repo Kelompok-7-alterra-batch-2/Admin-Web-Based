@@ -10,7 +10,7 @@ import {
 } from '@mui/material'
 
 const RadioModalInput = (props) => {
-  const { onChange, value, error, item } = props
+  const { onChange, value, error, item, param } = props
 
   return (
     <FormControl error={error}>
@@ -33,9 +33,9 @@ const RadioModalInput = (props) => {
         {item.option.map((option, indexRadio) => (
           <FormControlLabel
             key={indexRadio}
-            value={option.value}
+            value={option[param.value]}
             control={<Radio />}
-            label={option.title}
+            label={option[param.title]}
           />
         ))}
       </RadioGroup>
