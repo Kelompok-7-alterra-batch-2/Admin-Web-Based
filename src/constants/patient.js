@@ -12,8 +12,21 @@ export const field = [
   {
     title: 'Gender',
     fieldname: 'gender_id',
-    type: 'radio-with-api',
-    endPoint: 'genders',
+    type: 'radio',
+    param: {
+      title: 'type',
+      value: 'id',
+    },
+    option: [
+      {
+        id: 1,
+        type: 'Male',
+      },
+      {
+        id: 2,
+        type: 'Female',
+      },
+    ],
   },
   {
     title: 'Phone Number',
@@ -23,10 +36,29 @@ export const field = [
   {
     title: 'Blood Type',
     fieldname: 'blood_type_id',
-    type: 'select-with-api',
-    value: 'bloodType',
-    valueChild: 'id',
-    endPoint: 'bloods',
+    type: 'select',
+    param: {
+      title: 'type',
+      value: 'id',
+    },
+    option: [
+      {
+        id: 1,
+        type: 'A',
+      },
+      {
+        id: 2,
+        type: 'AB',
+      },
+      {
+        id: 3,
+        type: 'B',
+      },
+      {
+        id: 4,
+        type: 'O',
+      },
+    ],
   },
   {
     title: 'City',

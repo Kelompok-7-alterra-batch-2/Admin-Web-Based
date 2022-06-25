@@ -10,7 +10,7 @@ import {
 import ErrorRounded from '@mui/icons-material/ErrorRounded'
 
 const SelectModalInput = (props) => {
-  const { onChange, value, item, error } = props
+  const { onChange, value, item, error, param } = props
 
   return (
     <FormControl error={error} fullWidth>
@@ -38,8 +38,8 @@ const SelectModalInput = (props) => {
         <MenuItem value=''>None</MenuItem>
 
         {item.option.map((option, indexSelect) => (
-          <MenuItem key={indexSelect} value={option.value}>
-            {option.title}
+          <MenuItem key={indexSelect} value={option[param.value]}>
+            {option[param.title]}
           </MenuItem>
         ))}
       </Select>

@@ -123,13 +123,21 @@ export default function ModalInput(props) {
   const handleSubmit = async () => {
     let paramError
     for (let i = 0; i < field.length; i++) {
-      if (form[field[i].fieldname] === '') {
+      if (
+        form[field[i].fieldname] === '' ||
+        form[field[i].fieldname] === undefined ||
+        form[field[i].fieldname] === null
+      ) {
         paramError = true
         setIsError((prev) => {
           return { ...prev, [field[i].fieldname]: true }
         })
       }
-      if (form[field[i].fieldname] !== '') {
+      if (
+        form[field[i].fieldname] !== '' &&
+        form[field[i].fieldname] !== null &&
+        form[field[i].fieldname] !== undefined
+      ) {
         setIsError((prev) => {
           return { ...prev, [field[i].fieldname]: false }
         })
@@ -329,6 +337,7 @@ export default function ModalInput(props) {
                         value={form[item.fieldname]}
                         item={item}
                         error={isError[item.fieldname]}
+                        param={item.param}
                       />
                     </Box>
                   )
@@ -356,6 +365,7 @@ export default function ModalInput(props) {
                         value={form[item.fieldname]}
                         item={item}
                         error={isError[item.fieldname]}
+                        param={item.param}
                       />
                     </Box>
                   )
