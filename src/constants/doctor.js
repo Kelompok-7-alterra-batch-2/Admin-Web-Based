@@ -3,11 +3,13 @@ export const field = [
     title: 'Doctor Name',
     fieldname: 'name',
     type: 'text',
+    typeInput: 'noNumber',
   },
   {
     title: 'NID',
     fieldname: 'nid',
     type: 'text',
+    typeInput: 'number',
   },
   {
     title: 'Department',
@@ -30,6 +32,7 @@ export const field = [
     title: 'Phone Number',
     fieldname: 'phoneNumber',
     type: 'text',
+    typeInput: 'number',
   },
 ]
 

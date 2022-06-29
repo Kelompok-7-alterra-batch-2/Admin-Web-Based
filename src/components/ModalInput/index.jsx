@@ -15,7 +15,7 @@ import {
 
 import CloseIcon from '@mui/icons-material/Close'
 
-import { fetchFilter } from 'api/get'
+import { fetchData } from 'api/get'
 
 import { updateData } from 'api/put'
 
@@ -109,7 +109,10 @@ export default function ModalInput(props) {
       if (listDoctor) {
         setListDoctor(null)
       }
-      const { data, error } = await fetchFilter('doctors', e.target.value)
+      const { data, error } = await fetchData(
+        'outpatients/doctors',
+        e.target.value
+      )
 
       if (data) {
         setListDoctor(data)
@@ -378,6 +381,7 @@ export default function ModalInput(props) {
                       name={item.fieldname}
                       label={item.title}
                       onChange={handleChange}
+                      typeInput={item.typeInput}
                       type={item.type}
                       multiline={false}
                       isError={isError[item.fieldname]}
