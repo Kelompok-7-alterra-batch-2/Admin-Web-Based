@@ -46,7 +46,36 @@ export default function CustomInput(props) {
     endAdornment,
     rows,
     multiline,
+    typeInput,
   } = props
+
+  const numberRegex = /^[0-9\b]+$/
+
+  const letterRegex = /^[A-Za-z\s]+$/
+
+  const textRegex = /^[0-9A-Za-z\s]+$/
+
+  const noNumberRegex = /[A-Za-z'.,\s]$/
+
+  const handleChange = (e) => {
+    if (e.target.value === '') {
+      return onChange(e)
+    }
+    if (typeInput === 'number' && !numberRegex.test(e.target.value)) {
+      return
+    }
+
+    if (typeInput === 'letter' && !letterRegex.test(e.target.value)) {
+      return
+    }
+    if (typeInput === 'noSymbol' && !textRegex.test(e.target.value)) {
+      return
+    }
+    if (typeInput === 'noNumber' && !noNumberRegex.test(e.target.value)) {
+      return
+    }
+    onChange(e)
+  }
 
   return (
     <FormControl variant='standard' error={isError} sx={sx} key={key} fullWidth>
@@ -70,7 +99,7 @@ export default function CustomInput(props) {
           borderColor: isError ? 'red' : 'neutral500',
           borderRadius: '4px',
         }}
-        onChange={(e) => onChange(e)}
+        onChange={handleChange}
         id='custom-input'
         type={type}
         multiline={multiline}

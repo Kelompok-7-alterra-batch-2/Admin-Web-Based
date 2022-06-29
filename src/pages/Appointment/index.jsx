@@ -12,33 +12,33 @@ import { toCapitalize } from 'helpers/function/toCapitalize'
 
 import { dataHead, field, filterItem } from 'constants/appointment'
 
-import { fetchAppointment } from 'api/get'
+import { fetchAppointment, fetchData } from 'api/get'
 
 import ModalConfirm from './components/ModalConfirm'
 
-const dataDeparment = [
-  {
-    title: 'general',
-    field: [],
-  },
-  {
-    title: 'neurology',
-    field: [],
-  },
-  {
-    title: 'cardiology',
-    field: [],
-  },
-  {
-    title: 'pediatric',
-    field: [],
-  },
-  {
-    title: 'gynecology',
-    field: [],
-  },
-]
-
+// const dataDeparment = [
+//   {
+//     title: 'general',
+//     field: [],
+//   },
+//   {
+//     title: 'neurology',
+//     field: [],
+//   },
+//   {
+//     title: 'cardiology',
+//     field: [],
+//   },
+//   {
+//     title: 'pediatric',
+//     field: [],
+//   },
+//   {
+//     title: 'gynecology',
+//     field: [],
+//   },
+// ]
+//
 export default function Appointment() {
   const [data, setData] = useState(null)
 
@@ -48,19 +48,24 @@ export default function Appointment() {
 
   const [dataFilter, setDataFilter] = useState(null)
 
+  const dataDepartment = useQuery('departments', () => fetchData('departments'))
+
   const { data: dataAppointment, isLoading: isLoad } = useQuery(
     'appointment',
     fetchAppointment
   )
 
   useEffect(() => {
-    if (!isLoad) {
+    if (!isLoad && !dataDepartment.isLoading) {
       let totalFilter = []
-      for (let i = 0; i < dataDeparment.length; i++) {
+      for (let i = 0; i < dataDepartment.data?.data.length; i++) {
         let filter = dataAppointment.filter(
-          (item) => item.department === dataDeparment[i].title
+          (item) => item.department.id === dataDepartment.data?.data[i].id
         )
-        totalFilter.push({ title: dataDeparment[i].title, field: filter })
+        totalFilter.push({
+          title: dataDepartment.data?.data[i].name,
+          field: filter,
+        })
       }
       setData(totalFilter)
     }
@@ -81,12 +86,12 @@ export default function Appointment() {
   }
 
   const onChangeSearch = (e) => {
-    console.log(e.target.value)
+    console.log()
   }
 
-  const handleSearch = () => {
-    console.log('click')
-  }
+  // const handleSearch = () => {
+  //   console.log('click')
+  // }
 
   return (
     <DefaultLayout>
@@ -95,39 +100,39 @@ export default function Appointment() {
           mb: '30px',
         }}
       >
-        <SearchBox
-          labelLeftButton='Add new appointment'
-          onClickLeftButton={handleOpenModal}
-          placeholder='Search here...'
-          onChangeSearch={onChangeSearch}
-          onClickSearch={handleSearch}
-        />
-
-        <Box
-          sx={{
-            display: 'flex',
-            gap: '30px',
-            mt: '30px',
-          }}
-        >
-          <FilterListIcon
-            sx={{
-              height: '32px',
-              width: '32px',
-              color: 'primary.main',
-            }}
-          />
-
-          <CustomFilter
-            value={filterParam}
-            onChange={handleChangeDepartment}
-            placeholder='DEPARTMENT'
-            filters={filterItem}
-            sx={{
-              width: '175px',
-            }}
-          />
-        </Box>
+        {/*   <SearchBox */}
+        {/*     labelLeftButton='Add new appointment' */}
+        {/*     onClickLeftButton={handleOpenModal} */}
+        {/*     placeholder='Search here...' */}
+        {/*     onChangeSearch={onChangeSearch} */}
+        {/*     onClickSearch={handleSearch} */}
+        {/*   /> */}
+        {/**/}
+        {/*   <Box */}
+        {/*     sx={{ */}
+        {/*       display: 'flex', */}
+        {/*       gap: '30px', */}
+        {/*       mt: '30px', */}
+        {/*     }} */}
+        {/*   > */}
+        {/*     <FilterListIcon */}
+        {/*       sx={{ */}
+        {/*         height: '32px', */}
+        {/*         width: '32px', */}
+        {/*         color: 'primary.main', */}
+        {/*       }} */}
+        {/*     /> */}
+        {/**/}
+        {/*     <CustomFilter */}
+        {/*       value={filterParam} */}
+        {/*       onChange={handleChangeDepartment} */}
+        {/*       placeholder='DEPARTMENT' */}
+        {/*       filters={filterItem} */}
+        {/*       sx={{ */}
+        {/*         width: '175px', */}
+        {/*       }} */}
+        {/*     /> */}
+        {/*   </Box> */}
 
         <Box
           sx={{
@@ -139,35 +144,35 @@ export default function Appointment() {
         >
           <Typography variant='h2'>Today Appointment</Typography>
 
-          {data &&
-            !dataFilter &&
-            data.map((item, index) => (
-              <Box
-                key={index}
-                sx={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  rowGap: '30px',
-                }}
-              >
-                <Typography
-                  variant='h3'
-                  sx={{
-                    textAlign: 'center',
-                  }}
-                >
-                  {toCapitalize(item.title)} Department
-                </Typography>
-
-                <TableBox
-                  dataHead={dataHead}
-                  dataBody={item.field}
-                  isLoading={isLoad}
-                  endPoint='appointment'
-                  fieldEdit={field}
-                />
-              </Box>
-            ))}
+          {/* {data && */}
+          {/*   !dataFilter && */}
+          {/*   data.map((item, index) => ( */}
+          {/*     <Box */}
+          {/*       key={index} */}
+          {/*       sx={{ */}
+          {/*         display: 'flex', */}
+          {/*         flexDirection: 'column', */}
+          {/*         rowGap: '30px', */}
+          {/*       }} */}
+          {/*     > */}
+          {/*       <Typography */}
+          {/*         variant='h3' */}
+          {/*         sx={{ */}
+          {/*           textAlign: 'center', */}
+          {/*         }} */}
+          {/*       > */}
+          {/*         {toCapitalize(item.title)} Department */}
+          {/*       </Typography> */}
+          {/**/}
+          {/*       <TableBox */}
+          {/*         dataHead={dataHead} */}
+          {/*         dataBody={item.field} */}
+          {/*         isLoading={isLoad} */}
+          {/*         endPoint='appointment' */}
+          {/*         fieldEdit={field} */}
+          {/*       /> */}
+          {/*     </Box> */}
+          {/*   ))} */}
 
           {dataFilter &&
             dataFilter.map((item, index) => (
