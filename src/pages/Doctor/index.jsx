@@ -195,6 +195,7 @@ export default function Doctor() {
               endPoint='doctors'
               fieldEdit={field}
               queryKey='doctors'
+              editParam=''
             >
               <TablePagination
                 sx={{
@@ -225,6 +226,7 @@ export default function Doctor() {
                 endPoint='doctors'
                 fieldEdit={field}
                 queryKey='filterData'
+                editParam=''
               >
                 <TablePagination
                   sx={{

@@ -7,35 +7,46 @@ export const dataHead = [
   },
   {
     headerName: 'Time',
-    fieldname: 'time',
+    fieldname: 'arrivalTime',
+    noCap: true,
   },
   {
     headerName: 'Patient',
     fieldname: 'patient',
+    fieldChild: 'name',
   },
   {
     headerName: 'Doctor',
     fieldname: 'doctor',
+    fieldChild: 'name',
   },
   {
     headerName: 'Status',
-    fieldname: 'status',
+    fieldname: 'outpatientCondition',
+    fieldChild: 'conditions',
   },
   {
     headerName: 'Edit',
     fieldname: 'edit',
+    delete: true,
   },
 ]
 
 export const field = [
   {
     title: 'Patient',
-    fieldname: 'patient',
+    fieldname: 'patient_id',
     type: 'search',
-  },
-  {
-    title: 'Department',
-    fieldname: 'department',
+    endPoint: 'patients',
+    value: 'patient',
+    valueChild: 'id',
+    param: {
+      first: {
+        title: 'name',
+        value: 'id',
+      },
+      second: 'address',
+    },
   },
   {
     title: 'Appointment Date',
@@ -44,54 +55,36 @@ export const field = [
   },
   {
     title: 'Appointment Time',
-    fieldname: 'time',
+    fieldname: 'arrivalTime',
     type: 'time',
   },
   {
+    title: 'Department',
+    fieldname: 'department_id',
+    type: 'department',
+    value: 'department',
+    valueChild: 'id',
+  },
+  {
     title: 'Doctor',
-    fieldname: 'doctor',
+    fieldname: 'doctor_id',
+    type: 'doctor',
+    value: 'doctor',
+    valueChild: 'id',
   },
   {
     title: 'Appointment Reason',
-    fieldname: 'reason',
+    fieldname: 'appointmentReason',
     type: 'area',
     rows: 3,
   },
 ]
 
-export const filterItem = [
-  {
-    title: 'All',
-    value: 'all',
-  },
-  {
-    title: 'General',
-    value: 'general',
-  },
-  {
-    title: 'Neurology',
-    value: 'neurology',
-  },
-  {
-    title: 'Cardiology',
-    value: 'cardiology',
-  },
-  {
-    title: 'Pediatric',
-    value: 'pediatric',
-  },
-  {
-    title: 'Gynecology',
-    value: 'gynecology',
-  },
-]
-
 export const initialData = {
-  patient: '',
-  department: '',
-  date: moment().format('YYYY[-]MM[-]DD'), 
-  time: moment().format('HH[:]mm'),
-  doctor: '',
+  patient_id: '',
+  department_id: '',
+  date: moment().format('YYYY[-]MM[-]DD'),
+  arrivalTime: moment().format('HH[:]mm'),
+  doctor_id: '',
   reason: '',
-  status: 'pending',
 }

@@ -43,6 +43,7 @@ export default function ModalInput(props) {
     endPoint,
     methodSubmit,
     queryKey,
+    editParam,
   } = props
 
   const initialError = {
@@ -102,17 +103,27 @@ export default function ModalInput(props) {
 
   const handleChangeDepartment = async (e) => {
     handleChange(e)
-    if (form.doctor || form.doctor === '') {
+    if (form.doctor_id || form.doctor_id === '') {
       setForm((prev) => {
         return { ...prev, doctor: '' }
       })
       if (listDoctor) {
         setListDoctor(null)
       }
-      const { data, error } = await fetchData(
-        'outpatients/doctors',
-        e.target.value
-      )
+
+      let data
+      let error = false
+      let params = {
+        arrival_time: form.arrivalTime,
+        department_id: e.target.value,
+      }
+      await fetchData('outpatients/doctors', params)
+        .then((res) => {
+          data = res.data
+        })
+        .catch(() => {
+          error = true
+        })
 
       if (data) {
         setListDoctor(data)
@@ -126,21 +137,13 @@ export default function ModalInput(props) {
   const handleSubmit = async () => {
     let paramError
     for (let i = 0; i < field.length; i++) {
-      if (
-        form[field[i].fieldname] === '' ||
-        form[field[i].fieldname] === undefined ||
-        form[field[i].fieldname] === null
-      ) {
+      if (form[field[i].fieldname] === '') {
         paramError = true
         setIsError((prev) => {
           return { ...prev, [field[i].fieldname]: true }
         })
       }
-      if (
-        form[field[i].fieldname] !== '' &&
-        form[field[i].fieldname] !== null &&
-        form[field[i].fieldname] !== undefined
-      ) {
+      if (form[field[i].fieldname] !== '') {
         setIsError((prev) => {
           return { ...prev, [field[i].fieldname]: false }
         })
@@ -155,12 +158,17 @@ export default function ModalInput(props) {
         result = error
       }
       if (methodSubmit === 'put') {
-        const { error } = await updateData(endPoint, initialData.id, form)
+        const { error } = await updateData(
+          endPoint,
+          initialData.id,
+          editParam,
+          form
+        )
         result = error
       }
 
       if (!result) {
-        await queryClient.invalidateQueries(queryKey)
+        queryClient.invalidateQueries(queryKey)
         setIsSuccess(true)
         if (methodSubmit === 'post') {
           setForm(initialData)
@@ -243,7 +251,7 @@ export default function ModalInput(props) {
                   return (
                     <Box key={index}>
                       <SearchInput
-                        onChange={handleChange}
+                        initial={initialData[item.value]}
                         value={form[item.fieldname]}
                         item={item}
                         error={isError[item.fieldname]}
@@ -274,7 +282,7 @@ export default function ModalInput(props) {
                   )
                 }
 
-                if (item.fieldname === 'doctor') {
+                if (item.type === 'doctor') {
                   return (
                     <Box key={index}>
                       <DoctorInput

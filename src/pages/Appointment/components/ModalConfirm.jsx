@@ -122,18 +122,20 @@ export default function ModalConfirm(props) {
           </Box>
         </Fade>
       </Modal>
-
-      <ModalInput
-        isOpen={openAppointment}
-        handleClose={() => {
-          setOpenAppointment(false)
-        }}
-        field={fieldInput}
-        initialData={initialData}
-        title='New Appointment'
-        endPoint='appointment'
-        methodSubmit='post'
-      />
+      {openAppointment && (
+        <ModalInput
+          isOpen={openAppointment}
+          handleClose={() => {
+            setOpenAppointment(false)
+          }}
+          field={fieldInput}
+          initialData={initialData}
+          title='New Appointment'
+          endPoint='outpatients'
+          methodSubmit='post'
+          queryKey='outpatients'
+        />
+      )}
     </>
   )
 }
