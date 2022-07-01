@@ -32,6 +32,7 @@ export default function TableBox(props) {
     fieldEdit,
     queryKey,
     children,
+    editParam,
   } = props
 
   const [openModal, setOpenModal] = useState({
@@ -112,10 +113,12 @@ export default function TableBox(props) {
                         )
                       }
 
-                      if (itemCell.fieldname === 'status') {
+                      if (itemCell.fieldname === 'outpatientCondition') {
                         return (
                           <TableCell key={indexCell} align='center'>
-                            <CustomChip params={itemRow[itemCell.fieldname]} />
+                            <CustomChip
+                              params={itemRow.outpatientCondition.conditions}
+                            />
                           </TableCell>
                         )
                       }
@@ -141,11 +144,14 @@ export default function TableBox(props) {
                                 <Edit />
                               </IconButton>
                             )}
-                            <IconButton
-                              onClick={() => handleOpenDelete(itemRow.id)}
-                            >
-                              <Delete />
-                            </IconButton>
+
+                            {itemCell.delete && (
+                              <IconButton
+                                onClick={() => handleOpenDelete(itemRow.id)}
+                              >
+                                <Delete />
+                              </IconButton>
+                            )}
                           </TableCell>
                         )
                       }
@@ -228,6 +234,7 @@ export default function TableBox(props) {
           endPoint={endPoint}
           methodSubmit='put'
           queryKey={queryKey}
+          editParam={editParam}
         />
       )}
     </>

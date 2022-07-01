@@ -1,15 +1,20 @@
 export const field = [
   {
+    title: 'NID',
+    fieldname: 'nid',
+    type: 'text',
+    typeInput: 'number',
+  },
+  {
     title: 'Doctor Name',
     fieldname: 'name',
     type: 'text',
     typeInput: 'noNumber',
   },
   {
-    title: 'NID',
-    fieldname: 'nid',
-    type: 'text',
-    typeInput: 'number',
+    title: 'Date of Birth',
+    fieldname: 'dob',
+    type: 'date',
   },
   {
     title: 'Department',
@@ -68,5 +73,6 @@ export const dataHead = [
   {
     headerName: 'Edit',
     fieldname: 'edit',
+    delete: true,
   },
 ]

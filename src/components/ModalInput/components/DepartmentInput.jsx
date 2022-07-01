@@ -16,6 +16,11 @@ const DepartmentInput = (props) => {
 
   const department = useQuery('departments', () => fetchData('departments'))
 
+  let getDepartment
+  if (value !== '') {
+    getDepartment = department.data.data.filter((item) => item.id === value)
+  }
+
   return (
     <FormControl fullWidth error={error || errorEmpty}>
       <Typography
@@ -51,7 +56,9 @@ const DepartmentInput = (props) => {
 
       {error && (
         <FormHelperText>
-          No doctor from {value} available at this time
+          No doctor from{' '}
+          {getDepartment === undefined ? '' : getDepartment[0].name} available
+          at this time
         </FormHelperText>
       )}
 

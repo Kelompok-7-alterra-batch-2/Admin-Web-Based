@@ -10,7 +10,6 @@ import {
 
 const DoctorInput = (props) => {
   const { onChange, value, item, initialData, list, error } = props
-
   return (
     <FormControl fullWidth error={error}>
       <Typography
@@ -36,12 +35,14 @@ const DoctorInput = (props) => {
         <MenuItem value=''>None</MenuItem>
 
         {initialData.doctor && initialData.doctor !== '' && !list && (
-          <MenuItem value={initialData.doctor}>{initialData.doctor}</MenuItem>
+          <MenuItem value={initialData.doctor.id}>
+            {initialData.doctor.name}
+          </MenuItem>
         )}
 
         {list &&
           list.map((option, index) => (
-            <MenuItem key={index} value={option.name}>
+            <MenuItem key={index} value={option.id}>
               {option.name}
             </MenuItem>
           ))}

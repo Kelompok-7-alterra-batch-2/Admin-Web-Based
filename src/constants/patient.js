@@ -114,6 +114,7 @@ export const dataHead = [
   {
     headerName: 'Edit',
     fieldname: 'edit',
+    delete: true,
     redirect: true,
     path: '/patient/edit/',
   },

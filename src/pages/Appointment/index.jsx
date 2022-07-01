@@ -1,44 +1,25 @@
-import { Box, Typography } from '@mui/material'
+import { Box, Typography, Grid } from '@mui/material'
 
 import React, { useState, useEffect } from 'react'
 
 import { useQuery } from 'react-query'
 
-import { DefaultLayout, CustomFilter, SearchBox, TableBox } from 'components'
-
-import FilterListIcon from '@mui/icons-material/FilterList'
+import {
+  DefaultLayout,
+  CustomFilter,
+  SearchBox,
+  TableBox,
+  LoadingTable,
+} from 'components'
 
 import { toCapitalize } from 'helpers/function/toCapitalize'
 
-import { dataHead, field, filterItem } from 'constants/appointment'
+import { dataHead, field } from 'constants/appointment'
 
 import { fetchAppointment, fetchData } from 'api/get'
 
 import ModalConfirm from './components/ModalConfirm'
 
-// const dataDeparment = [
-//   {
-//     title: 'general',
-//     field: [],
-//   },
-//   {
-//     title: 'neurology',
-//     field: [],
-//   },
-//   {
-//     title: 'cardiology',
-//     field: [],
-//   },
-//   {
-//     title: 'pediatric',
-//     field: [],
-//   },
-//   {
-//     title: 'gynecology',
-//     field: [],
-//   },
-// ]
-//
 export default function Appointment() {
   const [data, setData] = useState(null)
 
@@ -50,8 +31,8 @@ export default function Appointment() {
 
   const dataDepartment = useQuery('departments', () => fetchData('departments'))
 
-  const { data: dataAppointment, isLoading: isLoad } = useQuery(
-    'appointment',
+  const { data: dataAppointment, isFetching: isLoad } = useQuery(
+    'outpatients',
     fetchAppointment
   )
 
@@ -64,12 +45,13 @@ export default function Appointment() {
         )
         totalFilter.push({
           title: dataDepartment.data?.data[i].name,
+          id: dataDepartment.data?.data[i].id,
           field: filter,
         })
       }
       setData(totalFilter)
     }
-  }, [isLoad, dataAppointment])
+  }, [isLoad, dataAppointment, dataDepartment.isLoading, dataDepartment.data])
 
   const handleChangeDepartment = (e) => {
     setFilterParam(e.target.value)
@@ -78,7 +60,7 @@ export default function Appointment() {
       return setDataFilter(null)
     }
 
-    return setDataFilter(data.filter((item) => item.title === e.target.value))
+    return setDataFilter(data.filter((item) => item.id === e.target.value))
   }
 
   const handleOpenModal = () => {
@@ -89,9 +71,9 @@ export default function Appointment() {
     console.log()
   }
 
-  // const handleSearch = () => {
-  //   console.log('click')
-  // }
+  const handleSearch = () => {
+    console.log('click')
+  }
 
   return (
     <DefaultLayout>
@@ -100,40 +82,28 @@ export default function Appointment() {
           mb: '30px',
         }}
       >
-        {/*   <SearchBox */}
-        {/*     labelLeftButton='Add new appointment' */}
-        {/*     onClickLeftButton={handleOpenModal} */}
-        {/*     placeholder='Search here...' */}
-        {/*     onChangeSearch={onChangeSearch} */}
-        {/*     onClickSearch={handleSearch} */}
-        {/*   /> */}
-        {/**/}
-        {/*   <Box */}
-        {/*     sx={{ */}
-        {/*       display: 'flex', */}
-        {/*       gap: '30px', */}
-        {/*       mt: '30px', */}
-        {/*     }} */}
-        {/*   > */}
-        {/*     <FilterListIcon */}
-        {/*       sx={{ */}
-        {/*         height: '32px', */}
-        {/*         width: '32px', */}
-        {/*         color: 'primary.main', */}
-        {/*       }} */}
-        {/*     /> */}
-        {/**/}
-        {/*     <CustomFilter */}
-        {/*       value={filterParam} */}
-        {/*       onChange={handleChangeDepartment} */}
-        {/*       placeholder='DEPARTMENT' */}
-        {/*       filters={filterItem} */}
-        {/*       sx={{ */}
-        {/*         width: '175px', */}
-        {/*       }} */}
-        {/*     /> */}
-        {/*   </Box> */}
-
+        <SearchBox
+          labelLeftButton='Add new appointment'
+          onClickLeftButton={handleOpenModal}
+          placeholder='Search here...'
+          onChangeSearch={onChangeSearch}
+          onClickSearch={handleSearch}
+        >
+          <Grid item xs={6}>
+            {!dataDepartment.isLoading && (
+              <CustomFilter
+                value={filterParam}
+                onChange={handleChangeDepartment}
+                placeholder='DEPARTMENT'
+                filters={dataDepartment.data?.data}
+                param={{ title: 'name', value: 'id' }}
+                sx={{
+                  width: '175px',
+                }}
+              />
+            )}
+          </Grid>
+        </SearchBox>
         <Box
           sx={{
             marginTop: '30px',
@@ -144,35 +114,38 @@ export default function Appointment() {
         >
           <Typography variant='h2'>Today Appointment</Typography>
 
-          {/* {data && */}
-          {/*   !dataFilter && */}
-          {/*   data.map((item, index) => ( */}
-          {/*     <Box */}
-          {/*       key={index} */}
-          {/*       sx={{ */}
-          {/*         display: 'flex', */}
-          {/*         flexDirection: 'column', */}
-          {/*         rowGap: '30px', */}
-          {/*       }} */}
-          {/*     > */}
-          {/*       <Typography */}
-          {/*         variant='h3' */}
-          {/*         sx={{ */}
-          {/*           textAlign: 'center', */}
-          {/*         }} */}
-          {/*       > */}
-          {/*         {toCapitalize(item.title)} Department */}
-          {/*       </Typography> */}
-          {/**/}
-          {/*       <TableBox */}
-          {/*         dataHead={dataHead} */}
-          {/*         dataBody={item.field} */}
-          {/*         isLoading={isLoad} */}
-          {/*         endPoint='appointment' */}
-          {/*         fieldEdit={field} */}
-          {/*       /> */}
-          {/*     </Box> */}
-          {/*   ))} */}
+          {!data && <LoadingTable />}
+          {data &&
+            !dataFilter &&
+            data.map((item, index) => (
+              <Box
+                key={index}
+                sx={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  rowGap: '30px',
+                }}
+              >
+                <Typography
+                  variant='h3'
+                  sx={{
+                    textAlign: 'center',
+                  }}
+                >
+                  {toCapitalize(item.title)} Department
+                </Typography>
+
+                <TableBox
+                  dataHead={dataHead}
+                  dataBody={item.field}
+                  isLoading={isLoad}
+                  endPoint='outpatients'
+                  fieldEdit={field}
+                  queryKey='outpatients'
+                  editParam=''
+                />
+              </Box>
+            ))}
 
           {dataFilter &&
             dataFilter.map((item, index) => (
@@ -197,8 +170,10 @@ export default function Appointment() {
                   dataHead={dataHead}
                   dataBody={item.field}
                   isLoading={isLoad}
-                  endPoint='appointment'
+                  endPoint='outpatients'
                   fieldEdit={field}
+                  queryKey='outpatients'
+                  editParam=''
                 />
               </Box>
             ))}

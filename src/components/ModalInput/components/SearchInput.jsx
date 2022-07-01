@@ -10,16 +10,21 @@ import {
   Paper,
   Button,
   Typography,
+  FormControl,
+  Select,
+  MenuItem,
 } from '@mui/material'
 
 import Search from '@mui/icons-material/Search'
+import Cancel from '@mui/icons-material/Cancel'
 
 import { CustomInput } from 'components'
 
 import { fetchSearch } from 'api/get'
+import { toCapitalize } from 'helpers/function/toCapitalize'
 
 const SearchInput = (props) => {
-  const { onChange, value, item, onSubmit, error } = props
+  const { initial, value, item, onSubmit, error } = props
 
   const [isLoading, setIsLoading] = useState(false)
 
@@ -29,10 +34,23 @@ const SearchInput = (props) => {
 
   const [isError, setIsError] = useState(false)
 
-  const handleSearch = async (param) => {
+  const [search, setSearch] = useState('')
+
+  const [result, setResult] = useState(null)
+
+  const handleSearch = async () => {
     setIsLoading(true)
 
-    const { data, error } = await fetchSearch(param, value)
+    let data
+    let error = false
+
+    await fetchSearch(item.endPoint, search)
+      .then((res) => {
+        data = res.data
+      })
+      .catch(() => {
+        error = true
+      })
 
     if (data) {
       setOpenPopper(true)
@@ -47,9 +65,16 @@ const SearchInput = (props) => {
     setList(null)
   }
 
-  const handleSubmitSearch = (e) => {
-    onSubmit(e)
+  const handleSubmitSearch = (value) => {
+    setSearch('')
+    setResult(value)
+    onSubmit(value[item.param.first.value])
     setOpenPopper(false)
+    setList(null)
+  }
+
+  const handleReset = () => {
+    onSubmit('')
   }
 
   return (
@@ -58,100 +83,153 @@ const SearchInput = (props) => {
         position: 'relative',
       }}
     >
-      <CustomInput
-        name={item.fieldname}
-        value={value}
-        label={item.title}
-        onChange={onChange}
-        type='text'
-        multiline={false}
-        isError={error}
-        errorMessage={`Field ${item.title} is empty or not search yet`}
-        endAdornment={
-          <Box>
-            <IconButton
-              onClick={() => {
-                handleSearch(item.fieldname)
-              }}
-              sx={{
-                position: 'relative',
-              }}
-            >
-              <Search />
-              {isLoading.search && (
-                <CircularProgress
-                  size={24}
-                  sx={{
-                    color: 'primary.main',
-                    position: 'absolute',
-                    top: '50%',
-                    left: '50%',
-                    marginTop: '-12px',
-                    marginLeft: '-12px',
-                  }}
-                />
-              )}
-            </IconButton>
-          </Box>
-        }
-      />
-
-      {openPopper && (
-        <Paper
-          sx={{
-            position: 'absolute',
-            width: '100%',
-            zIndex: 1,
-            padding: '5px',
-          }}
-        >
-          <List>
-            {list &&
-              list.length > 0 &&
-              list.map((itemPop, index) => (
-                <ListItem key={index}>
-                  <ListItemButton
-                    onClick={() => handleSubmitSearch(itemPop.name)}
-                    sx={{
-                      display: 'flex',
-                      flexDirection: 'column',
-                      boxShadow: '1',
-                      my: '5px',
-                      alignItems: 'baseline',
-                    }}
-                  >
-                    <Typography variant='body2'>{itemPop.name}</Typography>
-
-                    <Typography variant='body7'>{itemPop.address}</Typography>
-                  </ListItemButton>
-                </ListItem>
-              ))}
-          </List>
-
-          {(isError || list.length === 0) && (
+      {value !== '' && (
+        <>
+          <FormControl fullWidth disabled>
             <Typography
               sx={{
-                textAlign: 'center',
-                color: 'neutral500',
+                fontSize: '14px',
+                fontWeight: 'normal',
               }}
-              variant='body2'
             >
-              {value} isn't in database
+              {item.title}
             </Typography>
-          )}
 
-          <Button
-            variant='outlined'
+            <Select
+              name={item.fieldname}
+              value={value}
+              size='small'
+              sx={{
+                fontSize: '16px',
+                fontWeight: 'normal',
+              }}
+            >
+              {initial !== '' && !result && (
+                <MenuItem disabled value={initial[item.param.first.value]}>
+                  {toCapitalize(initial[item.param.first.title])}
+                </MenuItem>
+              )}
+              {result && value !== '' && (
+                <MenuItem disabled value={result[item.param.first.value]}>
+                  {toCapitalize([item.param.first.title])}
+                </MenuItem>
+              )}
+            </Select>
+          </FormControl>
+          <IconButton
             color='error'
-            onClick={handleCancelSearch}
-            size='small'
             sx={{
-              float: 'right',
+              position: 'absolute',
+              transform: 'translate(-105%,65%)',
             }}
+            onClick={handleReset}
           >
-            Cancel
-          </Button>
-        </Paper>
+            <Cancel fontSize='small' />
+          </IconButton>
+        </>
+      )}
+      {value === '' && (
+        <>
+          <CustomInput
+            name={item.fieldname}
+            value={search}
+            label={item.title}
+            onChange={(e) => {
+              setSearch(e.target.value)
+            }}
+            type='text'
+            multiline={false}
+            isError={error}
+            errorMessage={`Field ${item.title} is empty or not search yet`}
+            endAdornment={
+              <Box>
+                <IconButton
+                  onClick={handleSearch}
+                  sx={{
+                    position: 'relative',
+                  }}
+                  disabled={search.length > 3 ? false : true}
+                >
+                  <Search />
+                  {isLoading && (
+                    <CircularProgress
+                      size={24}
+                      sx={{
+                        color: 'primary.main',
+                        position: 'absolute',
+                        top: '50%',
+                        left: '50%',
+                        marginTop: '-12px',
+                        marginLeft: '-12px',
+                      }}
+                    />
+                  )}
+                </IconButton>
+              </Box>
+            }
+          />
+          {openPopper && (
+            <Paper
+              sx={{
+                position: 'absolute',
+                width: '100%',
+                zIndex: 1,
+                padding: '5px',
+              }}
+            >
+              <List>
+                {list &&
+                  list.length > 0 &&
+                  list.map((itemPop, index) => (
+                    <ListItem key={index}>
+                      <ListItemButton
+                        onClick={() => handleSubmitSearch(itemPop)}
+                        sx={{
+                          display: 'flex',
+                          flexDirection: 'column',
+                          boxShadow: '1',
+                          my: '5px',
+                          alignItems: 'baseline',
+                        }}
+                      >
+                        <Typography variant='body2'>
+                          {itemPop[item.param.first.title]}
+                        </Typography>
+
+                        <Typography variant='body7'>
+                          {itemPop[item.param.second]}
+                        </Typography>
+                      </ListItemButton>
+                    </ListItem>
+                  ))}
+              </List>
+
+              {(isError || list.length === 0) && (
+                <Typography
+                  sx={{
+                    textAlign: 'center',
+                    color: 'neutral500',
+                  }}
+                  variant='body2'
+                >
+                  {search} isn't in database
+                </Typography>
+              )}
+
+              <Button
+                variant='outlined'
+                color='error'
+                onClick={handleCancelSearch}
+                size='small'
+                sx={{
+                  float: 'right',
+                }}
+              >
+                Cancel
+              </Button>
+            </Paper>
+          )}
+        </>
       )}
     </Box>
   )
