@@ -45,12 +45,20 @@ export default function ModalInput(props) {
     queryKey,
     editParam,
   } = props
-
   const initialError = {
     submit: false,
     selectDoctor: false,
   }
   let updateForm = {}
+  if (
+    initialData.outpatientCondition &&
+    initialData.outpatientCondition !== undefined
+  ) {
+    updateForm = {
+      ...updateForm,
+      outpatientCondition_id: initialData.outpatientCondition.id,
+    }
+  }
   for (let i = 0; i < field.length; i++) {
     if (initialData[field[i].value] !== undefined) {
       updateForm = {
@@ -65,6 +73,7 @@ export default function ModalInput(props) {
       }
     }
   }
+
   const [form, setForm] = useState(updateForm)
 
   const [isSuccess, setIsSuccess] = useState(false)
@@ -110,7 +119,7 @@ export default function ModalInput(props) {
         })
       }
       setForm((prev) => {
-        return { ...prev, doctor: '' }
+        return { ...prev, doctor_id: '' }
       })
       if (listDoctor) {
         setListDoctor(null)

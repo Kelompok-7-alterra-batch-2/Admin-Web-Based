@@ -39,7 +39,7 @@ const Schedule = () => {
 
   const dataDepartment = useQuery('departments', () => fetchData('departments'))
 
-  const dataSchedule = useQuery('doctors', () =>
+  const dataSchedule = useQuery(['doctors', pagination], () =>
     fetchDoctor(pagination.page, pagination.row)
   )
 
