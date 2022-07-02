@@ -111,7 +111,7 @@ const SearchInput = (props) => {
               )}
               {result && value !== '' && (
                 <MenuItem disabled value={result[item.param.first.value]}>
-                  {toCapitalize([item.param.first.title])}
+                  {toCapitalize(result[item.param.first.title])}
                 </MenuItem>
               )}
             </Select>
