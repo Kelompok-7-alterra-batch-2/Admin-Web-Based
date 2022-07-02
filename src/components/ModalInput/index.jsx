@@ -104,6 +104,11 @@ export default function ModalInput(props) {
   const handleChangeDepartment = async (e) => {
     handleChange(e)
     if (form.doctor_id || form.doctor_id === '') {
+      if (!form.arrivalTime) {
+        return setIsError((prev) => {
+          return { ...prev, selectDoctor: true }
+        })
+      }
       setForm((prev) => {
         return { ...prev, doctor: '' }
       })

@@ -141,6 +141,7 @@ const SearchInput = (props) => {
             multiline={false}
             isError={error}
             errorMessage={`Field ${item.title} is empty or not search yet`}
+            typeInput='noNumber'
             endAdornment={
               <Box>
                 <IconButton
