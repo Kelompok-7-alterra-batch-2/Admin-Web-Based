@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 
 import {
   Modal,
@@ -15,13 +15,13 @@ import {
 
 import CloseIcon from '@mui/icons-material/Close'
 
-import { fetchData } from 'api/get'
+import { fetchData } from '@/api/get'
 
-import { updateData } from 'api/put'
+import { updateData } from '@/api/put'
 
-import { postData } from 'api/post'
+import { postData } from '@/api/post'
 
-import { CustomInput } from 'components'
+import { CustomInput } from '@/components'
 
 import ModalSuccess from './components/ModalSuccess'
 import DepartmentInput from './components/DepartmentInput'

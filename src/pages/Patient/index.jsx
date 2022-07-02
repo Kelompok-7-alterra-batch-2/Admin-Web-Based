@@ -1,12 +1,12 @@
 import { Box, Snackbar, Alert, TablePagination } from '@mui/material'
 
-import React, { useState } from 'react'
+import { useState } from 'react'
 
 import { useQuery } from 'react-query'
 
-import { dataHead, initialData, field } from 'constants/patient'
+import { dataHead, initialData, field } from '@/constants/patient'
 
-import { fetchPatient, fetchSearch } from 'api/get'
+import { fetchPatient, fetchSearch } from '@/api/get'
 
 import {
   SearchBox,
@@ -14,7 +14,7 @@ import {
   DefaultLayout,
   ModalInput,
   LoadingTable,
-} from 'components'
+} from '@/components'
 
 export default function Patient() {
   const initialPagination = {

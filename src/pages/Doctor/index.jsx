@@ -1,6 +1,6 @@
 import { Box, Snackbar, Alert, TablePagination, Grid } from '@mui/material'
 
-import React, { useState } from 'react'
+import { useState } from 'react'
 
 import { useQuery } from 'react-query'
 
@@ -11,11 +11,11 @@ import {
   ModalInput,
   CustomFilter,
   LoadingTable,
-} from 'components'
+} from '@/components'
 
-import { fetchDoctor, fetchFilter, fetchData } from 'api/get'
+import { fetchDoctor, fetchFilter, fetchData } from '@/api/get'
 
-import { dataHead, field, initialData } from 'constants/doctor'
+import { dataHead, field, initialData } from '@/constants/doctor'
 
 export default function Doctor() {
   const initialPagination = {

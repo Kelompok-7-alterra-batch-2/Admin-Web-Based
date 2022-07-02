@@ -1,14 +1,12 @@
-import React from 'react'
-
 import { Box } from '@mui/material'
 
-import { DefaultLayout } from 'components'
+import { DefaultLayout } from '@/components'
 
 import WelcomeBox from './components/WelcomeBox'
 import OverviewBox from './components/OverviewBox'
 import DoctorBox from './components/DoctorBox'
 import { useQuery } from 'react-query'
-import { fetchAppointment, fetchData, fetchUser } from 'api/get'
+import { fetchAppointment, fetchData, fetchUser } from '@/api/get'
 
 const userId = '1'
 export default function Dashboard() {

@@ -9,7 +9,7 @@ import {
 
 import ErrorRounded from '@mui/icons-material/ErrorRounded'
 import { useQuery } from 'react-query'
-import { fetchData } from 'api/get'
+import { fetchData } from '@/api/get'
 
 const DepartmentInput = (props) => {
   const { onChange, value, item, error, errorEmpty } = props

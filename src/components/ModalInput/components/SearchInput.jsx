@@ -18,10 +18,10 @@ import {
 import Search from '@mui/icons-material/Search'
 import Cancel from '@mui/icons-material/Cancel'
 
-import { CustomInput } from 'components'
+import { CustomInput } from '@/components'
 
-import { fetchSearch } from 'api/get'
-import { toCapitalize } from 'helpers/function/toCapitalize'
+import { fetchSearch } from '@/api/get'
+import { toCapitalize } from '@/helpers/function/toCapitalize'
 
 const SearchInput = (props) => {
   const { initial, value, item, onSubmit, error } = props
@@ -111,7 +111,7 @@ const SearchInput = (props) => {
               )}
               {result && value !== '' && (
                 <MenuItem disabled value={result[item.param.first.value]}>
-                  {toCapitalize([item.param.first.title])}
+                  {toCapitalize(result[item.param.first.title])}
                 </MenuItem>
               )}
             </Select>

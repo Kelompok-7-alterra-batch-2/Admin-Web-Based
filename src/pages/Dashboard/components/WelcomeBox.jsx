@@ -1,12 +1,11 @@
-import React from 'react'
+import moment from 'moment'
 
 import { Box, Typography, Divider } from '@mui/material'
 
-import BgWelcome from 'assets/image/bg_welcome.jpg'
+import BgWelcome from '@/assets/image/bg_welcome.jpg'
 
 export default function WelcomeBox(props) {
   const { user, isLoading } = props
-  let moment = require('moment')
 
   return (
     <Box

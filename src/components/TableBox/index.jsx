@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 
 import {
   Table,
@@ -15,12 +15,12 @@ import {
 import Edit from '@mui/icons-material/Edit'
 import Delete from '@mui/icons-material/Delete'
 
-import { LoadingTable, ModalInput } from 'components'
+import { LoadingTable, ModalInput } from '@/components'
 
 import ModalDelete from './ModalDelete'
 import CustomChip from './CustomChip'
 
-import { toCapitalize } from 'helpers/function/toCapitalize'
+import { toCapitalize } from '@/helpers/function/toCapitalize'
 import { useNavigate } from 'react-router-dom'
 
 export default function TableBox(props) {

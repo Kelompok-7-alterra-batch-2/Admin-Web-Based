@@ -9,7 +9,7 @@ import {
 } from '@mui/material'
 
 import ErrorRounded from '@mui/icons-material/ErrorRounded'
-import { fetchData } from 'api/get'
+import { fetchData } from '@/api/get'
 import { useEffect, useState } from 'react'
 
 const SelectWithApi = (props) => {

@@ -1,5 +1,3 @@
-import React from 'react'
-
 import { Button, Grid, InputBase, IconButton } from '@mui/material'
 
 import Search from '@mui/icons-material/Search'

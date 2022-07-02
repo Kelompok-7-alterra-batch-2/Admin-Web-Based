@@ -1,8 +1,6 @@
-import React from 'react'
-
 import { Chip } from '@mui/material'
 
-import { toCapitalize } from 'helpers/function/toCapitalize'
+import { toCapitalize } from '@/helpers/function/toCapitalize'
 
 export default function CustomChip(props) {
   const { params } = props
