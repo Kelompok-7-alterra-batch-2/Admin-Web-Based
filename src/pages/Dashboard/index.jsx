@@ -8,13 +8,18 @@ import WelcomeBox from './components/WelcomeBox'
 import OverviewBox from './components/OverviewBox'
 import DoctorBox from './components/DoctorBox'
 import { useQuery } from 'react-query'
-import { fetchAppointment, fetchDoctor, fetchUser } from 'api/get'
+import { fetchAppointment, fetchData, fetchUser } from 'api/get'
 
 const userId = '1'
 export default function Dashboard() {
   const usersQuery = useQuery([userId, userId], () => fetchUser(userId))
-  const doctorQuery = useQuery('doctor', fetchDoctor)
-  const appointmentQuery = useQuery('appointment', fetchAppointment)
+  const doctorQuery = useQuery(['doctors', 'doctors'], () =>
+    fetchData('doctors')
+  )
+  const appointmentQuery = useQuery('outpatients', fetchAppointment)
+  const patientQuery = useQuery(['patients', 'patients'], () =>
+    fetchData('patients')
+  )
 
   return (
     <DefaultLayout
@@ -34,13 +39,14 @@ export default function Dashboard() {
           user={usersQuery.data?.data}
         />
         <OverviewBox
-          doctor={doctorQuery.data}
+          doctor={doctorQuery.data?.data}
           appointment={appointmentQuery.data}
+          patient={patientQuery.data?.data}
           isLoading={doctorQuery.isLoading && appointmentQuery.isLoading}
         />
 
         <DoctorBox
-          doctor={doctorQuery.data}
+          doctor={doctorQuery.data?.data}
           isLoading={doctorQuery.isLoading}
         />
       </Box>
