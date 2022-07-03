@@ -32,6 +32,7 @@ import RadioModalInput from './components/RadioModalInput'
 import SelectWithApi from './components/SelectWithApi'
 import RadioWithApi from './components/RadioWithApi'
 import { useQueryClient } from 'react-query'
+import moment from 'moment'
 
 export default function ModalInput(props) {
   const {
@@ -45,12 +46,20 @@ export default function ModalInput(props) {
     queryKey,
     editParam,
   } = props
-
   const initialError = {
     submit: false,
     selectDoctor: false,
   }
   let updateForm = {}
+  if (
+    initialData.outpatientCondition &&
+    initialData.outpatientCondition !== undefined
+  ) {
+    updateForm = {
+      ...updateForm,
+      outpatientCondition_id: initialData.outpatientCondition.id,
+    }
+  }
   for (let i = 0; i < field.length; i++) {
     if (initialData[field[i].value] !== undefined) {
       updateForm = {
@@ -64,7 +73,14 @@ export default function ModalInput(props) {
         [field[i].fieldname]: initialData[field[i].fieldname],
       }
     }
+    if (initialData[field[i].fieldname] === 'TimeNow()') {
+      updateForm = {
+        ...updateForm,
+        [field[i].fieldname]: moment().format('HH[:]mm'),
+      }
+    }
   }
+
   const [form, setForm] = useState(updateForm)
 
   const [isSuccess, setIsSuccess] = useState(false)
@@ -110,7 +126,7 @@ export default function ModalInput(props) {
         })
       }
       setForm((prev) => {
-        return { ...prev, doctor: '' }
+        return { ...prev, doctor_id: '' }
       })
       if (listDoctor) {
         setListDoctor(null)

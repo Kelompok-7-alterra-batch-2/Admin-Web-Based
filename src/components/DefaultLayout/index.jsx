@@ -19,7 +19,7 @@ import { useLocation } from 'react-router-dom'
 import Dashboard from '@mui/icons-material/Dashboard'
 import DashboardOutlined from '@mui/icons-material/DashboardOutlined'
 //Appoinment Icon
-import ContentPaste from '@mui/icons-material/ContentPaste'
+import ContentPasteTwoToneIcon from '@mui/icons-material/ContentPasteTwoTone'
 import ContentPasteOutlined from '@mui/icons-material/ContentPasteOutlined'
 //Schedule Icon
 import DateRange from '@mui/icons-material/DateRange'
@@ -51,7 +51,7 @@ const listSideBar = [
   },
   {
     title: 'Appointment',
-    iconActive: <ContentPaste />,
+    iconActive: <ContentPasteTwoToneIcon />,
     iconDefault: <ContentPasteOutlined />,
     path: '/appointment',
   },

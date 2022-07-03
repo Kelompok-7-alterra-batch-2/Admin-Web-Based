@@ -84,7 +84,7 @@ export const initialData = {
   patient_id: '',
   department_id: '',
   date: moment().format('YYYY[-]MM[-]DD'),
-  arrivalTime: moment().format('HH[:]mm'),
+  arrivalTime: 'TimeNow()',
   doctor_id: '',
   appointmentReason: '',
 }
