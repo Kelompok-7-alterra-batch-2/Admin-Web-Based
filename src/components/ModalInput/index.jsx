@@ -32,6 +32,7 @@ import RadioModalInput from './components/RadioModalInput'
 import SelectWithApi from './components/SelectWithApi'
 import RadioWithApi from './components/RadioWithApi'
 import { useQueryClient } from 'react-query'
+import moment from 'moment'
 
 export default function ModalInput(props) {
   const {
@@ -70,6 +71,12 @@ export default function ModalInput(props) {
       updateForm = {
         ...updateForm,
         [field[i].fieldname]: initialData[field[i].fieldname],
+      }
+    }
+    if (initialData[field[i].fieldname] === 'TimeNow()') {
+      updateForm = {
+        ...updateForm,
+        [field[i].fieldname]: moment().format('HH[:]mm'),
       }
     }
   }
