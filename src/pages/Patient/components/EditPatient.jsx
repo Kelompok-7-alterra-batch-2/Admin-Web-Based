@@ -1,13 +1,13 @@
-import React from 'react'
+import React, { useState } from 'react'
 
-import { Box, 
-  Snackbar, 
-  Alert, 
+import { Box,  
   Avatar, 
   Card,
   CardActionArea,
   CardContent,
   Typography,
+  Tab,
+  Tabs,
   Divider } from '@mui/material'
 
 import {
@@ -20,7 +20,15 @@ import {
 
 import EditIcon from '@mui/icons-material/Edit';
 
-export default function edit() {
+export default function Edit() {
+
+  const [value, setValue] = useState('one');
+
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
+  };
+
+
   return (
     <div>
       <DefaultLayout>
@@ -273,6 +281,29 @@ export default function edit() {
               </CardActionArea>
             </CardContent>
           </Card>
+        </Box>
+        <Box
+        sx={{
+          display: 'flex',
+          columnGap: '25px',
+          alignItems: 'center',
+          bgcolor: 'neutral100',
+          marginTop: '50px',
+          padding: '10px'
+        }}
+        >
+          <Box
+          sx={{
+            display: 'flex',
+            columnGap: '25px',
+            alignItems: 'center',
+            bgcolor: 'neutral400',
+          }}>
+            <Tabs value={value} onChange={handleChange}>
+              <Tab label="Past Appointment" value='one'/>
+              <Tab label="Upcoming Appointment" value='two'/>
+            </Tabs>
+          </Box>
         </Box>
       </DefaultLayout>
     </div>
