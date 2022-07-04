@@ -1,40 +1,35 @@
-import React from "react";
-import { Route, Routes } from "react-router-dom";
+import React from 'react'
+import { Route, Routes } from 'react-router-dom'
 
-import { Dashboard, Login, Patient , Appointment , Doctor} from "pages";
+import {
+  Dashboard,
+  Login,
+  Patient,
+  Appointment,
+  Doctor,
+  Schedule,
+  EditPatient,
+} from '@/pages'
 
 export default function RouteComponent() {
   return (
     <Routes>
-      <Route path="/">
+      <Route path='/'>
+        <Route index element={<Dashboard />} />
 
-        <Route index element={
-        
-          <Dashboard />
-        
-        } />
-      
-        <Route path="patient" element={
+        <Route path='patient/'>
+          <Route index element={<Patient />} />
+          <Route path='edit/:id' element={<EditPatient />} />
+        </Route>
 
-              <Patient/>
+        <Route path='appointment' element={<Appointment />} />
 
-        }/>
+        <Route path='doctor' element={<Doctor />} />
 
-        <Route path="appointment" element={
+        <Route path='schedule' element={<Schedule />} />
 
-              <Appointment/>
-
-        }/>
-          
-        <Route path="doctor" element={
-          
-              <Doctor />
-              
-        }/>
-
-
-        <Route path="login" element={<Login />} />
+        <Route path='login' element={<Login />} />
       </Route>
     </Routes>
-  );
+  )
 }

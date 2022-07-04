@@ -1,64 +1,67 @@
-import React from 'react'
+import moment from 'moment'
 
 import { Box, Typography, Divider } from '@mui/material'
 
-import BgWelcome from 'assets/image/bg_welcome.jpg'
+import BgWelcome from '@/assets/image/bg_welcome.jpg'
 
-export default function WelcomeBox() {
+export default function WelcomeBox(props) {
+  const { user, isLoading } = props
+
   return (
-
     <Box
-    sx={{
-        backgroundImage : `url(${BgWelcome})`,
-        backgroundSize : 'cover',
-        backgroundRepeat : 'no-repeat',
-        borderRadius : '8px'
-    }}
+      sx={{
+        backgroundImage: `url(${BgWelcome})`,
+        backgroundSize: 'cover',
+        backgroundRepeat: 'no-repeat',
+        borderRadius: '8px',
+      }}
     >
-
-        <Box
+      <Box
         sx={{
-        display : 'flex',
-        padding : '75px',
-        background : 'linear-gradient(89.89deg, #4E89A8 6.63%, #00000000 105.65%)',
-        borderRadius : '8px',
-        boxShadow : '0px 4px 4px rgba(0, 0, 0, 0.25)'
+          display: 'flex',
+          padding: '75px',
+          background:
+            'linear-gradient(89.89deg, #4E89A8 6.63%, #00000000 105.65%)',
+          borderRadius: '8px',
+          boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.25)',
         }}
+      >
+        <Box
+          sx={{
+            display: 'flex',
+            width: '50%',
+            color: 'white',
+            flexDirection: 'column',
+            rowGap: '10px',
+            justifyContent: 'center',
+          }}
         >
-        
-            <Box
+          <Box
             sx={{
-                display : 'flex',
-                width : '50%',
-                color : 'white',
-                flexDirection : 'column',
-                rowGap : '10px',
-                justifyContent : 'center'
+              display: 'flex',
+              flexDirection: 'row-reverse',
+              justifyContent: 'space-between',
             }}
-            >
-            
-                <Typography variant='body1'>
-                Welcome
-                </Typography>
+          >
+            <Typography variant='h3'>
+              {moment().format('MMMM[ ]DD[, ]YYYY')}
+            </Typography>
 
-                <Typography variant='h3'>
-                Hai, Kevin
-                </Typography>
+            <Typography variant='body1'>Welcome</Typography>
+          </Box>
+          <Typography variant='h3'>
+            {user && !isLoading && user !== undefined ? user.username : ''}
+          </Typography>
 
-                <Divider
-                sx={{
-                borderColor:'white'
-                }}
-                />
+          <Divider
+            sx={{
+              borderColor: 'white',
+            }}
+          />
 
-                <Typography variant='body1'>
-                Stay safe and wash your hand
-                </Typography>
-            
-            </Box>
-
+          <Typography variant='body1'>Stay safe and wash your hand</Typography>
         </Box>
-    
+      </Box>
     </Box>
   )
 }

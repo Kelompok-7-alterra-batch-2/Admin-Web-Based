@@ -1,177 +1,175 @@
-import React from 'react'
+import {
+  Box,
+  Card,
+  CardActionArea,
+  CardContent,
+  Typography,
+} from '@mui/material'
 
-import { Box, Card, CardActionArea, CardContent , Typography } from '@mui/material'
+import { useNavigate } from 'react-router-dom'
 
-import NoteAltIcon from '@mui/icons-material/NoteAlt';
-import PermIdentityIcon from '@mui/icons-material/PermIdentity';
-import MedicalServicesIcon from '@mui/icons-material/MedicalServices';
+import NoteAltIcon from '@mui/icons-material/NoteAlt'
+import PersonIcon from '@mui/icons-material/Person'
+import AssignmentIndIcon from '@mui/icons-material/AssignmentInd'
 
-export default function OverviewBox() {
+export default function OverviewBox(props) {
+  const { doctor, appointment, isLoading, patient } = props
+
+  const navigate = useNavigate()
+
   return (
-    
     <Box>
-        
-        <Typography 
+      <Typography
         variant='h3'
         sx={{
-          marginBottom : '30px'
+          marginBottom: '30px',
         }}
-        >
-          Today's Overview
-        </Typography>
+      >
+        Today's Overview
+      </Typography>
 
-        <Box
+      <Box
         sx={{
-          display : 'flex',
-          columnGap : '25px',
-          alignItems : 'center'
+          display: 'flex',
+          columnGap: '25px',
+          alignItems: 'center',
         }}
+      >
+        <Card
+          sx={{
+            width: '100%',
+            borderRadius: '8px',
+            bgcolor: 'neutral100',
+          }}
         >
-
-          <Card
-          sx={{
-            width : '100%',
-            borderRadius : '8px',
-            bgcolor: 'neutral100'
-          }}
+          <CardActionArea
+            onClick={() => {
+              navigate('/appointment')
+            }}
           >
-          
-            <CardActionArea>
-
-              <CardContent
+            <CardContent
               sx={{
-                display : 'flex',
-                alignItems : 'center',
-                columnGap : '16px',
-                justifyContent : 'center',
-                padding : '32px 0'
+                display: 'flex',
+                alignItems: 'center',
+                columnGap: '16px',
+                justifyContent: 'center',
+                padding: '32px 0',
               }}
-              >
-                <NoteAltIcon
+            >
+              <NoteAltIcon
                 sx={{
-                  height : '56px',
-                  width : '56px',
-                  color : 'primary.main'
+                  height: '56px',
+                  width: '56px',
+                  color: 'primary.main',
                 }}
-                />
+              />
 
-                <Typography
-                variant='h3'
-                >
-                  143
-                </Typography>
-                
-                <Typography 
+              <Typography variant='h3'>
+                {appointment && !isLoading ? appointment.length : 0}
+              </Typography>
+
+              <Typography
                 sx={{
-                  fontSize:'20px',
-                  fontWeight : '700'
-                }}>
-                  Appoinments
-                </Typography>
-            
-              </CardContent>
-            
-            </CardActionArea>
-          
-          </Card>
-          
-          <Card
-          sx={{
-            width : '100%',
-            borderRadius : '8px',
-            bgcolor: 'neutral100'
-          }}
-          >
-
-            <CardActionArea>
-
-              <CardContent
-              sx={{
-                display : 'flex',
-                alignItems : 'center',
-                columnGap : '16px',
-                justifyContent : 'center',
-                padding : '32px 0'
-              }}
+                  fontSize: '20px',
+                  fontWeight: '700',
+                }}
               >
+                Appoinments
+              </Typography>
+            </CardContent>
+          </CardActionArea>
+        </Card>
 
-                <PermIdentityIcon
-                sx={{
-                  height : '56px',
-                  width : '56px',
-                  color : 'primary.main'
-                }}/>
-
-                <Typography
-                variant='h3'
-                >
-                  50
-                </Typography>
-                
-                <Typography 
-                sx={{
-                  fontSize:'20px',
-                  fontWeight : '700'
-                }}>
-                  Doctors
-                </Typography>
-
-              </CardContent>
-            
-            </CardActionArea>
-          
-          </Card>
-          
-          <Card
+        <Card
           sx={{
-            width : '100%',
-            borderRadius : '8px',
-            bgcolor: 'neutral100'
+            width: '100%',
+            borderRadius: '8px',
+            bgcolor: 'neutral100',
           }}
+        >
+          <CardActionArea
+            onClick={() => {
+              navigate('/doctor')
+            }}
           >
-
-            <CardActionArea>
-
-              <CardContent
+            <CardContent
               sx={{
-                display : 'flex',
-                alignItems : 'center',
-                gap : '16px',
-                justifyContent : 'center',
-                padding : '32px 0'
+                display: 'flex',
+                alignItems: 'center',
+                columnGap: '16px',
+                justifyContent: 'center',
+                padding: '32px 0',
               }}
+            >
+              <PersonIcon
+                sx={{
+                  height: '56px',
+                  width: '56px',
+                  color: 'primary.main',
+                }}
+              />
+
+              <Typography variant='h3'>
+                {doctor && !isLoading ? doctor.length : 0}
+              </Typography>
+
+              <Typography
+                sx={{
+                  fontSize: '20px',
+                  fontWeight: '700',
+                }}
               >
+                Doctors
+              </Typography>
+            </CardContent>
+          </CardActionArea>
+        </Card>
 
-                <MedicalServicesIcon
+        <Card
+          sx={{
+            width: '100%',
+            borderRadius: '8px',
+            bgcolor: 'neutral100',
+          }}
+        >
+          <CardActionArea
+            onClick={() => {
+              navigate('/patient')
+            }}
+          >
+            <CardContent
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '16px',
+                justifyContent: 'center',
+                padding: '32px 0',
+              }}
+            >
+              <AssignmentIndIcon
                 sx={{
-                  height : '56px',
-                  width : '56px',
-                  color : 'primary.main'
-                }}/>
+                  height: '56px',
+                  width: '56px',
+                  color: 'primary.main',
+                }}
+              />
 
-                <Typography
-                variant='h3'
-                >
-                  15
-                </Typography>
-                
-                <Typography 
+              <Typography variant='h3'>
+                {patient && !isLoading ? patient.length : 0}
+              </Typography>
+
+              <Typography
                 sx={{
-                  fontSize:'20px',
-                  fontWeight : '700'
-                }}>
-                  Emergency
-                </Typography>
-
-              </CardContent>
-            
-            </CardActionArea>
-          
-          </Card>
-
-        </Box>
-
+                  fontSize: '20px',
+                  fontWeight: '700',
+                }}
+              >
+                Patients
+              </Typography>
+            </CardContent>
+          </CardActionArea>
+        </Card>
       </Box>
-
+    </Box>
   )
 }

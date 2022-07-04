@@ -1,230 +1,188 @@
-import { Box , Snackbar, Alert} from '@mui/material'
+import { Box, Snackbar, Alert, TablePagination } from '@mui/material'
 
-import React, { useEffect, useState } from 'react'
+import { useState } from 'react'
 
-import axios from 'axios'
+import { useQuery } from 'react-query'
 
-import { SearchBox, TableBox , DefaultLayout , ModalInput } from 'components'
+import { dataHead, initialData, field } from '@/constants/patient'
 
-const field = [
-  {
-    title : 'Name',
-    fieldname : 'name',
-    type : 'text'
-  },
-  {
-    title : 'Date of Birth',
-    fieldname : 'dob',
-    type : 'date'
-  },
-  {
-    title : 'Gender',
-    fieldname : 'gender',
-    type : 'radio',
-    option : [
-      {
-        title : 'Male',
-        value : 'Male'
-      },
-      {
-        title : 'Female',
-        value : 'Female'
-      }
-    ]
-  },
-  {
-    title : 'Phone Number',
-    fieldname : 'phone_number',
-    type : 'text'
-  },
-  {
-    title : 'Blood Type',
-    fieldname : 'blood_type',
-    type : 'select',
-    option : [
-      {
-        title : 'A',
-        value : 'A',
-      },
-      {
-        title : 'AB',
-        value : 'AB'
-      },
-      {
-        title : 'B',
-        value : 'B'
-      },
-      {
-        title : 'O',
-        value : 'O'
-      }
-    ]
-  },
-  {
-    title : 'City',
-    fieldname : 'city',
-    type : 'text'
-  },
-  {
-    title : 'Address',
-    fieldname : 'address',
-    type : 'text'
-  }
-]
+import { fetchPatient, fetchSearch } from '@/api/get'
 
-const initialData = {
-  name : '',
-  dob : '',
-  gender : '',
-  phone_number : '',
-  blood_type : '',
-  city : '',
-  address : ''
-}
+import {
+  SearchBox,
+  TableBox,
+  DefaultLayout,
+  ModalInput,
+  LoadingTable,
+} from '@/components'
 
 export default function Patient() {
+  const initialPagination = {
+    row: 5,
+    page: 0,
+  }
 
-    const [data,setData] = useState(null)
+  const initialSearch = {
+    value: '',
+    enabled: false,
+  }
 
-    const [isLoading,setIsLoading] = useState(true)
+  const [openModal, setOpenModal] = useState(false)
 
-    const [openModal,setOpenModal ] = useState({
-      patient : false
+  const [searchPatient, setSearchPatient] = useState(initialSearch)
+
+  const [pagination, setPagination] = useState(initialPagination)
+
+  const [manual, setManual] = useState(initialPagination)
+
+  const {
+    data,
+    isFetching: isLoad,
+    isError: isErr,
+  } = useQuery(
+    ['patients', pagination],
+    () => fetchPatient(pagination.page, pagination.row),
+    { keepPreviousData: true }
+  )
+
+  const dataSearch = useQuery(
+    ['searchPatient', searchPatient],
+    () => fetchSearch('patients', searchPatient.value),
+    { enabled: searchPatient.enabled }
+  )
+
+  const handleOpenPatient = () => {
+    setSearchPatient(initialSearch)
+    setOpenModal((prev) => {
+      return !prev
     })
+  }
 
-    const [searchPatient,setSearchPatient] = useState(null)
+  const onChangeSearch = (e) => {
+    setSearchPatient({ value: e.target.value, enabled: false })
+  }
 
-    const [isError,setIsError] = useState(false)
+  const handleSearch = () => {
+    setSearchPatient((prev) => {
+      return { ...prev, enabled: true }
+    })
+    setManual(initialPagination)
+  }
 
-    const dataHead = [
-      {
-        headerName : 'Patient ID',
-        fieldname : 'id'
-      },
-      {
-        headerName : 'Name',
-        fieldname : 'name'
-      },
-      {
-        headerName : 'Date of Birth',
-        fieldname : 'dob'
-      },
-      {
-        headerName : 'Gender',
-        fieldname : 'gender'
-      },
-      {
-        headerName : 'Blood Type',
-        fieldname : 'blood_type'
-      },
-      {
-        headerName : 'Edit',
-        fieldname : 'edit'
-      }
-    ]
+  const handleResetSearch = () => {
+    setSearchPatient({ value: '', enabled: false })
+  }
 
-    useEffect(()=>{
+  const handlePageChange = (e, newPage) => {
+    setPagination((prev) => {
+      return { ...prev, page: newPage }
+    })
+  }
 
-      axios({
-        method : 'get',
-        url : 'https://62a18758cc8c0118ef4d691f.mockapi.io/patient',
-        data : {},
-        headers : {
-          'Content-Type' : 'application/json'
-        }
-      }).then((res)=>{
-        setData(res.data)
-        setIsLoading(false)
-      })
+  const handleChangeRowsPerPage = (e) => {
+    setPagination({ row: parseInt(e.target.value, 10), page: 0 })
+  }
 
-    },[])
+  const handleManualPage = (e, newPage) => {
+    setManual((prev) => {
+      return { ...prev, page: newPage }
+    })
+  }
 
-    const handleOpenPatient = () => {
-
-        setOpenModal((prev)=>{
-          return {...prev,patient : !prev.patient}
-        })
-
-    }
-
-    const onChangeSearch = (e) => {
-
-        setSearchPatient(e.target.value)
-
-    }
-
-    const handleSearch = () => {
-
-      axios({
-        method : 'get',
-        url : `https://62a18758cc8c0118ef4d691f.mockapi.io/patient?search=${searchPatient}`,
-        data : {},
-        headers : {
-          'Content-Type' : 'application/json'
-        }
-      }).then((res)=>{
-        setData(res.data)
-      }).catch(()=>{
-        setIsError(true)
-      })
-
-    }
+  const handleManualRow = (e) => {
+    setManual({ page: 0, row: parseInt(e.target.value, 10) })
+  }
 
   return (
-
     <DefaultLayout>
-
       <Box>
-
-          <SearchBox 
+        <SearchBox
           labelLeftButton='Add New Patient'
           onClickLeftButton={handleOpenPatient}
           placeholder='Search patient here...'
           onChangeSearch={onChangeSearch}
           onClickSearch={handleSearch}
-          />
+          valueSearch={searchPatient.value}
+          onResetSearch={handleResetSearch}
+        />
 
-          <ModalInput
-          isOpen={openModal.patient}
+        <ModalInput
+          isOpen={openModal}
           handleClose={handleOpenPatient}
           field={field}
           initialData={initialData}
           title='New Patient'
-          endPoint='patient'
+          endPoint='patients'
           methodSubmit='post'
-          />
+          queryKey='patients'
+        />
 
-          <Box
+        <Box
           sx={{
-            marginTop : '30px'
+            marginTop: '30px',
           }}
-          >
-            
-              <TableBox
+        >
+          {!searchPatient.enabled && !dataSearch.isFetching && (
+            <TableBox
               dataHead={dataHead}
-              dataBody={data}
-              isLoading={isLoading}
-              endPoint='patient'
-              fieldEdit={field}
-              />  
+              dataBody={data?.content}
+              isLoading={isLoad}
+              endPoint='patients'
+            >
+              <TablePagination
+                sx={{
+                  mt: '30px',
+                }}
+                onRowsPerPageChange={handleChangeRowsPerPage}
+                onPageChange={handlePageChange}
+                page={pagination.page}
+                rowsPerPage={pagination.row}
+                count={data !== undefined ? data.totalElements : 0}
+                component='div'
+                rowsPerPageOptions={[5, 10]}
+              />
+            </TableBox>
+          )}
+        </Box>
 
-          </Box>
+        {dataSearch.isFetching && <LoadingTable />}
 
-          <Snackbar
-          anchorOrigin={{vertical : 'bottom', horizontal : 'center'}}
-          open={isError}
-          onClose={()=>setIsError(false)}
+        {searchPatient.enabled &&
+          dataSearch.data !== undefined &&
+          !dataSearch.isFetching && (
+            <TableBox
+              dataHead={dataHead}
+              dataBody={dataSearch.data.data.slice(
+                manual.page * manual.row,
+                manual.page * manual.row + manual.row
+              )}
+              endPoint='patients'
+            >
+              <TablePagination
+                sx={{
+                  mt: '30px',
+                }}
+                onRowsPerPageChange={handleManualRow}
+                onPageChange={handleManualPage}
+                page={manual.page}
+                rowsPerPage={manual.row}
+                count={dataSearch.data?.data.length}
+                component='div'
+                rowsPerPageOptions={[5, 10]}
+              />
+            </TableBox>
+          )}
+
+        <Snackbar
+          anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+          open={dataSearch.isError || isErr}
           autoHideDuration={3000}
-          >
-              <Alert severity='error'>
-                  Sorry, can't find your search, please try another again
-              </Alert>
-
-          </Snackbar>
-
+        >
+          <Alert severity='error'>
+            Sorry, can't find your search, please try another again
+          </Alert>
+        </Snackbar>
       </Box>
-
     </DefaultLayout>
-  
   )
 }

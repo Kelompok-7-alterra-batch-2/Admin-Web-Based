@@ -1,260 +1,242 @@
-import { 
-    Box, 
-    Divider, 
-    Drawer, 
-    List, 
-    Toolbar,
-    ListItem,
-    Typography,
-    Avatar,
-    Container,
-    Skeleton} from '@mui/material'
-import React,{useState,useEffect} from 'react'
+import {
+  Snackbar,
+  Alert,
+  Box,
+  Divider,
+  Drawer,
+  List,
+  Toolbar,
+  ListItem,
+  Typography,
+  Avatar,
+  Skeleton,
+} from '@mui/material'
+import { useState, useEffect } from 'react'
 
-import axios from 'axios';
-
-import { useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom'
 
 //Dashboard Icon
-import Dashboard from '@mui/icons-material/Dashboard';
-import DashboardOutlined from '@mui/icons-material/DashboardOutlined';
+import Dashboard from '@mui/icons-material/Dashboard'
+import DashboardOutlined from '@mui/icons-material/DashboardOutlined'
 //Appoinment Icon
-import ContentPaste from '@mui/icons-material/ContentPaste';
-import ContentPasteOutlined from '@mui/icons-material/ContentPasteOutlined';
+import ContentPasteTwoToneIcon from '@mui/icons-material/ContentPasteTwoTone'
+import ContentPasteOutlined from '@mui/icons-material/ContentPasteOutlined'
 //Schedule Icon
-import DateRange from '@mui/icons-material/DateRange';
-import DateRangeOutlined from '@mui/icons-material/DateRangeOutlined';
+import DateRange from '@mui/icons-material/DateRange'
+import DateRangeOutlined from '@mui/icons-material/DateRangeOutlined'
 //Patient Icon
-import AssignmentIndIcon from '@mui/icons-material/AssignmentInd';
-import AssignmentIndOutlined from '@mui/icons-material/AssignmentIndOutlined';
+import AssignmentIndIcon from '@mui/icons-material/AssignmentInd'
+import AssignmentIndOutlined from '@mui/icons-material/AssignmentIndOutlined'
 //Doctor Icon
-import PersonIcon from '@mui/icons-material/Person';
-import PersonOutlined from '@mui/icons-material/PersonOutline';
-//Prescription Icon
-import MedicationIcon from '@mui/icons-material/Medication';
-import MedicationOutlined from '@mui/icons-material/MedicationOutlined';
-//Setting Icon
-import SettingsIcon from '@mui/icons-material/Settings';
-import SettingsOutlined from '@mui/icons-material/SettingsOutlined';
+import PersonIcon from '@mui/icons-material/Person'
+import PersonOutlined from '@mui/icons-material/PersonOutline'
 
-import LogoutIcon from '@mui/icons-material/Logout';
+import LogoutIcon from '@mui/icons-material/Logout'
 
-import ItemList from './components/ItemList';
+import ItemList from './components/ItemList'
 
-import Logo from 'assets/svg/Logo.svg'
+import Logo from '@/assets/svg/Logo.svg'
+
+import { fetchUser } from '@/api/get'
+import { Container } from '@mui/system'
 
 const drawerWidth = 272
 
 const listSideBar = [
-    
-    {
-        title : 'Dashboard',
-        iconActive : <Dashboard/>,
-        iconDefault : <DashboardOutlined/>,
-        path : '/'
-    },
-    {
-        title : 'Appointment',
-        iconActive : <ContentPaste/>,
-        iconDefault : <ContentPasteOutlined/>,
-        path : '/appointment'
-    },
-    {
-        title : 'Schedule',
-        iconActive : <DateRange/>,
-        iconDefault : <DateRangeOutlined/>,
-        path : '/schedule'
-    },
-    {
-        title : 'Patient',
-        iconActive : <AssignmentIndIcon/>,
-        iconDefault : <AssignmentIndOutlined/>,
-        path : '/patient',
-    },
-    {
-        title : 'Doctor',
-        iconActive : <PersonIcon/>,
-        iconDefault : <PersonOutlined/>,
-        path : '/doctor'
-    },
-    {
-        title : 'Prescription',
-        iconActive : <MedicationIcon/>,
-        iconDefault : <MedicationOutlined/>,
-        path : '/prescription'
-    },
-    {
-        title : 'Setting',
-        iconActive : <SettingsIcon/>,
-        iconDefault : <SettingsOutlined/>,
-        path : '/setting'
-    },
-    {
-        title : 'Log Out',
-        iconDefault : <LogoutIcon/>,
-        path : ''
-    },
-
+  {
+    title: 'Dashboard',
+    iconActive: <Dashboard />,
+    iconDefault: <DashboardOutlined />,
+    path: '/',
+  },
+  {
+    title: 'Appointment',
+    iconActive: <ContentPasteTwoToneIcon />,
+    iconDefault: <ContentPasteOutlined />,
+    path: '/appointment',
+  },
+  {
+    title: 'Schedule',
+    iconActive: <DateRange />,
+    iconDefault: <DateRangeOutlined />,
+    path: '/schedule',
+  },
+  {
+    title: 'Patient',
+    iconActive: <AssignmentIndIcon />,
+    iconDefault: <AssignmentIndOutlined />,
+    path: '/patient',
+  },
+  {
+    title: 'Doctor',
+    iconActive: <PersonIcon />,
+    iconDefault: <PersonOutlined />,
+    path: '/doctor',
+  },
+  {
+    title: 'Log Out',
+    iconDefault: <LogoutIcon />,
+    path: '',
+  },
 ]
 
+const userId = 2
+
 export default function DefaultLayout(props) {
-     
-    const {children ,isLoading} = props
+  const { children, isLoading, data } = props
 
-    const [user,setUser] = useState(null)
+  const [user, setUser] = useState(null)
 
-    const location = useLocation()
+  const [isError, setIsError] = useState(false)
 
-    const indexBar = listSideBar.findIndex((item)=>item.path === location.pathname)
+  const [isLoadUser, setIsLoadUser] = useState(false)
 
-    useEffect(()=>{
+  const location = useLocation()
 
-        axios({
-            method : 'get',
-            url : 'https://62a18758cc8c0118ef4d691f.mockapi.io/user/2',
-            data : {},
-            headers : {
-              'Content-Type' : 'application/json'
-            }
-          }).then((res)=>{
-            setUser(res.data)
-          })
+  const indexBar = listSideBar.findIndex(
+    (item) => item.path === location.pathname
+  )
 
-    },[])
+  useEffect(() => {
+    if ((!data || data === undefined) && !isLoading) {
+      getUser(userId)
+    }
+  }, [data, isLoading])
+
+  const getUser = async (param) => {
+    setIsLoadUser(true)
+    fetchUser(param)
+      .then((res) => {
+        setUser(res.data)
+      })
+      .catch(() => {
+        setIsError(true)
+      })
+    setIsLoadUser(false)
+  }
 
   return (
-
-    <Box
-    sx={{display: 'flex'}}
-    >
-        <Drawer
+    <Box sx={{ display: 'flex' }}>
+      <Drawer
         variant='permanent'
         anchor='left'
         sx={{
+          width: drawerWidth,
+          flexShrink: 0,
+          '& .MuiDrawer-paper': {
             width: drawerWidth,
-            flexShrink: 0,
-            '& .MuiDrawer-paper': {
-              width: drawerWidth,
-              boxSizing: 'border-box',
-            }
+            boxSizing: 'border-box',
+          },
+        }}
+      >
+        <Toolbar
+          sx={{
+            bgcolor: 'primary.main',
+            color: 'white',
+            gap: '8px',
+            justifyContent: 'center',
+            padding: '24px 0',
           }}
         >
-            <Toolbar
-            sx={{
-                bgcolor : 'primary.main',
-                color : 'white',
-                gap : '8px',
-                justifyContent : 'center',
-                padding : '24px 0'
-            }}
-            >
-                
-                <img src={Logo} alt="logo" />
-                
-                <Typography
-                variant='h3'
-                >
-                    Care Hospital
-                </Typography>
-            </Toolbar>
+          <img src={Logo} alt='logo' />
 
-            <Divider/>
-            
-            <List
-            sx={{
-                bgcolor: 'primary.main',
-                color : 'white',
-                height : '100vh'
-            }}
-            >
-            {listSideBar.map((list,index) => (
-            
-            <ListItem 
-            key={index} 
-            disablePadding>
-              
-              <ItemList
-              list={list}
-              />
-              
+          <Typography variant='h3'>Care Hospital</Typography>
+        </Toolbar>
+
+        <Divider />
+
+        <List
+          sx={{
+            bgcolor: 'primary.main',
+            color: 'white',
+            height: '100vh',
+          }}
+        >
+          {listSideBar.map((list, index) => (
+            <ListItem key={index} disablePadding>
+              <ItemList list={list} />
             </ListItem>
           ))}
         </List>
-        </Drawer>
+      </Drawer>
 
-        <Container maxWidth='xl'>
-
-        <Box
+      <Box
         sx={{
-        display : 'flex',
-        height: '88px',
-        padding : '0 40px',
-        bgcolor : 'neutral200',
-        justifyContent : 'space-between',
-        alignItems : 'center',
-        borderRadius : '0 0 8px 8px',
-        marginBottom : '30px'
+          width: '100%',
         }}
-        maxWidth='xl'
-        >
-
-        <Typography variant='h3'>
-            {listSideBar[indexBar].title}
-        </Typography>
-        
-        {isLoading &&
-
+      >
         <Box
-        sx={{
+          sx={{
             display: 'flex',
-            gap : '20px'
-        }}
+            height: '88px',
+            padding: '0 50px',
+            bgcolor: 'neutral200',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            marginBottom: '30px',
+          }}
+          maxWidth='xl'
         >
+          <Typography variant='h3'>
+            {listSideBar[indexBar] === undefined
+              ? 'Edit Patient'
+              : listSideBar[indexBar].title}
+          </Typography>
 
-            <Skeleton
-            variant='circular'
-            animation='wave'
-            width={48}
-            height={48}/>
+          {(isLoading || isLoadUser) && (
+            <Box
+              sx={{
+                display: 'flex',
+                gap: '20px',
+              }}
+            >
+              <Skeleton
+                variant='circular'
+                animation='wave'
+                width={48}
+                height={48}
+              />
 
-            <Skeleton
-            animation='wave'
-            width={100}
-            height={48}/>
-        
-        </Box>
-        }
-
-        {user &&
-        <Box
-        sx={{
-            display: 'flex',
-            gap : '20px'
-        }}
-        >
-            <Avatar
-            sx={{
-            width : '48px',
-            height : '48px'
-            }}
-            src={user.avatar_url}
-            />
-            
-            <Box>
-            <Typography variant='body2'>{user.username}</Typography>
-            <Typography variant='body5'>{user.role}</Typography>
+              <Skeleton animation='wave' width={100} height={48} />
             </Box>
-        
-        </Box>
-        }
+          )}
 
+          {(user || (data && data !== undefined)) && (
+            <Box
+              sx={{
+                display: 'flex',
+                gap: '20px',
+              }}
+            >
+              <Avatar
+                sx={{
+                  width: '48px',
+                  height: '48px',
+                }}
+                src={data ? data.avatar_url : user.avatar_url}
+              />
+
+              <Box>
+                <Typography variant='body2'>
+                  {data ? data.username : user.username}
+                </Typography>
+                <Typography variant='body5'>
+                  {data ? data.username : user.role}
+                </Typography>
+              </Box>
+            </Box>
+          )}
         </Box>
-        
-          {children}
-        
-        </Container>
-    
+        <Container maxWidth='xl'>{children}</Container>
+      </Box>
+      <Snackbar
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+        open={isError}
+        onClose={() => setIsError(false)}
+        autoHideDuration={3000}
+      >
+        <Alert severity='error'>Sorry, error</Alert>
+      </Snackbar>
     </Box>
-  
   )
 }

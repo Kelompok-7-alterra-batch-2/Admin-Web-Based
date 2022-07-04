@@ -1,318 +1,259 @@
-import { Box , Snackbar, Alert} from '@mui/material'
+import { Box, Snackbar, Alert, TablePagination, Grid } from '@mui/material'
 
-import React, { useEffect, useState } from 'react'
+import { useState } from 'react'
 
-import axios from 'axios';
+import { useQuery } from 'react-query'
 
-import FilterListIcon from '@mui/icons-material/FilterList';
+import {
+  SearchBox,
+  TableBox,
+  DefaultLayout,
+  ModalInput,
+  CustomFilter,
+  LoadingTable,
+} from '@/components'
 
-import { SearchBox, TableBox , DefaultLayout , ModalInput , CustomFilter } from 'components'
+import { fetchDoctor, fetchFilter, fetchData } from '@/api/get'
 
-const field = [
-  {
-    title : 'Doctor Name',
-    fieldname : 'name',
-    type : 'text'
-  },
-  {
-    title : 'NID',
-    fieldname : 'nid',
-    type : 'text'
-  },
-  {
-    title : 'Department',
-    fieldname : 'department',
-    type : 'select',
-    option : [
-      {
-        title : 'General',
-        value : 'general'
-      },
-      {
-        title : 'Neurology',
-        value : 'neurology'
-      },
-      {
-        title : 'Cardiology',
-        value : 'cardiology'
-      },
-      {
-        title : 'Pediatric',
-        value : 'pediatric'
-      },
-      {
-        title : 'Gynecology',
-        value : 'gynecology'
-      },
-    ]
-  },
-  {
-    title : 'Email',
-    fieldname : 'email',
-    type : 'email'
-  },
-  {
-    title : 'Password',
-    fieldname : 'password',
-    type : 'password'
-  },
-  {
-    title : 'Phone Number',
-    fieldname : 'phone_number',
-    type : 'text'
-  }
-]
-
-const initialData = {
-  name : '',
-  nid : '',
-  department : '',
-  email : '',
-  password : '',
-  phone_number : '',
-}
-
-const filterItem = [
-  {
-    title : 'All',
-    value : 'all'
-  },
-  {
-    title : 'General',
-    value : 'general'
-  },
-  {
-    title : 'Neurology',
-    value : 'neurology'
-  },
-  {
-    title : 'Cardiology',
-    value : 'cardiology'
-  },
-  {
-    title : 'Pediatric',
-    value : 'pediatric'
-  },
-  {
-    title : 'Gynecology',
-    value : 'gynecology'
-  }
-]
-
-const dataHead = [
-  {
-    headerName : 'NID',
-    fieldname : 'id'
-  },
-  {
-    headerName : 'Department',
-    fieldname : 'department'
-  },
-  {
-    headerName : 'Doctor Name',
-    fieldname : 'name'
-  },
-  {
-    headerName : 'Phone Number',
-    fieldname : 'phone_number'
-  },
-  {
-    headerName : 'Edit',
-    fieldname : 'edit'
-  }
-]
-
+import { dataHead, field, initialData } from '@/constants/doctor'
 
 export default function Doctor() {
+  const initialPagination = {
+    page: 0,
+    row: 5,
+  }
 
-    const [data,setData] = useState(null)
+  const [openModal, setOpenModal] = useState(false)
 
-    const [isLoading,setIsLoading] = useState(true)
+  const [searchDoctor, setSearchDoctor] = useState('')
 
-    const [openModal,setOpenModal ] = useState({
-      doctor : false
+  const [filterParam, setFilterParam] = useState({
+    enabled: false,
+    filter: '',
+    paramSearch: '',
+    paramFilter: '',
+  })
+
+  const [pagination, setPagination] = useState(initialPagination)
+
+  const [manual, setManual] = useState(initialPagination)
+
+  const {
+    data,
+    isError: isErr,
+    isFetching: isLoad,
+  } = useQuery(
+    ['doctors', pagination],
+    () => fetchDoctor(pagination.page, pagination.row),
+    { keepPreviousData: true }
+  )
+
+  const Department = useQuery('departments', () => fetchData('departments'))
+
+  const filterData = useQuery(
+    ['filterData', filterParam],
+    () =>
+      fetchFilter(
+        'doctors',
+        filterParam.filter,
+        filterParam.paramSearch === ''
+          ? filterParam.paramFilter
+          : filterParam.paramSearch
+      ),
+    { enabled: filterParam.enabled }
+  )
+
+  const handleChangeDepartment = (e) => {
+    if (searchDoctor !== '') {
+      setSearchDoctor('')
+    }
+    if (e.target.value === 'all') {
+      return setFilterParam((prev) => {
+        return { ...prev, paramFilter: '', enabled: false }
+      })
+    }
+    setFilterParam({
+      enabled: true,
+      filter: 'departments',
+      paramFilter: e.target.value,
+      paramSearch: '',
     })
 
-    const [searchDoctor,setSearchDoctor] = useState(null)
+    setManual(initialPagination)
+  }
 
-    const [isError,setIsError] = useState(false)
+  const handleOpenDoctor = () => {
+    setOpenModal((prev) => {
+      return !prev
+    })
+  }
 
-    const [filterParam,setFilterParam] = useState('')
-
-    const [dataFilter,setDataFilter] = useState(null)
-
-    useEffect(()=>{
-
-      axios({
-        method : 'get',
-        url : 'https://62a18758cc8c0118ef4d691f.mockapi.io/doctor',
-        data : {},
-        headers : {
-          'Content-Type' : 'application/json'
+  const onChangeSearch = (e) => {
+    if (e.target.value === '') {
+      setFilterParam((prev) => {
+        return {
+          ...prev,
+          paramSearch: '',
+          enabled: filterParam.paramFilter === '' ? false : true,
         }
-      }).then((res)=>{
-        setData(res.data)
-        setIsLoading(false)
-      }).catch(()=>{
-
       })
+    }
+    setSearchDoctor(e.target.value)
+  }
 
-    },[])
+  const handleSearch = () => {
+    setFilterParam({
+      enabled: true,
+      filter: 'names',
+      paramSearch: searchDoctor,
+      paramFilter: '',
+    })
+    setManual(initialPagination)
+  }
 
-    const handleChangeDepartment = async(e) => {
-
-      setFilterParam(e.target.value)
-      
-      if(e.target.value === 'all') {
-        
-        return setDataFilter(null)
-        
+  const handleResetSearch = () => {
+    setSearchDoctor('')
+    setFilterParam((prev) => {
+      return {
+        ...prev,
+        paramSearch: '',
+        enabled: filterParam.paramFilter === '' ? false : true,
       }
-      
-      setIsLoading(true)
+    })
+  }
 
-      await axios({
-        method : 'get',
-        url : `https://62a18758cc8c0118ef4d691f.mockapi.io/doctor?filter=${e.target.value}`,
-        data : {},
-        headers : {
-          'Content-Type' : 'application/json'
-        }
-      }).then((res)=>{
-        setDataFilter(res.data)
-      }).catch(()=>{
-        setIsError(true)
-      })
-      setIsLoading(false)
-    
-    }
+  const handlePageChange = (e, newPage) => {
+    setPagination((prev) => {
+      return { ...prev, page: newPage }
+    })
+  }
 
-    const handleOpenDoctor = () => {
+  const handleChangeRowsPerPage = (e) => {
+    setPagination({ page: 0, row: parseInt(e.target.value, 10) })
+  }
 
-        setOpenModal((prev)=>{
-          return {...prev, doctor : !prev.doctor}
-        })
+  const handleManualPage = (e, newPage) => {
+    setManual((prev) => {
+      return { ...prev, page: newPage }
+    })
+  }
 
-    }
-
-    const onChangeSearch = (e) => {
-
-        setSearchDoctor(e.target.value)
-
-    }
-
-    const handleSearch = async() => {
-
-      setIsLoading(true)
-      await axios({
-        method : 'get',
-        url : `https://62a18758cc8c0118ef4d691f.mockapi.io/doctor?search=${searchDoctor}`,
-        data : {},
-        headers : {
-          'Content-Type' : 'application/json'
-        }
-      }).then((res)=>{
-        setData(res.data)
-      }).catch(()=>{
-        setIsError(true)
-      })
-      setIsLoading(false)
-
-    }
+  const handleManualRow = (e) => {
+    setManual({ page: 0, row: parseInt(e.target.value, 10) })
+  }
 
   return (
-
     <DefaultLayout>
-
       <Box>
-
-          <SearchBox 
+        <SearchBox
           labelLeftButton='Add New Doctor'
           onClickLeftButton={handleOpenDoctor}
           placeholder='Search doctor here...'
           onChangeSearch={onChangeSearch}
           onClickSearch={handleSearch}
-          />
-
-          <Box
-          sx={{
-            display : 'flex',
-            gap : '30px',
-            mt : '30px'
-          }}
-          >
-
-            <FilterListIcon
-            sx={{
-              height : '32px',
-              width : '32px',
-              color : 'primary.main'   
-            }}
-            />
-
-            <CustomFilter
-            value={filterParam}
-            onChange={handleChangeDepartment}
-            placeholder='DEPARTMENT'
-            filters={filterItem}
-            sx={{
-              width : '175px'
-            }}
-            />
-
-          </Box>
-
-          <ModalInput
-          isOpen={openModal.doctor}
-          handleClose={handleOpenDoctor}
-          field={field}
-          initialData={initialData}
-          title='New Doctor'
-          endPoint='doctor'
-          methodSubmit='post'
-          />
-
-          <Box
-          sx={{
-            marginTop : '30px'
-          }}
-          >
-              {!dataFilter &&
-              <TableBox
-              dataHead={dataHead}
-              dataBody={data}
-              isLoading={isLoading}
-              endPoint='doctor'
-              fieldEdit={field}
-              />}
-
-              {dataFilter &&
-              <TableBox
-              dataHead={dataHead}
-              dataBody={dataFilter}
-              endPoint='doctor'
-              fieldEdit={field}
-              isLoading={isLoading}
+          valueSearch={searchDoctor}
+          onResetSearch={handleResetSearch}
+        >
+          <Grid item xs={6}>
+            {!Department.isLoading && (
+              <CustomFilter
+                value={filterParam.paramFilter}
+                onChange={handleChangeDepartment}
+                placeholder='DEPARTMENT'
+                filters={Department.data?.data}
+                param={{ title: 'name', value: 'id' }}
+                sx={{
+                  width: '175px',
+                }}
               />
-              }  
+            )}
+          </Grid>
+        </SearchBox>
+        {openModal && (
+          <ModalInput
+            isOpen={openModal}
+            handleClose={handleOpenDoctor}
+            field={field}
+            initialData={initialData}
+            title='New Doctor'
+            endPoint='doctors'
+            methodSubmit='post'
+            queryKey={filterParam.enabled ? 'filterData' : 'doctors'}
+          />
+        )}
 
-          </Box>
+        <Box
+          sx={{
+            marginTop: '30px',
+          }}
+        >
+          {!filterParam.enabled && !filterData.isFetching && (
+            <TableBox
+              dataHead={dataHead}
+              dataBody={data?.content}
+              isLoading={isLoad}
+              endPoint='doctors'
+              fieldEdit={field}
+              queryKey='doctors'
+              editParam=''
+            >
+              <TablePagination
+                sx={{
+                  mt: '30px',
+                }}
+                onRowsPerPageChange={handleChangeRowsPerPage}
+                onPageChange={handlePageChange}
+                page={pagination.page}
+                rowsPerPage={pagination.row}
+                count={data !== undefined ? data.totalElements : 0}
+                component='div'
+                rowsPerPageOptions={[5, 10]}
+              />
+            </TableBox>
+          )}
 
-          <Snackbar
-          anchorOrigin={{vertical : 'bottom', horizontal : 'center'}}
-          open={isError}
-          onClose={()=>setIsError(false)}
+          {filterData.isFetching && <LoadingTable />}
+
+          {filterParam.enabled &&
+            filterData.data !== undefined &&
+            !filterData.isFetching && (
+              <TableBox
+                dataHead={dataHead}
+                dataBody={filterData.data.data.slice(
+                  manual.page * manual.row,
+                  manual.page * manual.row + manual.row
+                )}
+                endPoint='doctors'
+                fieldEdit={field}
+                queryKey='filterData'
+                editParam=''
+              >
+                <TablePagination
+                  sx={{
+                    mt: '30px',
+                  }}
+                  onRowsPerPageChange={handleManualRow}
+                  onPageChange={handleManualPage}
+                  page={manual.page}
+                  rowsPerPage={manual.row}
+                  count={filterData.data?.data.length}
+                  component='div'
+                  rowsPerPageOptions={[5, 10]}
+                />
+              </TableBox>
+            )}
+        </Box>
+
+        <Snackbar
+          anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+          open={filterData.isError || isErr}
           autoHideDuration={3000}
-          >
-              <Alert severity='error'>
-                  Sorry, can't find your search, please try another again
-              </Alert>
-
-          </Snackbar>
-
+        >
+          <Alert severity='error'>
+            Sorry, can't find your search, please try another again
+          </Alert>
+        </Snackbar>
       </Box>
-
     </DefaultLayout>
-  
   )
 }
