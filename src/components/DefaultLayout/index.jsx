@@ -11,7 +11,7 @@ import {
   Avatar,
   Skeleton,
 } from '@mui/material'
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 
 import { useLocation } from 'react-router-dom'
 
@@ -35,9 +35,9 @@ import LogoutIcon from '@mui/icons-material/Logout'
 
 import ItemList from './components/ItemList'
 
-import Logo from 'assets/svg/Logo.svg'
+import Logo from '@/assets/svg/Logo.svg'
 
-import { fetchUser } from 'api/get'
+import { fetchUser } from '@/api/get'
 import { Container } from '@mui/system'
 
 const drawerWidth = 272

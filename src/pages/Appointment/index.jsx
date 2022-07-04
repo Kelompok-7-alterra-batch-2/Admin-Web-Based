@@ -1,6 +1,6 @@
 import { Box, Typography, Grid } from '@mui/material'
 
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 
 import { useQuery } from 'react-query'
 
@@ -10,13 +10,13 @@ import {
   SearchBox,
   TableBox,
   LoadingTable,
-} from 'components'
+} from '@/components'
 
-import { toCapitalize } from 'helpers/function/toCapitalize'
+import { toCapitalize } from '@/helpers/function/toCapitalize'
 
-import { dataHead, field } from 'constants/appointment'
+import { dataHead, field } from '@/constants/appointment'
 
-import { fetchAppointment, fetchData } from 'api/get'
+import { fetchAppointment, fetchData } from '@/api/get'
 
 import ModalConfirm from './components/ModalConfirm'
 

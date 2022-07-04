@@ -1,7 +1,14 @@
 import React from 'react'
 import { Route, Routes } from 'react-router-dom'
 
-import { Dashboard, Login, Patient, Appointment, Doctor, Schedule } from 'pages'
+import {
+  Dashboard,
+  Login,
+  Patient,
+  Appointment,
+  Doctor,
+  Schedule,
+} from '@/pages'
 
 export default function RouteComponent() {
   return (

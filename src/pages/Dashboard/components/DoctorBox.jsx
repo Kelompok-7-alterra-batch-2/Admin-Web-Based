@@ -1,5 +1,3 @@
-import React from 'react'
-
 import { Navigation, Autoplay } from 'swiper'
 
 import { Box, Card, CardContent, CardMedia, Typography } from '@mui/material'
@@ -8,7 +6,7 @@ import { Swiper, SwiperSlide } from 'swiper/react'
 
 import 'swiper/css/bundle'
 
-import { toCapitalize } from 'helpers/function/toCapitalize'
+import { toCapitalize } from '@/helpers/function/toCapitalize'
 
 export default function DoctorBox(props) {
   const { doctor, isLoading } = props

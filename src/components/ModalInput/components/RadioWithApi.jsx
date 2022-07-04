@@ -9,7 +9,7 @@ import {
   Radio,
   CircularProgress,
 } from '@mui/material'
-import { fetchData } from 'api/get'
+import { fetchData } from '@/api/get'
 import { useEffect, useState } from 'react'
 
 const RadioWithApi = (props) => {

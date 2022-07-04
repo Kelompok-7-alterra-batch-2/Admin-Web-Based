@@ -13,13 +13,13 @@ import {
   LoadingTable,
   SearchBox,
   TableBox,
-} from 'components'
+} from '@/components'
 import { useState } from 'react'
 
-import { dayList, dataHead, field } from 'constants/schedule'
-import { toCapitalize } from 'helpers/function/toCapitalize'
+import { dayList, dataHead, field } from '@/constants/schedule'
+import { toCapitalize } from '@/helpers/function/toCapitalize'
 import { useQuery } from 'react-query'
-import { fetchData, fetchDoctor } from 'api/get'
+import { fetchData, fetchDoctor } from '@/api/get'
 
 const Schedule = () => {
   const initialPagination = {

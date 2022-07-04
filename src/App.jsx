@@ -4,7 +4,7 @@ import { BrowserRouter } from 'react-router-dom'
 
 import { theme } from './themes'
 
-import { RouteComponent } from 'components'
+import { RouteComponent } from '@/components'
 
 function App() {
   return (

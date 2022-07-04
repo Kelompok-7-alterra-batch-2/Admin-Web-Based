@@ -1,5 +1,3 @@
-import React from 'react'
-
 import { FormControl, Select, MenuItem, OutlinedInput } from '@mui/material'
 
 export default function CustomFilter(props) {

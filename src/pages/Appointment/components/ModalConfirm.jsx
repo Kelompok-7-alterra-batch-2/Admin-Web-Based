@@ -12,11 +12,11 @@ import {
 
 import { useNavigate } from 'react-router-dom'
 
-import IconConfirm from 'assets/svg/ConfirmIcon.svg'
+import IconConfirm from '@/assets/svg/ConfirmIcon.svg'
 
-import { ModalInput } from 'components'
+import { ModalInput } from '@/components'
 
-import { initialData } from 'constants/appointment'
+import { initialData } from '@/constants/appointment'
 
 export default function ModalConfirm(props) {
   const { isOpen, handleClose, fieldInput } = props
