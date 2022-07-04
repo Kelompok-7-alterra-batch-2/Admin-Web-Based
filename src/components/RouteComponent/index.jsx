@@ -8,6 +8,7 @@ import {
   Appointment,
   Doctor,
   Schedule,
+  EditPatient,
 } from '@/pages'
 
 export default function RouteComponent() {
@@ -16,7 +17,10 @@ export default function RouteComponent() {
       <Route path='/'>
         <Route index element={<Dashboard />} />
 
-        <Route path='patient' element={<Patient />} />
+        <Route path='patient/'>
+          <Route index element={<Patient />} />
+          <Route path='edit/:id' element={<EditPatient />} />
+        </Route>
 
         <Route path='appointment' element={<Appointment />} />
 

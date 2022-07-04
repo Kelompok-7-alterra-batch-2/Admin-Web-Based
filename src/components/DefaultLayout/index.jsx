@@ -177,7 +177,11 @@ export default function DefaultLayout(props) {
           }}
           maxWidth='xl'
         >
-          <Typography variant='h3'>{listSideBar[indexBar].title}</Typography>
+          <Typography variant='h3'>
+            {listSideBar[indexBar] === undefined
+              ? 'Edit Patient'
+              : listSideBar[indexBar].title}
+          </Typography>
 
           {(isLoading || isLoadUser) && (
             <Box
