@@ -171,48 +171,33 @@ export default function Appointment() {
                   textAlign: 'center',
                 }}
               >
-                <Typography
-                  variant='h3'
+                {toCapitalize(item.title)} Department
+              </Typography>
+
+              <TableBox
+                dataHead={dataHead}
+                dataBody={item.field.slice()}
+                isLoading={isLoad}
+                endPoint='outpatients'
+                fieldEdit={field}
+                queryKey='outpatients'
+                editParam=''
+              >
+                <TablePagination
                   sx={{
-                    textAlign: 'center',
+                    mt: '30px',
                   }}
-                >
-                  {toCapitalize(item.title)} Department
-                </Typography>
-
-                <TableBox
-                  dataHead={dataHead}
-                  dataBody={item.field.slice()}
-                  isLoading={isLoad}
-                  endPoint='outpatients'
-                  fieldEdit={field}
-                  queryKey='outpatients'
-                  editParam=''
-                >
-                  <TablePagination
-                    sx={{
-                      mt: '30px',
-                    }}
-                    onRowsPerPageChange={handleRowsChange}
-                    onPageChange={handlePageChange}
-                    page={pagination.page}
-                    rowsPerPage={pagination.row}
-                    count={item.field.length}
-                    component='div'
-                    rowsPerPageOptions={[5, 10]}
-                  />
-                </TableBox>
-              </Box>
-            ))}
-        </Box>
-
-        <ModalConfirm
-          isOpen={openConfirm}
-          handleClose={() => {
-            setOpenConfirm(false)
-          }}
-          fieldInput={field}
-        />
+                  onRowsPerPageChange={handleRowsChange}
+                  onPageChange={handlePageChange}
+                  page={pagination.page}
+                  rowsPerPage={pagination.row}
+                  count={item.field.length}
+                  component='div'
+                  rowsPerPageOptions={[5, 10]}
+                />
+              </TableBox>
+            </Box>
+          ))}
       </Box>
 
       <ModalConfirm
