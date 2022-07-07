@@ -1,4 +1,4 @@
-import { Box, Typography, Grid } from '@mui/material'
+import { Box, Typography, Grid, TablePagination } from '@mui/material'
 
 import { useState, useEffect } from 'react'
 
@@ -22,6 +22,11 @@ export default function Appointment() {
   const [filterParam, setFilterParam] = useState('')
 
   const [dataFilter, setDataFilter] = useState(null)
+
+  const [pagination, setPagination] = useState({
+    page: 0,
+    row: 5,
+  })
 
   const dataDepartment = useQuery('departments', () => fetchData('departments'))
 
@@ -62,11 +67,21 @@ export default function Appointment() {
   }
 
   const onChangeSearch = (e) => {
-    console.log()
+    console.log(e)
   }
 
   const handleSearch = () => {
-    console.log('click')
+    console.log(data)
+  }
+
+  const handlePageChange = (e, newPage) => {
+    setPagination((prev) => {
+      return { ...prev, page: newPage }
+    })
+  }
+
+  const handleRowsChange = (e) => {
+    setPagination({ page: 0, row: parseInt(e.target.value, 10) })
   }
 
   return (
@@ -156,20 +171,48 @@ export default function Appointment() {
                   textAlign: 'center',
                 }}
               >
-                {toCapitalize(item.title)} Department
-              </Typography>
+                <Typography
+                  variant='h3'
+                  sx={{
+                    textAlign: 'center',
+                  }}
+                >
+                  {toCapitalize(item.title)} Department
+                </Typography>
 
-              <TableBox
-                dataHead={dataHead}
-                dataBody={item.field}
-                isLoading={isLoad}
-                endPoint='outpatients'
-                fieldEdit={field}
-                queryKey='outpatients'
-                editParam=''
-              />
-            </Box>
-          ))}
+                <TableBox
+                  dataHead={dataHead}
+                  dataBody={item.field.slice()}
+                  isLoading={isLoad}
+                  endPoint='outpatients'
+                  fieldEdit={field}
+                  queryKey='outpatients'
+                  editParam=''
+                >
+                  <TablePagination
+                    sx={{
+                      mt: '30px',
+                    }}
+                    onRowsPerPageChange={handleRowsChange}
+                    onPageChange={handlePageChange}
+                    page={pagination.page}
+                    rowsPerPage={pagination.row}
+                    count={item.field.length}
+                    component='div'
+                    rowsPerPageOptions={[5, 10]}
+                  />
+                </TableBox>
+              </Box>
+            ))}
+        </Box>
+
+        <ModalConfirm
+          isOpen={openConfirm}
+          handleClose={() => {
+            setOpenConfirm(false)
+          }}
+          fieldInput={field}
+        />
       </Box>
 
       <ModalConfirm
