@@ -9,12 +9,15 @@ import {
   Doctor,
   Schedule,
   EditPatient,
+  History,
 } from '@/pages'
+
+import { DefaultLayout } from '@/components'
 
 export default function RouteComponent() {
   return (
     <Routes>
-      <Route path='/'>
+      <Route path='/' element={<DefaultLayout />}>
         <Route index element={<Dashboard />} />
 
         <Route path='patient/'>
@@ -27,6 +30,8 @@ export default function RouteComponent() {
         <Route path='doctor' element={<Doctor />} />
 
         <Route path='schedule' element={<Schedule />} />
+
+        <Route path='history' element={<History />} />
 
         <Route path='login' element={<Login />} />
       </Route>

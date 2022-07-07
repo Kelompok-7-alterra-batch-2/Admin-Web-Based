@@ -20,34 +20,29 @@ export default function Dashboard() {
   )
 
   return (
-    <DefaultLayout
-      data={usersQuery.data?.data}
-      isLoading={usersQuery.isLoading}
+    <Box
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '30px',
+        pb: '50px',
+      }}
     >
-      <Box
-        sx={{
-          display: 'flex',
-          flexDirection: 'column',
-          gap: '30px',
-          pb: '50px',
-        }}
-      >
-        <WelcomeBox
-          isLoading={usersQuery.isLoading}
-          user={usersQuery.data?.data}
-        />
-        <OverviewBox
-          doctor={doctorQuery.data?.data}
-          appointment={appointmentQuery.data}
-          patient={patientQuery.data?.data}
-          isLoading={doctorQuery.isLoading && appointmentQuery.isLoading}
-        />
+      <WelcomeBox
+        isLoading={usersQuery.isLoading}
+        user={usersQuery.data?.data}
+      />
+      <OverviewBox
+        doctor={doctorQuery.data?.data}
+        appointment={appointmentQuery.data}
+        patient={patientQuery.data?.data}
+        isLoading={doctorQuery.isLoading && appointmentQuery.isLoading}
+      />
 
-        <DoctorBox
-          doctor={doctorQuery.data?.data}
-          isLoading={doctorQuery.isLoading}
-        />
-      </Box>
-    </DefaultLayout>
+      <DoctorBox
+        doctor={doctorQuery.data?.data}
+        isLoading={doctorQuery.isLoading}
+      />
+    </Box>
   )
 }
