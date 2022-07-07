@@ -10,6 +10,7 @@ import {
   Schedule,
   EditPatient,
   History,
+  ForgotPassword
 } from '@/pages'
 
 import { DefaultLayout } from '@/components'
@@ -33,8 +34,10 @@ export default function RouteComponent() {
 
         <Route path='history' element={<History />} />
 
-        <Route path='login' element={<Login />} />
       </Route>
+        <Route path='login' element={<Login />} />
+
+        <Route path='forgotpassword' element={<ForgotPassword />} />
     </Routes>
   )
 }
