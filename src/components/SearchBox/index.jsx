@@ -55,16 +55,18 @@ export default function SearchBox(props) {
           }
         />
       </Grid>
-      <Grid item xs={3}>
-        <Button variant='contained' fullWidth onClick={onClickLeftButton}>
-          <Add
-            sx={{
-              marginRight: '10px',
-            }}
-          />
-          {labelLeftButton}
-        </Button>
-      </Grid>
+      {labelLeftButton !== undefined && (
+        <Grid item xs={3}>
+          <Button variant='contained' fullWidth onClick={onClickLeftButton}>
+            <Add
+              sx={{
+                marginRight: '10px',
+              }}
+            />
+            {labelLeftButton}
+          </Button>
+        </Grid>
+      )}
     </Grid>
   )
 }

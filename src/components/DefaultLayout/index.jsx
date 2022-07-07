@@ -13,7 +13,7 @@ import {
 } from '@mui/material'
 import { useState, useEffect } from 'react'
 
-import { useLocation } from 'react-router-dom'
+import { useLocation, Outlet } from 'react-router-dom'
 
 //Dashboard Icon
 import Dashboard from '@mui/icons-material/Dashboard'
@@ -30,6 +30,9 @@ import AssignmentIndOutlined from '@mui/icons-material/AssignmentIndOutlined'
 //Doctor Icon
 import PersonIcon from '@mui/icons-material/Person'
 import PersonOutlined from '@mui/icons-material/PersonOutline'
+//History Icon
+import WorkHistoryOutlinedIcon from '@mui/icons-material/WorkHistoryOutlined'
+import WorkHistoryIcon from '@mui/icons-material/WorkHistory'
 
 import LogoutIcon from '@mui/icons-material/Logout'
 
@@ -74,6 +77,12 @@ const listSideBar = [
     path: '/doctor',
   },
   {
+    title: 'History',
+    iconActive: <WorkHistoryIcon />,
+    iconDefault: <WorkHistoryOutlinedIcon />,
+    path: '/history',
+  },
+  {
     title: 'Log Out',
     iconDefault: <LogoutIcon />,
     path: '',
@@ -82,9 +91,7 @@ const listSideBar = [
 
 const userId = 2
 
-export default function DefaultLayout(props) {
-  const { children, isLoading, data } = props
-
+export default function DefaultLayout() {
   const [user, setUser] = useState(null)
 
   const [isError, setIsError] = useState(false)
@@ -98,10 +105,8 @@ export default function DefaultLayout(props) {
   )
 
   useEffect(() => {
-    if ((!data || data === undefined) && !isLoading) {
-      getUser(userId)
-    }
-  }, [data, isLoading])
+    getUser(userId)
+  }, [])
 
   const getUser = async (param) => {
     setIsLoadUser(true)
@@ -183,7 +188,7 @@ export default function DefaultLayout(props) {
               : listSideBar[indexBar].title}
           </Typography>
 
-          {(isLoading || isLoadUser) && (
+          {isLoadUser && (
             <Box
               sx={{
                 display: 'flex',
@@ -201,7 +206,7 @@ export default function DefaultLayout(props) {
             </Box>
           )}
 
-          {(user || (data && data !== undefined)) && (
+          {user && (
             <Box
               sx={{
                 display: 'flex',
@@ -213,21 +218,19 @@ export default function DefaultLayout(props) {
                   width: '48px',
                   height: '48px',
                 }}
-                src={data ? data.avatar_url : user.avatar_url}
+                src={user.avatar_url}
               />
 
               <Box>
-                <Typography variant='body2'>
-                  {data ? data.username : user.username}
-                </Typography>
-                <Typography variant='body5'>
-                  {data ? data.username : user.role}
-                </Typography>
+                <Typography variant='body2'>{user.username}</Typography>
+                <Typography variant='body5'>{user.role}</Typography>
               </Box>
             </Box>
           )}
         </Box>
-        <Container maxWidth='xl'>{children}</Container>
+        <Container maxWidth='xl'>
+          <Outlet />
+        </Container>
       </Box>
       <Snackbar
         anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
