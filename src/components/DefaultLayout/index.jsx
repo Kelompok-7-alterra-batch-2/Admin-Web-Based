@@ -168,6 +168,7 @@ export default function DefaultLayout() {
       <Box
         sx={{
           width: '100%',
+          overflow: 'auto'
         }}
       >
         <Box
