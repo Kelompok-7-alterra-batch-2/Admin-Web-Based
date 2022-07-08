@@ -11,7 +11,11 @@ const CustomDateInput = (props) => {
     const max = moment().add(1, 'M')
     const min = moment('1920-01-01')
     const maxCheck = moment.min(moment(e.target.value), max)
-    onChange(name, moment.max(maxCheck, min).format(format))
+    const minCheck = moment.max(maxCheck, min).format(format)
+    if (minCheck === 'Invalid date') {
+      return onChange('')
+    }
+    onChange(minCheck)
   }
 
   return (
