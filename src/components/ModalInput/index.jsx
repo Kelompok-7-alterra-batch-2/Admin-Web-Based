@@ -21,7 +21,7 @@ import { updateData } from '@/api/put'
 
 import { postData } from '@/api/post'
 
-import { CustomInput } from '@/components'
+import { CustomInput, CustomDateInput } from '@/components'
 
 import ModalSuccess from './components/ModalSuccess'
 import DepartmentInput from './components/DepartmentInput'
@@ -169,6 +169,26 @@ export default function ModalInput(props) {
     }
     setIsError((prev) => {
       return { ...prev, selectDoctor: error }
+    })
+  }
+
+  const handleChangeDate = (nameField, value) => {
+    if (value === '') {
+      setIsError((prev) => {
+        return { ...prev, [nameField]: true }
+      })
+    }
+    if (value !== '') {
+      setIsError((prev) => {
+        return { ...prev, [nameField]: false }
+      })
+    }
+
+    setForm((prev) => {
+      return {
+        ...prev,
+        [nameField]: value,
+      }
     })
   }
 
@@ -432,6 +452,20 @@ export default function ModalInput(props) {
                         clearList={() => {
                           setListDoctor(null)
                         }}
+                      />
+                    </Box>
+                  )
+                }
+
+                if (item.type === 'date') {
+                  return (
+                    <Box key={index}>
+                      <CustomDateInput
+                        value={form[item.fieldname]}
+                        onChange={handleChangeDate}
+                        name={item.fieldname}
+                        label={item.title}
+                        isError={isError[item.fieldname]}
                       />
                     </Box>
                   )
