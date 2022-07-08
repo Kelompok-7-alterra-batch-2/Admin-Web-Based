@@ -31,6 +31,8 @@ import SelectModalInput from './components/SelectInput'
 import RadioModalInput from './components/RadioModalInput'
 import SelectWithApi from './components/SelectWithApi'
 import RadioWithApi from './components/RadioWithApi'
+import ArrivalInput from './components/ArrivalInput'
+
 import { useQueryClient } from 'react-query'
 import moment from 'moment'
 
@@ -109,6 +111,7 @@ export default function ModalInput(props) {
         return { ...prev, [e.target.name]: false }
       })
     }
+
     setForm((prev) => {
       return {
         ...prev,
@@ -117,7 +120,16 @@ export default function ModalInput(props) {
     })
   }
 
-  const handleChangeDepartment = async (e) => {
+  const handleArrival = (e) => {
+    if (form.department_id !== '') {
+      if (listDoctor) {
+        setListDoctor(null)
+      }
+      getDoctor(e, form.department_id)
+    }
+  }
+
+  const handleChangeDepartment = (e) => {
     handleChange(e)
     if (form.doctor_id || form.doctor_id === '') {
       if (!form.arrivalTime) {
@@ -131,28 +143,30 @@ export default function ModalInput(props) {
       if (listDoctor) {
         setListDoctor(null)
       }
-
-      let data
-      let error = false
-      let params = {
-        arrival_time: form.arrivalTime,
-        department_id: e.target.value,
-      }
-      await fetchData('outpatients/doctors', params)
-        .then((res) => {
-          data = res.data
-        })
-        .catch(() => {
-          error = true
-        })
-
-      if (data) {
-        setListDoctor(data)
-      }
-      setIsError((prev) => {
-        return { ...prev, selectDoctor: error }
-      })
+      getDoctor(form.arrivalTime, e.target.value)
     }
+  }
+
+  const getDoctor = async (arrivalTime, departmentID) => {
+    let data
+    let error = false
+    await fetchData('outpatients/doctors', {
+      arrival_time: arrivalTime,
+      department_id: departmentID,
+    })
+      .then((res) => {
+        data = res.data
+      })
+      .catch(() => {
+        error = true
+      })
+
+    if (data) {
+      setListDoctor(data)
+    }
+    setIsError((prev) => {
+      return { ...prev, selectDoctor: error }
+    })
   }
 
   const handleSubmit = async () => {
@@ -398,6 +412,23 @@ export default function ModalInput(props) {
                         item={item}
                         error={isError[item.fieldname]}
                         param={item.param}
+                      />
+                    </Box>
+                  )
+                }
+
+                if (item.type === 'arrival-time') {
+                  return (
+                    <Box key={index}>
+                      <ArrivalInput
+                        value={form[item.fieldname]}
+                        onChange={handleChange}
+                        item={item}
+                        isError={isError[item.fieldname]}
+                        onSubmit={handleArrival}
+                        clearList={() => {
+                          setListDoctor(null)
+                        }}
                       />
                     </Box>
                   )
