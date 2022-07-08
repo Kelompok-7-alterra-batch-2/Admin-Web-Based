@@ -17,6 +17,9 @@ import { Visibility, VisibilityOff } from "@mui/icons-material";
 // assets
 import Logo from '@/assets/svg/Logo2.svg'
 
+// api
+import { postLogin } from '@/api/post';
+
 export const Login = () => {
   // States & Variable
   const [values, setValues] = useState({
@@ -63,15 +66,20 @@ export const Login = () => {
   }, [values.password]);
 
   // Function
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!helperEmail.error || !helperPassword.error) {
-      console.log(values);
+      const formData = {
+        email: values.email,
+        password: values.password
+      }
+      const { data } = await postLogin(formData)
       setValues({
         showPassword: false,
         email: "",
         password: "",
       });
+      console.log(data)
     }
   };
 
