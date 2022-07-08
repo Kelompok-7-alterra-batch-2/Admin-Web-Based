@@ -31,6 +31,8 @@ import SelectModalInput from './components/SelectInput'
 import RadioModalInput from './components/RadioModalInput'
 import SelectWithApi from './components/SelectWithApi'
 import RadioWithApi from './components/RadioWithApi'
+import ArrivalInput from './components/ArrivalInput'
+
 import { useQueryClient } from 'react-query'
 import moment from 'moment'
 
@@ -98,7 +100,7 @@ export default function ModalInput(props) {
     setForm(initialData)
   }
 
-  const handleChange = async (e) => {
+  const handleChange = (e) => {
     if (e.target.value === '') {
       setIsError((prev) => {
         return { ...prev, [e.target.name]: true }
@@ -116,15 +118,14 @@ export default function ModalInput(props) {
         [e.target.name]: e.target.value,
       }
     })
+  }
 
-    if (e.target.name === 'arrivalTime' && form.department_id !== '') {
-      setForm((prev) => {
-        return { ...prev, doctor_id: '' }
-      })
+  const handleArrival = (e) => {
+    if (form.department_id !== '') {
       if (listDoctor) {
         setListDoctor(null)
       }
-      await getDoctor(e.target.value, form.department_id)
+      getDoctor(e, form.department_id)
     }
   }
 
@@ -411,6 +412,23 @@ export default function ModalInput(props) {
                         item={item}
                         error={isError[item.fieldname]}
                         param={item.param}
+                      />
+                    </Box>
+                  )
+                }
+
+                if (item.type === 'arrival-time') {
+                  return (
+                    <Box key={index}>
+                      <ArrivalInput
+                        value={form[item.fieldname]}
+                        onChange={handleChange}
+                        item={item}
+                        isError={isError[item.fieldname]}
+                        onSubmit={handleArrival}
+                        clearList={() => {
+                          setListDoctor(null)
+                        }}
                       />
                     </Box>
                   )

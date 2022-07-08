@@ -56,7 +56,7 @@ export const field = [
   {
     title: 'Appointment Time',
     fieldname: 'arrivalTime',
-    type: 'time',
+    type: 'arrival-time',
   },
   {
     title: 'Department',
