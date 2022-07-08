@@ -12,11 +12,11 @@ import {
 
 import { useNavigate } from 'react-router-dom'
 
-import IconConfirm from 'assets/svg/ConfirmIcon.svg'
+import IconConfirm from '@/assets/svg/ConfirmIcon.svg'
 
-import { ModalInput } from 'components'
+import { ModalInput } from '@/components'
 
-import { initialData } from 'constants/appointment'
+import { initialData } from '@/constants/appointment'
 
 export default function ModalConfirm(props) {
   const { isOpen, handleClose, fieldInput } = props
@@ -122,18 +122,20 @@ export default function ModalConfirm(props) {
           </Box>
         </Fade>
       </Modal>
-
-      <ModalInput
-        isOpen={openAppointment}
-        handleClose={() => {
-          setOpenAppointment(false)
-        }}
-        field={fieldInput}
-        initialData={initialData}
-        title='New Appointment'
-        endPoint='appointment'
-        methodSubmit='post'
-      />
+      {openAppointment && (
+        <ModalInput
+          isOpen={openAppointment}
+          handleClose={() => {
+            setOpenAppointment(false)
+          }}
+          field={fieldInput}
+          initialData={initialData}
+          title='New Appointment'
+          endPoint='outpatients'
+          methodSubmit='post'
+          queryKey='outpatients'
+        />
+      )}
     </>
   )
 }

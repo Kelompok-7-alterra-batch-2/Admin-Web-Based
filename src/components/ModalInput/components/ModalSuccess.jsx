@@ -1,8 +1,6 @@
-import React from 'react'
-
 import { Box, Modal, Backdrop, Fade, Typography, Button } from '@mui/material'
 
-import SuccessIcon from 'assets/svg/SuccessIcon.svg'
+import SuccessIcon from '@/assets/svg/SuccessIcon.svg'
 
 export default function ModalSuccess(props) {
   const { isOpen, onClose, descTitle } = props

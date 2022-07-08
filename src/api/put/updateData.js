@@ -1,13 +1,13 @@
-import host from 'api'
+import host from '@/api'
 import axios from 'axios'
 
-const updateData = async (endPoint, param, dataPost) => {
+const updateData = async (endPoint, param, editParam, dataPost) => {
   let data
   let error = false
 
   await axios({
     method: 'put',
-    url: `${host}/${endPoint}/${param}`,
+    url: `${host}/${endPoint}/${param}${editParam}`,
     data: {
       ...dataPost,
     },

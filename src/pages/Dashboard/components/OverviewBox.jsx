@@ -1,5 +1,3 @@
-import React from 'react'
-
 import {
   Box,
   Card,
@@ -11,11 +9,11 @@ import {
 import { useNavigate } from 'react-router-dom'
 
 import NoteAltIcon from '@mui/icons-material/NoteAlt'
-import PermIdentityIcon from '@mui/icons-material/PermIdentity'
-import MedicalServicesIcon from '@mui/icons-material/MedicalServices'
+import PersonIcon from '@mui/icons-material/Person'
+import AssignmentIndIcon from '@mui/icons-material/AssignmentInd'
 
 export default function OverviewBox(props) {
-  const { doctor, appointment, isLoading } = props
+  const { doctor, appointment, isLoading, patient } = props
 
   const navigate = useNavigate()
 
@@ -103,7 +101,7 @@ export default function OverviewBox(props) {
                 padding: '32px 0',
               }}
             >
-              <PermIdentityIcon
+              <PersonIcon
                 sx={{
                   height: '56px',
                   width: '56px',
@@ -134,7 +132,11 @@ export default function OverviewBox(props) {
             bgcolor: 'neutral100',
           }}
         >
-          <CardActionArea>
+          <CardActionArea
+            onClick={() => {
+              navigate('/patient')
+            }}
+          >
             <CardContent
               sx={{
                 display: 'flex',
@@ -144,7 +146,7 @@ export default function OverviewBox(props) {
                 padding: '32px 0',
               }}
             >
-              <MedicalServicesIcon
+              <AssignmentIndIcon
                 sx={{
                   height: '56px',
                   width: '56px',
@@ -152,7 +154,9 @@ export default function OverviewBox(props) {
                 }}
               />
 
-              <Typography variant='h3'>15</Typography>
+              <Typography variant='h3'>
+                {patient && !isLoading ? patient.length : 0}
+              </Typography>
 
               <Typography
                 sx={{
@@ -160,7 +164,7 @@ export default function OverviewBox(props) {
                   fontWeight: '700',
                 }}
               >
-                Emergency
+                Patients
               </Typography>
             </CardContent>
           </CardActionArea>

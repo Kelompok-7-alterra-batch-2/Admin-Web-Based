@@ -5,16 +5,22 @@ import {
   RadioGroup,
   Radio,
   Box,
+  TablePagination,
 } from '@mui/material'
-import { CustomFilter, DefaultLayout, SearchBox, TableBox } from 'components'
+import { CustomFilter, LoadingTable, SearchBox, TableBox } from '@/components'
 import { useState } from 'react'
 
-import { dayList } from 'constants/schedule'
-import { toCapitalize } from 'helpers/function/toCapitalize'
+import { dayList, dataHead, field } from '@/constants/schedule'
+import { toCapitalize } from '@/helpers/function/toCapitalize'
 import { useQuery } from 'react-query'
-import { fetchData } from 'api/get'
+import { fetchData, fetchDoctor } from '@/api/get'
 
 const Schedule = () => {
+  const initialPagination = {
+    page: 0,
+    row: 5,
+  }
+
   const [openModal, setOpenModal] = useState(false)
 
   const [searchSchedule, setSearchSchedule] = useState('')
@@ -23,7 +29,13 @@ const Schedule = () => {
 
   const [day, setDay] = useState('')
 
+  const [pagination, setPagination] = useState(initialPagination)
+
   const dataDepartment = useQuery('departments', () => fetchData('departments'))
+
+  const dataSchedule = useQuery(['doctors', pagination], () =>
+    fetchDoctor(pagination.page, pagination.row)
+  )
 
   const handleOpenSchedule = () => {}
 
@@ -43,8 +55,17 @@ const Schedule = () => {
     setDay(e.target.value)
   }
 
+  const handlePageChange = (e, newPage) => {
+    setPagination((prev) => {
+      return { ...prev, page: newPage }
+    })
+  }
+
+  const handleChangeRowsPerPage = (e) => {
+    setPagination({ page: 0, row: parseInt(e.target.value, 10) })
+  }
   return (
-    <DefaultLayout>
+    <>
       <SearchBox
         labelLeftButton='Add new schedule'
         onClickLeftButton={handleOpenSchedule}
@@ -106,7 +127,35 @@ const Schedule = () => {
           ))}
         </RadioGroup>
       </FormControl>
-    </DefaultLayout>
+      {dataSchedule.isFetching && <LoadingTable />}
+      {!dataSchedule.isFetching && (
+        <TableBox
+          dataHead={dataHead}
+          dataBody={dataSchedule.data?.content}
+          endPoint='doctors'
+          editParam='/schedule'
+          fieldEdit={field}
+          queryKey='doctors'
+        >
+          <TablePagination
+            sx={{
+              mt: '30px',
+            }}
+            onRowsPerPageChange={handleChangeRowsPerPage}
+            onPageChange={handlePageChange}
+            page={pagination.page}
+            rowsPerPage={pagination.row}
+            count={
+              dataSchedule.data !== undefined
+                ? dataSchedule.data.totalElements
+                : 0
+            }
+            component='div'
+            rowsPerPageOptions={[5, 10]}
+          />
+        </TableBox>
+      )}
+    </>
   )
 }
 

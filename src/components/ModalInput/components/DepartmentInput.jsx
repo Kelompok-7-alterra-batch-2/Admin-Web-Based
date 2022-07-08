@@ -9,12 +9,17 @@ import {
 
 import ErrorRounded from '@mui/icons-material/ErrorRounded'
 import { useQuery } from 'react-query'
-import { fetchData } from 'api/get'
+import { fetchData } from '@/api/get'
 
 const DepartmentInput = (props) => {
   const { onChange, value, item, error, errorEmpty } = props
 
   const department = useQuery('departments', () => fetchData('departments'))
+
+  let getDepartment
+  if (value !== '') {
+    getDepartment = department.data.data.filter((item) => item.id === value)
+  }
 
   return (
     <FormControl fullWidth error={error || errorEmpty}>
@@ -51,7 +56,9 @@ const DepartmentInput = (props) => {
 
       {error && (
         <FormHelperText>
-          No doctor from {value} available at this time
+          No doctor from{' '}
+          {getDepartment === undefined ? '' : getDepartment[0].name} available
+          at this time
         </FormHelperText>
       )}
 

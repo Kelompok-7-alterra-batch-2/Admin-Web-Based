@@ -1,20 +1,14 @@
 import { Box, Snackbar, Alert, TablePagination } from '@mui/material'
 
-import React, { useState } from 'react'
+import { useState } from 'react'
 
 import { useQuery } from 'react-query'
 
-import { dataHead, initialData, field } from 'constants/patient'
+import { dataHead, initialData, field } from '@/constants/patient'
 
-import { fetchPatient, fetchSearch } from 'api/get'
+import { fetchPatient, fetchSearch } from '@/api/get'
 
-import {
-  SearchBox,
-  TableBox,
-  DefaultLayout,
-  ModalInput,
-  LoadingTable,
-} from 'components'
+import { SearchBox, TableBox, ModalInput, LoadingTable } from '@/components'
 
 export default function Patient() {
   const initialPagination = {
@@ -94,95 +88,93 @@ export default function Patient() {
   }
 
   return (
-    <DefaultLayout>
-      <Box>
-        <SearchBox
-          labelLeftButton='Add New Patient'
-          onClickLeftButton={handleOpenPatient}
-          placeholder='Search patient here...'
-          onChangeSearch={onChangeSearch}
-          onClickSearch={handleSearch}
-          valueSearch={searchPatient.value}
-          onResetSearch={handleResetSearch}
-        />
+    <Box>
+      <SearchBox
+        labelLeftButton='Add New Patient'
+        onClickLeftButton={handleOpenPatient}
+        placeholder='Search patient here...'
+        onChangeSearch={onChangeSearch}
+        onClickSearch={handleSearch}
+        valueSearch={searchPatient.value}
+        onResetSearch={handleResetSearch}
+      />
 
-        <ModalInput
-          isOpen={openModal}
-          handleClose={handleOpenPatient}
-          field={field}
-          initialData={initialData}
-          title='New Patient'
-          endPoint='patients'
-          methodSubmit='post'
-          queryKey='patients'
-        />
+      <ModalInput
+        isOpen={openModal}
+        handleClose={handleOpenPatient}
+        field={field}
+        initialData={initialData}
+        title='New Patient'
+        endPoint='patients'
+        methodSubmit='post'
+        queryKey='patients'
+      />
 
-        <Box
-          sx={{
-            marginTop: '30px',
-          }}
-        >
-          {!searchPatient.enabled && !dataSearch.isFetching && (
-            <TableBox
-              dataHead={dataHead}
-              dataBody={data?.content}
-              isLoading={isLoad}
-              endPoint='patients'
-            >
-              <TablePagination
-                sx={{
-                  mt: '30px',
-                }}
-                onRowsPerPageChange={handleChangeRowsPerPage}
-                onPageChange={handlePageChange}
-                page={pagination.page}
-                rowsPerPage={pagination.row}
-                count={data !== undefined ? data.totalElements : 0}
-                component='div'
-                rowsPerPageOptions={[5, 10]}
-              />
-            </TableBox>
-          )}
-        </Box>
-
-        {dataSearch.isFetching && <LoadingTable />}
-
-        {searchPatient.enabled &&
-          dataSearch.data !== undefined &&
-          !dataSearch.isFetching && (
-            <TableBox
-              dataHead={dataHead}
-              dataBody={dataSearch.data.data.slice(
-                manual.page * manual.row,
-                manual.page * manual.row + manual.row
-              )}
-              endPoint='patients'
-            >
-              <TablePagination
-                sx={{
-                  mt: '30px',
-                }}
-                onRowsPerPageChange={handleManualRow}
-                onPageChange={handleManualPage}
-                page={manual.page}
-                rowsPerPage={manual.row}
-                count={dataSearch.data?.data.length}
-                component='div'
-                rowsPerPageOptions={[5, 10]}
-              />
-            </TableBox>
-          )}
-
-        <Snackbar
-          anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-          open={dataSearch.isError || isErr}
-          autoHideDuration={3000}
-        >
-          <Alert severity='error'>
-            Sorry, can't find your search, please try another again
-          </Alert>
-        </Snackbar>
+      <Box
+        sx={{
+          marginTop: '30px',
+        }}
+      >
+        {!searchPatient.enabled && !dataSearch.isFetching && (
+          <TableBox
+            dataHead={dataHead}
+            dataBody={data?.content}
+            isLoading={isLoad}
+            endPoint='patients'
+          >
+            <TablePagination
+              sx={{
+                mt: '30px',
+              }}
+              onRowsPerPageChange={handleChangeRowsPerPage}
+              onPageChange={handlePageChange}
+              page={pagination.page}
+              rowsPerPage={pagination.row}
+              count={data !== undefined ? data.totalElements : 0}
+              component='div'
+              rowsPerPageOptions={[5, 10]}
+            />
+          </TableBox>
+        )}
       </Box>
-    </DefaultLayout>
+
+      {dataSearch.isFetching && <LoadingTable />}
+
+      {searchPatient.enabled &&
+        dataSearch.data !== undefined &&
+        !dataSearch.isFetching && (
+          <TableBox
+            dataHead={dataHead}
+            dataBody={dataSearch.data.data.slice(
+              manual.page * manual.row,
+              manual.page * manual.row + manual.row
+            )}
+            endPoint='patients'
+          >
+            <TablePagination
+              sx={{
+                mt: '30px',
+              }}
+              onRowsPerPageChange={handleManualRow}
+              onPageChange={handleManualPage}
+              page={manual.page}
+              rowsPerPage={manual.row}
+              count={dataSearch.data?.data.length}
+              component='div'
+              rowsPerPageOptions={[5, 10]}
+            />
+          </TableBox>
+        )}
+
+      <Snackbar
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+        open={dataSearch.isError || isErr}
+        autoHideDuration={3000}
+      >
+        <Alert severity='error'>
+          Sorry, can't find your search, please try another again
+        </Alert>
+      </Snackbar>
+    </Box>
   )
 }

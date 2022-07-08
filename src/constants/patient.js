@@ -3,6 +3,7 @@ export const field = [
     title: 'Name',
     fieldname: 'name',
     type: 'text',
+    typeInput: 'noNumber',
   },
   {
     title: 'Date of Birth',
@@ -32,6 +33,7 @@ export const field = [
     title: 'Phone Number',
     fieldname: 'phoneNumber',
     type: 'text',
+    typeInput: 'number',
   },
   {
     title: 'Blood Type',
@@ -112,6 +114,7 @@ export const dataHead = [
   {
     headerName: 'Edit',
     fieldname: 'edit',
+    delete: true,
     redirect: true,
     path: '/patient/edit/',
   },

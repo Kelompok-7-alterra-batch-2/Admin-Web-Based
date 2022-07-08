@@ -10,9 +10,9 @@ import {
   CircularProgress,
 } from '@mui/material'
 import { Box } from '@mui/system'
-import React, { useState } from 'react'
+import { useState } from 'react'
 
-import { deleteData } from 'api/delete'
+import { deleteData } from '@/api/delete'
 import { useQueryClient } from 'react-query'
 
 export default function ModalDelete(props) {

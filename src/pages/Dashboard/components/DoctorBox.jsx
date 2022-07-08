@@ -1,5 +1,3 @@
-import React from 'react'
-
 import { Navigation, Autoplay } from 'swiper'
 
 import { Box, Card, CardContent, CardMedia, Typography } from '@mui/material'
@@ -8,11 +6,10 @@ import { Swiper, SwiperSlide } from 'swiper/react'
 
 import 'swiper/css/bundle'
 
-import { toCapitalize } from 'helpers/function/toCapitalize'
+import { toCapitalize } from '@/helpers/function/toCapitalize'
 
 export default function DoctorBox(props) {
   const { doctor, isLoading } = props
-
   return (
     <Box>
       <Typography
@@ -30,9 +27,15 @@ export default function DoctorBox(props) {
             modules={[Navigation, Autoplay]}
             spaceBetween={30}
             slidesPerView={3}
-            onSlideChange={() => console.log('slide change')}
-            onSwiper={(swiper) => console.log(swiper)}
             autoplay
+            breakpoints={{
+              1200: {
+                slidesPerView: 3,
+              },
+              800: {
+                slidesPerView: 2,
+              },
+            }}
             style={{
               padding: '10px 10px',
             }}
@@ -69,11 +72,11 @@ export default function DoctorBox(props) {
                         marginBottom: '10px',
                       }}
                     >
-                      {item.name}
+                      {toCapitalize(item.name)}
                     </Typography>
 
                     <Typography variant='body6'>
-                      {toCapitalize(item.department)}
+                      {toCapitalize(item.department.name)}
                     </Typography>
                   </CardContent>
                 </Card>
