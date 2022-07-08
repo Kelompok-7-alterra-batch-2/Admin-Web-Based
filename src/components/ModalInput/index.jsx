@@ -122,6 +122,9 @@ export default function ModalInput(props) {
 
   const handleArrival = (e) => {
     if (form.department_id !== '') {
+      setForm((prev) => {
+        return { ...prev, doctor_id: '' }
+      })
       if (listDoctor) {
         setListDoctor(null)
       }
