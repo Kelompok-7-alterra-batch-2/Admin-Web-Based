@@ -11,6 +11,7 @@ import {
   EditPatient,
   History,
   ForgotPassword,
+  NotFound
 } from '@/pages'
 
 
@@ -42,6 +43,9 @@ export default function RouteComponent() {
 
         </Route>
       </Route>
+
+      <Route path='*' element={<NotFound />} />
+    
     </Routes>
   )
 }
