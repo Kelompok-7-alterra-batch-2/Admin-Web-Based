@@ -1,12 +1,12 @@
-import React, { useMemo, useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useMemo, useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 
 // components
 import { Box } from "@mui/system";
 import { Button, InputLabel, TextField } from "@mui/material";
 
 // assets
-import Logo from '@/assets/svg/Logo2.svg'
+import Logo from "@/assets/svg/Logo2.svg";
 
 export const ForgotPassword = () => {
   // States & Variable
@@ -15,6 +15,7 @@ export const ForgotPassword = () => {
     email: "",
     password: "",
   });
+  const navigate = useNavigate();
 
   // Helper Email
   const validateEmail = (value) => {
@@ -47,6 +48,17 @@ export const ForgotPassword = () => {
       });
     }
   };
+
+  // useEffect
+  useEffect(() => {
+    if (localStorage.getItem("token")) {
+      if (JSON.parse(localStorage.getItem("token")).role === "admin") {
+        navigate("/");
+      } else {
+        localStorage.removeItem("token");
+      }
+    }
+  });
 
   return (
     <Box
