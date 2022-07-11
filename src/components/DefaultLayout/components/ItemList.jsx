@@ -10,7 +10,12 @@ export default function ItemList(props) {
   const navigate = useNavigate()
 
   const moveTo = () => {
-    navigate(list.path)
+    if (list.path === "") {
+      localStorage.removeItem('token')
+      navigate('/login')
+    } else {
+      navigate(list.path)
+    }
   }
 
   return (

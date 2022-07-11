@@ -6,4 +6,6 @@ export { default as TableBox } from './TableBox'
 export { default as ModalInput } from './ModalInput'
 export { default as CustomFilter } from './CustomFilter'
 export { default as LoadingTable } from './LoadingTable'
+export { default as PrivateRoute } from './PrivateRoute'
 export { default as CustomDateInput } from './CustomDateInput'
+

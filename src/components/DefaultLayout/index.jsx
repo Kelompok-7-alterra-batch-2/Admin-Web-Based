@@ -13,7 +13,7 @@ import {
 } from '@mui/material'
 import { useState, useEffect } from 'react'
 
-import { useLocation, Outlet } from 'react-router-dom'
+import { useLocation, Outlet, useNavigate } from 'react-router-dom'
 
 //Dashboard Icon
 import Dashboard from '@mui/icons-material/Dashboard'
@@ -104,6 +104,8 @@ export default function DefaultLayout() {
     (item) => item.path === location.pathname
   )
 
+  const navigate = useNavigate()
+
   useEffect(() => {
     getUser(userId)
   }, [])
@@ -118,6 +120,15 @@ export default function DefaultLayout() {
         setIsError(true)
       })
     setIsLoadUser(false)
+  }
+
+  if (!JSON.parse(localStorage.getItem("token"))) {
+    navigate("/login");
+  }
+  
+  if (JSON.parse(localStorage.getItem("token")).role !== "admin") {
+    localStorage.removeItem('token')
+    navigate("/login");
   }
 
   return (
@@ -168,6 +179,7 @@ export default function DefaultLayout() {
       <Box
         sx={{
           width: '100%',
+          overflow: 'auto'
         }}
       >
         <Box
