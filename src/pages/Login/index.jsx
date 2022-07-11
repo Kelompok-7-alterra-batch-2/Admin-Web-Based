@@ -1,5 +1,5 @@
-import React, { useMemo, useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect, useMemo, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 
 // components
 import { Box } from "@mui/system";
@@ -27,6 +27,7 @@ export const Login = () => {
     email: "",
     password: "",
   });
+  const navigate = useNavigate();
 
   // Helper Email
   const validateEmail = (value) => {
@@ -74,14 +75,26 @@ export const Login = () => {
         password: values.password
       }
       const { data } = await postLogin(formData)
+      localStorage.setItem('token', JSON.stringify(data))
       setValues({
         showPassword: false,
         email: "",
         password: "",
       });
-      console.log(data)
     }
   };
+
+  // useEffect
+  useEffect(() => {
+    if (localStorage.getItem("token")) {
+      if (JSON.parse(localStorage.getItem("token")).role === "admin") {
+        navigate("/");
+      } else {
+        localStorage.removeItem("token")
+      }
+    }
+  });
+  
 
   return (
     <Box
