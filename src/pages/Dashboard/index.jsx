@@ -8,16 +8,16 @@ import DoctorBox from './components/DoctorBox'
 import { useQuery } from 'react-query'
 import { fetchAppointment, fetchData, fetchUser } from '@/api/get'
 
-const userId = '1'
+const userId = 'afwan@gmail.com'
 export default function Dashboard() {
   const usersQuery = useQuery([userId, userId], () => fetchUser(userId))
-  const doctorQuery = useQuery(['doctors', 'doctors'], () =>
-    fetchData('doctors')
-  )
-  const appointmentQuery = useQuery('outpatients', fetchAppointment)
-  const patientQuery = useQuery(['patients', 'patients'], () =>
-    fetchData('patients')
-  )
+  // const doctorQuery = useQuery(['doctors', 'doctors'], () =>
+  //   fetchData('doctors')
+  // )
+  // const appointmentQuery = useQuery('count-outpatient-today', () => fetchData('bloods'))
+  // const patientQuery = useQuery(['patients', 'patients'], () =>
+  //   fetchData('patients')
+  // )
 
   return (
     <Box
@@ -29,19 +29,21 @@ export default function Dashboard() {
       }}
     >
       <WelcomeBox
-        isLoading={usersQuery.isLoading}
-        user={usersQuery.data?.data}
+     isLoading={false}
+     user={null}
+        // isLoading={usersQuery.isLoading}
+        // user={usersQuery.data?.data}
       />
       <OverviewBox
-        doctor={doctorQuery.data?.data}
-        appointment={appointmentQuery.data}
-        patient={patientQuery.data?.data}
-        isLoading={doctorQuery.isLoading && appointmentQuery.isLoading}
+        // doctor={doctorQuery.data?.data}
+        // appointment={appointmentQuery.data}
+        // patient={patientQuery.data?.data}
+        // isLoading={doctorQuery.isLoading && appointmentQuery.isLoading}
       />
 
       <DoctorBox
-        doctor={doctorQuery.data?.data}
-        isLoading={doctorQuery.isLoading}
+        // doctor={doctorQuery.data?.data}
+        // isLoading={doctorQuery.isLoading}
       />
     </Box>
   )

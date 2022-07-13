@@ -1,4 +1,4 @@
-import host from '@/api'
+import {host} from '@/api'
 import axios from 'axios'
 
 const updateData = async (endPoint, param, editParam, dataPost) => {

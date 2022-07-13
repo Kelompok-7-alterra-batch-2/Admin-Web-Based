@@ -40,7 +40,7 @@ import ItemList from './components/ItemList'
 
 import Logo from '@/assets/svg/Logo.svg'
 
-import { fetchUser } from '@/api/get'
+import { fetchUser ,fetchData } from '@/api/get'
 import { Container } from '@mui/system'
 
 const drawerWidth = 272
@@ -89,7 +89,7 @@ const listSideBar = [
   },
 ]
 
-const userId = 2
+const userId = "afwan@gmail.com"
 
 export default function DefaultLayout() {
   const [user, setUser] = useState(null)
@@ -112,14 +112,14 @@ export default function DefaultLayout() {
 
   const getUser = async (param) => {
     setIsLoadUser(true)
-    fetchUser(param)
-      .then((res) => {
-        setUser(res.data)
-      })
-      .catch(() => {
-        setIsError(true)
-      })
-    setIsLoadUser(false)
+    fetchData('bloods')
+    //   .then((res) => {
+    //     setUser(res.data)
+    //   })
+    //   .catch(() => {
+    //     setIsError(true)
+    //   })
+    // setIsLoadUser(false)
   }
 
   if (!JSON.parse(localStorage.getItem("token"))) {
@@ -234,8 +234,8 @@ export default function DefaultLayout() {
               />
 
               <Box>
-                <Typography variant='body2'>{user.username}</Typography>
-                <Typography variant='body5'>{user.role}</Typography>
+                <Typography variant='body2'>{user.name}</Typography>
+                <Typography variant='body5'>{user.role.name}</Typography>
               </Box>
             </Box>
           )}

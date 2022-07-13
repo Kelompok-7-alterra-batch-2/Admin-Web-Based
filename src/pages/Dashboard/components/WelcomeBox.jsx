@@ -50,7 +50,7 @@ export default function WelcomeBox(props) {
             <Typography variant='body1'>Welcome</Typography>
           </Box>
           <Typography variant='h3'>
-            {user && !isLoading && user !== undefined ? user.username : ''}
+            {user && !isLoading && user !== undefined ? user.name : ''}
           </Typography>
 
           <Divider
