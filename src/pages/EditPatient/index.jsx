@@ -1,29 +1,13 @@
 import { useState } from 'react'
 
-import {
-  Box,
-  Avatar,
-  Card,
-  CardActionArea,
-  CardContent,
-  Typography,
-  Button,
-} from '@mui/material'
+import { Box, Card, CardContent, Typography, Button } from '@mui/material'
 
 import ArrowRight from '@mui/icons-material/ArrowForwardIos'
 import NoteAdd from '@mui/icons-material/NoteAdd'
 
-import AvatarBox from './components/AvatarBox'
-import DataDetailBox from './components/DataDetailBox'
-import NotesBox from './components/NotesBox'
+import PersonalDataBox from './components/PersonalDataBox'
 
 export default function EditPatient() {
-  const [value, setValue] = useState('one')
-
-  const handleChange = (event, newValue) => {
-    setValue(newValue)
-  }
-
   return (
     <>
       <Box
@@ -34,9 +18,7 @@ export default function EditPatient() {
           bgcolor: 'neutral100',
         }}
       >
-        <AvatarBox />
-        <DataDetailBox />
-        <NotesBox />
+        <PersonalDataBox />
       </Box>
 
       <Box

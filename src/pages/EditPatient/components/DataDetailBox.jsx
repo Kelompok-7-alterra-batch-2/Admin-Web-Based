@@ -1,13 +1,30 @@
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import Box from '@mui/material/Box'
-import Typography from '@mui/material/Typography'
 import IconButton from '@mui/material/IconButton'
-import Divider from '@mui/material/Divider'
+import TextField from '@mui/material/TextField'
 
 import EditIcon from '@mui/icons-material/Edit'
+import CloseIcon from '@mui/icons-material/Close'
+import CheckIcon from '@mui/icons-material/Check'
 
-const DataDetailBox = () => {
+import { FormControl, InputLabel, MenuItem, Select } from '@mui/material'
+
+const DataDetailBox = (props) => {
+  const { data, onChange, isError } = props
+
+  const numberRegex = /^[0-9\b]+$/
+
+  const handleChange = (e) => {
+    if (e.target.value === '') {
+      return onChange(e)
+    }
+    if (e.target.name === 'phoneNumber' && !numberRegex.test(e.target.value)) {
+      return
+    }
+    onChange(e)
+  }
+
   return (
     <Card
       sx={{
@@ -19,138 +36,86 @@ const DataDetailBox = () => {
       <CardContent
         sx={{
           display: 'flex',
-          alignItems: 'left',
+          alignItems: 'start',
           columnGap: '16px',
           justifyContent: 'center',
           padding: '32px 0',
         }}
       >
-        <Box
-          sx={{
-            flexDirection: 'column',
-            alignItems: 'center',
-          }}
-        >
-          <Typography
+        <Box>
+          <FormControl
             sx={{
-              fontSize: '14px',
-              fontWeight: '600',
+              minWidth: 120,
             }}
+            variant='standard'
+            error={isError.gender_id}
           >
-            Gender
-          </Typography>
-          <Typography
-            sx={{
-              fontSize: '14px',
-              fontWeight: '600',
-              marginTop: '10px',
-            }}
-          >
-            Female
-          </Typography>
-          <Divider
-            sx={{
-              borderColor: 'black',
-              width: '100%',
-              marginTop: '10px',
-            }}
+            <InputLabel>Gender</InputLabel>
+            <Select
+              name='gender_id'
+              value={data.gender_id}
+              onChange={handleChange}
+            >
+              <MenuItem value={1}>Male</MenuItem>
+              <MenuItem value={2}>Female</MenuItem>
+            </Select>
+          </FormControl>
+          <TextField
+            name='dob'
+            variant='standard'
+            label='Date Of Birth'
+            type='date'
+            value={data.dob}
+            onChange={handleChange}
           />
-          <Typography
-            sx={{
-              fontSize: '14px',
-              fontWeight: '600',
-              marginTop: '10px',
-            }}
-          >
-            Address
-          </Typography>
-          <Typography
-            sx={{
-              fontSize: '14px',
-              fontWeight: '600',
-              marginTop: '10px',
-            }}
-          >
-            Jl. Anggrek No.9, Jakarta Pusat, Jakarta
-          </Typography>
-          <Divider
-            sx={{
-              borderColor: 'black',
-              width: '100%',
-              marginTop: '10px',
-            }}
+          <TextField
+            name='phoneNumber'
+            variant='standard'
+            label='Phone Number'
+            onChange={handleChange}
+            value={data.phoneNumber}
+          />
+          <TextField
+            name='address'
+            variant='standard'
+            label='Address'
+            multiline
+            rows={3}
+            onChange={handleChange}
+            value={data.address}
           />
         </Box>
-        <Box
-          sx={{
-            flexDirection: 'column',
-            alignItems: 'center',
-          }}
-        >
-          <Typography
+        <Box>
+          <IconButton
             sx={{
-              fontSize: '14px',
-              fontWeight: '600',
+              borderRadius: '10px',
+              backgroundColor: 'neutral100',
+              padding: '14px 16px',
             }}
           >
-            Date Of Birth
-          </Typography>
-          <Typography
+            <EditIcon />
+          </IconButton>
+          <IconButton
             sx={{
-              fontSize: '14px',
-              fontWeight: '600',
-              marginTop: '10px',
+              borderRadius: '10px',
+              backgroundColor: 'neutral100',
+              padding: '14px 16px',
+              color: 'error.main',
             }}
           >
-            15/08/1998
-          </Typography>
-          <Divider
+            <CloseIcon />
+          </IconButton>
+          <IconButton
             sx={{
-              borderColor: 'black',
-              width: '100%',
-              marginTop: '10px',
+              borderRadius: '10px',
+              backgroundColor: 'neutral100',
+              padding: '14px 16px',
+              color: 'success.main',
             }}
-          />
+          >
+            <CheckIcon />
+          </IconButton>
         </Box>
-        <Box
-          sx={{
-            flexDirection: 'column',
-            alignItems: 'center',
-          }}
-        >
-          <Typography
-            sx={{
-              fontSize: '14px',
-              fontWeight: '600',
-            }}
-          >
-            Phone Number
-          </Typography>
-          <Typography
-            sx={{
-              fontSize: '14px',
-              fontWeight: '600',
-              marginTop: '10px',
-            }}
-          >
-            081234567890
-          </Typography>
-          <Divider
-            sx={{
-              borderColor: 'black',
-              width: '100%',
-              marginTop: '10px',
-            }}
-          />
-        </Box>
-        <IconButton
-          sx={{
-            width: '11%',
-            marginBottom: '80px',
-          }}
-        >
-          <EditIcon />
-        </IconButton>
       </CardContent>
     </Card>
   )
