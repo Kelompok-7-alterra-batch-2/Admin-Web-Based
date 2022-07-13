@@ -3,11 +3,12 @@ import axios from 'axios'
 const host = import.meta.env.VITE_REST_API_END_POINT
     const value = localStorage.getItem('token')
     const keys = JSON.parse(value)
+
 const axiosApiInstance = axios.create(
    {
       baseURL : host,
       headers : {
-         Authorization : `Bearer ${keys.token}`
+         Authorization : value === null ? '' : `Bearer ${keys.token}`
       }
    }
 )

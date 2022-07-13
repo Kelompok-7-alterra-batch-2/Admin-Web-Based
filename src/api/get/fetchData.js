@@ -9,7 +9,7 @@ const fetchData = async (endPoint, params) => {
     url: `/${endPoint}`,
     params: params === undefined ? {} : params,
     // headers: {
-    //   Authorization: `Bearer eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiYWRtaW4iLCJ1c2VybmFtZSI6ImFmd2FuQGdtYWlsLmNvbSIsImlhdCI6MTY1NzY5MjE4NywiZXhwIjoxNjU3Njk1Nzg3fQ.Qa3vtSVM0ipC1924nj-XYsKbJW_sCHLYi14cl4p4PAs`,
+    //   Authorization: `Bearer ${cek.token}`,
     // },
   }
   const data = await axiosApiInstance(config)
