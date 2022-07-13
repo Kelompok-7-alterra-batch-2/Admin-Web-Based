@@ -13,12 +13,13 @@ import {
   TextField,
 } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
+import Swal from "sweetalert2";
 
 // assets
-import Logo from '@/assets/svg/Logo2.svg'
+import Logo from "@/assets/svg/Logo2.svg";
 
 // api
-import { postLogin } from '@/api/post';
+import { postLogin } from "@/api/post";
 
 export const Login = () => {
   // States & Variable
@@ -28,6 +29,19 @@ export const Login = () => {
     password: "",
   });
   const navigate = useNavigate();
+
+  // Toast
+  const Toast = Swal.mixin({
+    toast: true,
+    position: "top-end",
+    showConfirmButton: false,
+    timer: 3000,
+    timerProgressBar: true,
+    didOpen: (toast) => {
+      toast.addEventListener("mouseenter", Swal.stopTimer);
+      toast.addEventListener("mouseleave", Swal.resumeTimer);
+    },
+  });
 
   // Helper Email
   const validateEmail = (value) => {
@@ -72,10 +86,30 @@ export const Login = () => {
     if (!helperEmail.error || !helperPassword.error) {
       const formData = {
         email: values.email,
-        password: values.password
+        password: values.password,
+      };
+      const { data, error } = await postLogin(formData);
+      if (!error) {
+        localStorage.setItem("token", JSON.stringify(data));
+        setTimeout(() => {
+          if (localStorage.getItem("token")) {
+            Toast.fire({
+              icon: "success",
+              title: "Signed in successfully",
+            });
+          } else {
+            Toast.fire({
+              icon: "error",
+              title: "Signed in Error",
+            });
+          }
+        }, 100);
+      } else {
+        Toast.fire({
+          icon: "error",
+          title: "Signed in Error",
+        });
       }
-      const { data } = await postLogin(formData)
-      localStorage.setItem('token', JSON.stringify(data))
       setValues({
         showPassword: false,
         email: "",
@@ -90,11 +124,10 @@ export const Login = () => {
       if (JSON.parse(localStorage.getItem("token")).role === "admin") {
         navigate("/");
       } else {
-        localStorage.removeItem("token")
+        localStorage.removeItem("token");
       }
     }
   });
-  
 
   return (
     <Box
