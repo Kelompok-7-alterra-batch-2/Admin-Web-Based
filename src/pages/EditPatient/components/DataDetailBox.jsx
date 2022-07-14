@@ -8,12 +8,21 @@ import EditIcon from '@mui/icons-material/Edit'
 import CloseIcon from '@mui/icons-material/Close'
 import CheckIcon from '@mui/icons-material/Check'
 
-import { FormControl, InputLabel, MenuItem, Select } from '@mui/material'
+import {
+  FormControl,
+  FormHelperText,
+  InputLabel,
+  MenuItem,
+  Select,
+} from '@mui/material'
+
+import moment from 'moment'
 
 const DataDetailBox = (props) => {
   const { data, onChange, isError } = props
 
   const numberRegex = /^[0-9\b]+$/
+  const format = 'YYYY[-]MM[-]DD'
 
   const handleChange = (e) => {
     if (e.target.value === '') {
@@ -22,6 +31,27 @@ const DataDetailBox = (props) => {
     if (e.target.name === 'phoneNumber' && !numberRegex.test(e.target.value)) {
       return
     }
+    if (e.target.name === 'dob') {
+      const max = moment().add(1, 'M')
+      const min = moment('1920-01-01')
+      const maxCheck = moment.min(moment(e.target.value), max)
+      const minCheck = moment.max(maxCheck, min).format(format)
+      if (minCheck === 'Invalid date') {
+        return onChange({
+          target: {
+            value: '',
+            name: 'dob',
+          },
+        })
+      }
+      return onChange({
+        target: {
+          name: 'dob',
+          value: minCheck,
+        },
+      })
+    }
+
     onChange(e)
   }
 
@@ -59,23 +89,33 @@ const DataDetailBox = (props) => {
               <MenuItem value={1}>Male</MenuItem>
               <MenuItem value={2}>Female</MenuItem>
             </Select>
+            {isError.gender_id && (
+              <FormHelperText variant='filled'>
+                Gender Cant Empty
+              </FormHelperText>
+            )}
           </FormControl>
           <TextField
+            error={isError.dob}
             name='dob'
             variant='standard'
             label='Date Of Birth'
             type='date'
             value={data.dob}
             onChange={handleChange}
+            helperText={isError.dob ? 'Date Of Birth Cant Empty' : ''}
           />
           <TextField
+            error={isError.phoneNumber}
             name='phoneNumber'
             variant='standard'
             label='Phone Number'
             onChange={handleChange}
             value={data.phoneNumber}
+            helperText={isError.phoneNumber ? 'Phone Number Cant Empty' : ''}
           />
           <TextField
+            error={isError.address}
             name='address'
             variant='standard'
             label='Address'
@@ -83,6 +123,7 @@ const DataDetailBox = (props) => {
             rows={3}
             onChange={handleChange}
             value={data.address}
+            helperText={isError.address ? 'Address Cant Empty' : ''}
           />
         </Box>
         <Box>

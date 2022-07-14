@@ -29,7 +29,7 @@ const PersonalDataBox = () => {
         return { ...prev, [e.target.name]: true }
       })
     }
-    if (e.target.value === '') {
+    if (e.target.value !== '') {
       setIsError((prev) => {
         return { ...prev, [e.target.name]: false }
       })
