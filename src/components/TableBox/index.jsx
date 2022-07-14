@@ -172,6 +172,18 @@ export default function TableBox(props) {
                         )
                       }
 
+                      if (itemCell.fieldGrandChild) {
+                        return (
+                          <TableCell key={indexCell} align='center'>
+                            {toCapitalize(
+                              itemRow[itemCell.fieldname][itemCell.fieldChild][
+                                itemCell.fieldGrandChild
+                              ]
+                            )}
+                          </TableCell>
+                        )
+                      }
+
                       if (itemCell.fieldChild) {
                         return (
                           <TableCell key={indexCell} align='center'>

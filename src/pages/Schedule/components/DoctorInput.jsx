@@ -9,9 +9,9 @@ import {
 } from '@mui/material'
 
 const DoctorInput = (props) => {
-  const { onChange, value, item, initialData, list, error } = props
+  const { onChange, value, list, error } = props
   return (
-    <FormControl fullWidth error={error} disabled={item.disabled}>
+    <FormControl fullWidth error={error}>
       <Typography
         sx={{
           color: error ? 'error.main' : '',
@@ -19,11 +19,11 @@ const DoctorInput = (props) => {
           fontWeight: 'normal',
         }}
       >
-        {item.title}
+        Doctor Name
       </Typography>
 
       <Select
-        name={item.fieldname}
+        name='doctor_id'
         value={value}
         onChange={onChange}
         size='small'
@@ -34,16 +34,10 @@ const DoctorInput = (props) => {
       >
         <MenuItem value=''>None</MenuItem>
 
-        {initialData.doctor && initialData.doctor !== '' && !list && (
-          <MenuItem value={initialData.doctor.id}>
-            {initialData.doctor.name}
-          </MenuItem>
-        )}
-
         {list &&
           list.map((option, index) => (
-            <MenuItem key={index} value={option.doctor.id}>
-              {option.doctor.name}
+            <MenuItem key={index} value={option.id}>
+              {option.name}
             </MenuItem>
           ))}
       </Select>
@@ -60,7 +54,7 @@ const DoctorInput = (props) => {
             }}
           />
           <FormHelperText variant='filled'>
-            {`Field ${item.title} is empty`}
+            Field Doctor is empty
           </FormHelperText>
         </Box>
       )}

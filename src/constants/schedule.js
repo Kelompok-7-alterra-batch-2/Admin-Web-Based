@@ -1,18 +1,18 @@
 export const dayList = ['yesterday', 'today', 'tomorrow']
 
+export const listField = ['doctor_id','availableFrom','availableTo']
+
 export const dataHead = [
-  // {
-  //   headerName : 'Date',
-  //
-  // },
   {
     headerName: 'Department',
-    fieldname: 'department',
-    fieldChild: 'name',
+    fieldname: 'doctor',
+    fieldChild: 'department',
+    fieldGrandChild: 'name',
   },
   {
     headerName: 'Doctor Name',
-    fieldname: 'name',
+    fieldname: 'doctor',
+    fieldChild: 'name',
   },
   {
     headerName: 'Available From',
@@ -27,10 +27,19 @@ export const dataHead = [
   {
     headerName: 'Edit',
     fieldname: 'edit',
+    delete: true,
   },
 ]
 
 export const field = [
+  {
+    title: 'Doctor',
+    fieldname: 'doctor_id',
+    type: 'doctor',
+    value: 'doctor',
+    valueChild: 'id',
+    disabled: true,
+  },
   {
     title: 'Available From',
     fieldname: 'availableFrom',
@@ -42,3 +51,17 @@ export const field = [
     type: 'time',
   },
 ]
+
+export const initialData =  {
+    department: '',
+    doctor_id: '',
+    availableFrom: '',
+    availableTo: '',
+  }
+
+export const initialError = {
+   doctor_id : false,
+   availableFrom : false,
+   availableTo : false,
+   submit : false,
+}
