@@ -193,7 +193,6 @@ export default function ModalInput(props) {
   }
 
   const handleSubmit = async () => {
-    console.log(isError)
     let paramError
     for (let i = 0; i < field.length; i++) {
       if (form[field[i].fieldname] === '') {
