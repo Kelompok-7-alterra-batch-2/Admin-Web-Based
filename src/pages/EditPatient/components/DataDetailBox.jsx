@@ -19,7 +19,7 @@ import {
 import moment from 'moment'
 
 const DataDetailBox = (props) => {
-  const { data, onChange, isError } = props
+  const { data, onChange, isError, isEdit, onChangeMode, onSubmit } = props
 
   const numberRegex = /^[0-9\b]+$/
   const format = 'YYYY[-]MM[-]DD'
@@ -72,90 +72,120 @@ const DataDetailBox = (props) => {
           padding: '32px 0',
         }}
       >
-        <Box>
-          <FormControl
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            rowGap: '30px',
+          }}
+        >
+          <Box
             sx={{
-              minWidth: 120,
+              display: 'flex',
+              gap: '20px',
+              flexWrap: 'wrap',
             }}
-            variant='standard'
-            error={isError.gender_id}
           >
-            <InputLabel>Gender</InputLabel>
-            <Select
-              name='gender_id'
-              value={data.gender_id}
-              onChange={handleChange}
+            <FormControl
+              sx={{
+                minWidth: 120,
+              }}
+              variant='standard'
+              error={isError.gender_id}
+              disabled={!isEdit}
             >
-              <MenuItem value={1}>Male</MenuItem>
-              <MenuItem value={2}>Female</MenuItem>
-            </Select>
-            {isError.gender_id && (
-              <FormHelperText variant='filled'>
-                Gender Cant Empty
-              </FormHelperText>
-            )}
-          </FormControl>
-          <TextField
-            error={isError.dob}
-            name='dob'
-            variant='standard'
-            label='Date Of Birth'
-            type='date'
-            value={data.dob}
-            onChange={handleChange}
-            helperText={isError.dob ? 'Date Of Birth Cant Empty' : ''}
-          />
-          <TextField
-            error={isError.phoneNumber}
-            name='phoneNumber'
-            variant='standard'
-            label='Phone Number'
-            onChange={handleChange}
-            value={data.phoneNumber}
-            helperText={isError.phoneNumber ? 'Phone Number Cant Empty' : ''}
-          />
-          <TextField
-            error={isError.address}
-            name='address'
-            variant='standard'
-            label='Address'
-            multiline
-            rows={3}
-            onChange={handleChange}
-            value={data.address}
-            helperText={isError.address ? 'Address Cant Empty' : ''}
-          />
+              <InputLabel>Gender</InputLabel>
+              <Select
+                name='gender_id'
+                value={data.gender_id}
+                onChange={handleChange}
+              >
+                <MenuItem value={1}>Male</MenuItem>
+                <MenuItem value={2}>Female</MenuItem>
+              </Select>
+              {isError.gender_id && (
+                <FormHelperText variant='filled'>
+                  Gender Cant Empty
+                </FormHelperText>
+              )}
+            </FormControl>
+            <TextField
+              disabled={!isEdit}
+              error={isError.dob}
+              name='dob'
+              variant='standard'
+              label='Date Of Birth'
+              type='date'
+              value={data.dob}
+              onChange={handleChange}
+              helperText={isError.dob ? 'Date Of Birth Cant Empty' : ''}
+            />
+            <TextField
+              disabled={!isEdit}
+              error={isError.phoneNumber}
+              name='phoneNumber'
+              variant='standard'
+              label='Phone Number'
+              onChange={handleChange}
+              value={data.phoneNumber}
+              helperText={isError.phoneNumber ? 'Phone Number Cant Empty' : ''}
+            />
+          </Box>
+          <Box>
+            <TextField
+              fullWidth
+              disabled={!isEdit}
+              error={isError.address}
+              name='address'
+              variant='standard'
+              label='Address'
+              multiline
+              rows={3}
+              onChange={handleChange}
+              value={data.address}
+              helperText={isError.address ? 'Address Cant Empty' : ''}
+            />
+          </Box>
         </Box>
         <Box>
-          <IconButton
-            sx={{
-              borderRadius: '10px',
-              backgroundColor: 'neutral100',
-              padding: '14px 16px',
-            }}
-          >
-            <EditIcon />
-          </IconButton>
-          <IconButton
-            sx={{
-              borderRadius: '10px',
-              backgroundColor: 'neutral100',
-              padding: '14px 16px',
-              color: 'error.main',
-            }}
-          >
-            <CloseIcon />
-          </IconButton>
-          <IconButton
-            sx={{
-              borderRadius: '10px',
-              backgroundColor: 'neutral100',
-              padding: '14px 16px',
-              color: 'success.main',
-            }}
-          >
-            <CheckIcon />
-          </IconButton>
+          {!isEdit && (
+            <IconButton
+              sx={{
+                borderRadius: '10px',
+                backgroundColor: 'neutral100',
+                padding: '14px 16px',
+              }}
+              onClick={onChangeMode}
+            >
+              <EditIcon />
+            </IconButton>
+          )}
+          {isEdit && (
+            <>
+              <IconButton
+                sx={{
+                  borderRadius: '10px',
+                  backgroundColor: 'neutral100',
+                  padding: '14px 16px',
+                  color: 'error.main',
+                }}
+                onClick={onChangeMode}
+              >
+                <CloseIcon />
+              </IconButton>
+              <IconButton
+                sx={{
+                  borderRadius: '10px',
+                  backgroundColor: 'neutral100',
+                  padding: '14px 16px',
+                  color: 'success.main',
+                }}
+                onClick={onSubmit}
+              >
+                <CheckIcon />
+              </IconButton>
+            </>
+          )}
         </Box>
       </CardContent>
     </Card>

@@ -3,8 +3,23 @@ import CardContent from '@mui/material/CardContent'
 import Box from '@mui/material/Box'
 import Avatar from '@mui/material/Avatar'
 import Typography from '@mui/material/Typography'
+import TextField from '@mui/material/TextField'
 
-const AvatarBox = () => {
+const AvatarBox = (props) => {
+  const { onChange, name, data, isError, isEdit } = props
+
+  const nameRegex = /[A-Za-z'.,\s]$/
+
+  const handleChange = (e) => {
+    if (e.target.value === '') {
+      return onChange(e)
+    }
+    if (!nameRegex.test(e.target.value)) {
+      return
+    }
+    onChange(e)
+  }
+
   return (
     <Card
       sx={{
@@ -17,13 +32,11 @@ const AvatarBox = () => {
         sx={{
           display: 'flex',
           alignItems: 'center',
-          columnGap: '16px',
-          justifyContent: 'center',
-          padding: '32px 0',
         }}
       >
         <Box
           sx={{
+            display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
           }}
@@ -35,25 +48,24 @@ const AvatarBox = () => {
               color: 'primary.main',
             }}
           />
+          <TextField
+            error={isError}
+            name='name'
+            variant='standard'
+            value={name}
+            onChange={handleChange}
+            disabled={!isEdit}
+            helperText={isError ? 'Name Cant Empty' : ''}
+          />
           <Typography
             align='center'
             sx={{
               fontSize: '16px',
-              fontWeight: '600',
-              align: 'center',
-            }}
-          >
-            Wanda Scarlett
-          </Typography>
-          <Typography
-            align='center'
-            sx={{
-              fontSize: '14px',
               fontWeight: '400',
               align: 'center',
             }}
           >
-            123456
+            {data ? data.id : ''}
           </Typography>
         </Box>
       </CardContent>

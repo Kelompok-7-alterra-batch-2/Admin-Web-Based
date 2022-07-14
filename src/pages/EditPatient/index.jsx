@@ -14,8 +14,7 @@ export default function EditPatient() {
         sx={{
           display: 'flex',
           columnGap: '25px',
-          alignItems: 'center',
-          bgcolor: 'neutral100',
+          alignItems: 'stretch',
         }}
       >
         <PersonalDataBox />
