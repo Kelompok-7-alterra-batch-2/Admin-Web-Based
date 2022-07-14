@@ -11,10 +11,14 @@ import ErrorRounded from '@mui/icons-material/ErrorRounded'
 import { useQuery } from 'react-query'
 import { fetchData } from '@/api/get'
 
+import { getToken } from '@/helpers/function/getToken'
+
 const DepartmentInput = (props) => {
   const { onChange, value, item, error, errorEmpty } = props
 
-  const department = useQuery('departments', () => fetchData('departments'))
+  const department = useQuery(['departments', getToken().token], () =>
+    fetchData('departments', getToken().token)
+  )
 
   let getDepartment
   if (value !== '') {

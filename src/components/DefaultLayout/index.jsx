@@ -10,6 +10,7 @@ import {
   Typography,
   Avatar,
   Skeleton,
+  Container,
 } from '@mui/material'
 import { useState, useEffect } from 'react'
 
@@ -40,8 +41,10 @@ import ItemList from './components/ItemList'
 
 import Logo from '@/assets/svg/Logo.svg'
 
-import { fetchUser ,fetchData } from '@/api/get'
-import { Container } from '@mui/system'
+import { fetchUser } from '@/api/get'
+
+import { getToken } from '@/helpers/function/getToken'
+import { toCapitalize } from '@/helpers/function/toCapitalize'
 
 const drawerWidth = 272
 
@@ -89,8 +92,6 @@ const listSideBar = [
   },
 ]
 
-const userId = "afwan@gmail.com"
-
 export default function DefaultLayout() {
   const [user, setUser] = useState(null)
 
@@ -107,28 +108,28 @@ export default function DefaultLayout() {
   const navigate = useNavigate()
 
   useEffect(() => {
-    getUser(userId)
+    getUser()
   }, [])
 
-  const getUser = async (param) => {
+  const getUser = async () => {
     setIsLoadUser(true)
-    fetchData('bloods')
-    //   .then((res) => {
-    //     setUser(res.data)
-    //   })
-    //   .catch(() => {
-    //     setIsError(true)
-    //   })
-    // setIsLoadUser(false)
+    fetchUser(getToken().email)
+      .then((res) => {
+        setUser(res.data)
+      })
+      .catch(() => {
+        setIsError(true)
+      })
+    setIsLoadUser(false)
   }
 
-  if (!JSON.parse(localStorage.getItem("token"))) {
-    navigate("/login");
+  if (!JSON.parse(localStorage.getItem('token'))) {
+    navigate('/login')
   }
-  
-  if (JSON.parse(localStorage.getItem("token")).role !== "admin") {
+
+  if (JSON.parse(localStorage.getItem('token')).role !== 'admin') {
     localStorage.removeItem('token')
-    navigate("/login");
+    navigate('/login')
   }
 
   return (
@@ -179,7 +180,7 @@ export default function DefaultLayout() {
       <Box
         sx={{
           width: '100%',
-          overflow: 'auto'
+          overflow: 'auto',
         }}
       >
         <Box
@@ -234,8 +235,12 @@ export default function DefaultLayout() {
               />
 
               <Box>
-                <Typography variant='body2'>{user.name}</Typography>
-                <Typography variant='body5'>{user.role.name}</Typography>
+                <Typography variant='body2'>
+                  {toCapitalize(user.name)}
+                </Typography>
+                <Typography variant='body5'>
+                  {toCapitalize(user.role.name)}
+                </Typography>
               </Box>
             </Box>
           )}

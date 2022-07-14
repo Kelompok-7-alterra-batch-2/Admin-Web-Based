@@ -1,8 +1,13 @@
-import {host} from '@/api'
-import axios from 'axios'
+import {axiosApiInstance} from '@/api'
+
+import {getToken} from '@/helpers/function/getToken'
 
 const fetchSearch = async (endPoint, param) => {
-  let data = await axios.get(`${host}/${endPoint}/names/${param}`)
+  let data = await axiosApiInstance.get(`/${endPoint}/names/${param}`,{
+     headers : {
+        Authorization : `Bearer ${getToken().token}`
+     }
+  })
 
   return data
 }

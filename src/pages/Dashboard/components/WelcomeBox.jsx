@@ -4,6 +4,8 @@ import { Box, Typography, Divider } from '@mui/material'
 
 import BgWelcome from '@/assets/image/bg_welcome.jpg'
 
+import { toCapitalize } from '@/helpers/function/toCapitalize'
+
 export default function WelcomeBox(props) {
   const { user, isLoading } = props
 
@@ -50,7 +52,9 @@ export default function WelcomeBox(props) {
             <Typography variant='body1'>Welcome</Typography>
           </Box>
           <Typography variant='h3'>
-            {user && !isLoading && user !== undefined ? user.name : ''}
+            {toCapitalize(
+              user && !isLoading && user !== undefined ? user.name : ''
+            )}
           </Typography>
 
           <Divider

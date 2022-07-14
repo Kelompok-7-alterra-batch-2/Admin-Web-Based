@@ -1,13 +1,14 @@
-import {host} from '@/api'
-import axios from 'axios'
+import { axiosApiInstance } from '@/api'
+import { getToken } from '@/helpers/function/getToken'
 
 const fetchFilter = async (endPoint, filter, param) => {
-  let data = await axios({
+  let data = await axiosApiInstance({
     method: 'get',
-    url: `${host}/${endPoint}/${filter}/${param}`,
+    url: `${endPoint}/${filter}/${param}`,
     data: {},
     headers: {
       'Content-Type': 'application/json',
+      Authorization: `Bearer ${getToken().token}`,
     },
   })
 

@@ -36,6 +36,8 @@ import ArrivalInput from './components/ArrivalInput'
 import { useQueryClient } from 'react-query'
 import moment from 'moment'
 
+import { getToken } from '@/helpers/function/getToken'
+
 export default function ModalInput(props) {
   const {
     isOpen,
@@ -153,8 +155,8 @@ export default function ModalInput(props) {
   const getDoctor = async (arrivalTime, departmentID) => {
     let data
     let error = false
-    await fetchData('outpatients/doctors', {
-      arrival_time: arrivalTime,
+    await fetchData('doctors/schedules/available', getToken().token, {
+      arrivalTime: arrivalTime,
       department_id: departmentID,
     })
       .then((res) => {
@@ -193,7 +195,6 @@ export default function ModalInput(props) {
   }
 
   const handleSubmit = async () => {
-    console.log(isError)
     let paramError
     for (let i = 0; i < field.length; i++) {
       if (form[field[i].fieldname] === '') {

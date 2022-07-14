@@ -1,11 +1,16 @@
-import {host} from '@/api'
-import axios from 'axios'
+import { axiosApiInstance } from '@/api'
+
+import { getToken } from '@/helpers/function/getToken'
 
 const deleteData = async (endPoint, param) => {
   let data
   let error = false
-  await axios
-    .delete(`${host}/${endPoint}/${param}`)
+  await axiosApiInstance
+    .delete(`/${endPoint}/${param}`, {
+      headers: {
+        Authorization: `Bearer ${getToken().token}`,
+      },
+    })
     .then(() => {
       data = true
     })

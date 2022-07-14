@@ -1,18 +1,20 @@
-import {host} from '@/api'
-import axios from 'axios'
+import { axiosApiInstance } from '@/api'
+
+import { getToken } from '@/helpers/function/getToken'
 
 const updateData = async (endPoint, param, editParam, dataPost) => {
   let data
   let error = false
 
-  await axios({
+  await axiosApiInstance({
     method: 'put',
-    url: `${host}/${endPoint}/${param}${editParam}`,
+    url: `/${endPoint}/${param}${editParam}`,
     data: {
       ...dataPost,
     },
     headers: {
       'Content-Type': 'application/json',
+      Authorization: `Bearer ${getToken().token}`,
     },
   })
     .then((res) => {

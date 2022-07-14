@@ -1,8 +1,12 @@
-import {host} from '@/api'
-import axios from 'axios'
+import {axiosApiInstance} from '@/api'
+import {getToken} from '@/helpers/function/getToken'
 
 const fetchPatient = async (page, row) => {
-  let { data } = await axios.get(`${host}/patients/page/${page}/${row}`)
+  let { data } = await axiosApiInstance.get(`/patients/page/${page}/${row}`,{
+     headers : {
+        Authorization : `Bearer ${getToken().token}`
+     }
+  })
 
   return data
 }
