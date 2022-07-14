@@ -1,15 +1,15 @@
-import host from '@/api'
-import axios from 'axios'
+import { axiosApiInstance } from '@/api'
 
-const fetchData = async (endPoint, params) => {
+const fetchData = async (endPoint, token, params) => {
   const config = {
     method: 'get',
-    url: `${host}/${endPoint}`,
-    headers: { 'Content-Type': 'application/json' },
+    url: `/${endPoint}`,
     params: params === undefined ? {} : params,
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
   }
-  const data = await axios(config)
-
+  const data = await axiosApiInstance(config)
   return data
 }
 export default fetchData

@@ -10,8 +10,9 @@ import {
   Typography,
   Avatar,
   Skeleton,
-} from "@mui/material";
-import { useState, useEffect } from "react";
+  Container,
+} from '@mui/material'
+import { useState, useEffect } from 'react'
 
 import { useLocation, Outlet, useNavigate } from "react-router-dom";
 
@@ -40,8 +41,10 @@ import ItemList from "./components/ItemList";
 
 import Logo from "@/assets/svg/Logo.svg";
 
-import { fetchUser } from "@/api/get";
-import { Container } from "@mui/system";
+import { fetchUser } from '@/api/get'
+
+import { getToken } from '@/helpers/function/getToken'
+import { toCapitalize } from '@/helpers/function/toCapitalize'
 
 const drawerWidth = 272;
 
@@ -89,8 +92,6 @@ const listSideBar = [
   },
 ];
 
-const userId = 2;
-
 export default function DefaultLayout() {
   const [user, setUser] = useState(null);
 
@@ -107,12 +108,12 @@ export default function DefaultLayout() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    getUser(userId);
-  }, []);
+    getUser()
+  }, [])
 
-  const getUser = async (param) => {
-    setIsLoadUser(true);
-    fetchUser(param)
+  const getUser = async () => {
+    setIsLoadUser(true)
+    fetchUser(getToken().email)
       .then((res) => {
         setUser(res.data);
       })
@@ -122,13 +123,13 @@ export default function DefaultLayout() {
     setIsLoadUser(false);
   };
 
-  if (!JSON.parse(localStorage.getItem("token"))) {
-    navigate("/login");
+  if (!JSON.parse(localStorage.getItem('token'))) {
+    navigate('/login')
   }
 
-  if (JSON.parse(localStorage.getItem("token")).role !== "admin") {
-    localStorage.removeItem("token");
-    navigate("/login");
+  if (JSON.parse(localStorage.getItem('token')).role !== 'admin') {
+    localStorage.removeItem('token')
+    navigate('/login')
   }
 
   return (
@@ -179,8 +180,8 @@ export default function DefaultLayout() {
 
       <Box
         sx={{
-          width: "100%",
-          overflow: "auto",
+          width: '100%',
+          overflow: 'auto',
         }}
       >
         <Box
@@ -235,8 +236,12 @@ export default function DefaultLayout() {
               />
 
               <Box>
-                <Typography variant="body2">{user.username}</Typography>
-                <Typography variant="body5">{user.role}</Typography>
+                <Typography variant='body2'>
+                  {toCapitalize(user.name)}
+                </Typography>
+                <Typography variant='body5'>
+                  {toCapitalize(user.role.name)}
+                </Typography>
               </Box>
             </Box>
           )}

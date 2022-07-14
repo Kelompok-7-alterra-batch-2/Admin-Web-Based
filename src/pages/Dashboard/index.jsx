@@ -1,22 +1,25 @@
 import { Box } from '@mui/material'
 
-import { DefaultLayout } from '@/components'
-
 import WelcomeBox from './components/WelcomeBox'
 import OverviewBox from './components/OverviewBox'
 import DoctorBox from './components/DoctorBox'
 import { useQuery } from 'react-query'
-import { fetchAppointment, fetchData, fetchUser } from '@/api/get'
+import { fetchData, fetchUser } from '@/api/get'
+import { getToken } from '@/helpers/function/getToken'
 
-const userId = '1'
 export default function Dashboard() {
-  const usersQuery = useQuery([userId, userId], () => fetchUser(userId))
-  const doctorQuery = useQuery(['doctors', 'doctors'], () =>
-    fetchData('doctors')
+  const usersQuery = useQuery([getToken().email, getToken().email], () =>
+    fetchUser(getToken().email)
   )
-  const appointmentQuery = useQuery('outpatients', fetchAppointment)
-  const patientQuery = useQuery(['patients', 'patients'], () =>
-    fetchData('patients')
+  const doctorQuery = useQuery(['doctors', getToken().token], () =>
+    fetchData('doctors', getToken().token)
+  )
+  const appointmentQuery = useQuery(
+    ['count-outpatient-today', getToken().token],
+    () => fetchData('outpatients/count/today', getToken().token)
+  )
+  const patientQuery = useQuery(['patients', getToken().token], () =>
+    fetchData('patients', getToken().token)
   )
 
   return (
@@ -34,7 +37,7 @@ export default function Dashboard() {
       />
       <OverviewBox
         doctor={doctorQuery.data?.data}
-        appointment={appointmentQuery.data}
+        appointment={appointmentQuery.data?.data}
         patient={patientQuery.data?.data}
         isLoading={doctorQuery.isLoading && appointmentQuery.isLoading}
       />

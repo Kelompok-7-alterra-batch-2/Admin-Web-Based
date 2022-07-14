@@ -12,6 +12,8 @@ import { dataHead, field } from '@/constants/appointment'
 
 import { fetchAppointment, fetchData } from '@/api/get'
 
+import { getToken } from '@/helpers/function/getToken'
+
 import ModalConfirm from './components/ModalConfirm'
 
 export default function Appointment() {
@@ -28,7 +30,9 @@ export default function Appointment() {
     row: 5,
   })
 
-  const dataDepartment = useQuery('departments', () => fetchData('departments'))
+  const dataDepartment = useQuery(['departments', getToken().token], () =>
+    fetchData('departments', getToken().token)
+  )
 
   const { data: dataAppointment, isFetching: isLoad } = useQuery(
     'outpatients',

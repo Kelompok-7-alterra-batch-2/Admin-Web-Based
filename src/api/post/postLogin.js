@@ -1,6 +1,6 @@
 import axios from "axios";
 
-import host from "@/api";
+import {host} from '@/api'
 
 const postLogin = async (dataPost) => {
   let data;

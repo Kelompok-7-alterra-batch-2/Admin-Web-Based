@@ -1,8 +1,13 @@
-import host from '@/api'
-import axios from 'axios'
+import { axiosApiInstance } from '@/api'
+
+import { getToken } from '@/helpers/function/getToken'
 
 const fetchAppointment = async () => {
-  let { data } = await axios.get(`${host}/outpatients/today`)
+  let { data } = await axiosApiInstance.get(`/outpatients/today`, {
+    headers: {
+      Authorization: `Bearer ${getToken().token}`,
+    },
+  })
 
   return data
 }

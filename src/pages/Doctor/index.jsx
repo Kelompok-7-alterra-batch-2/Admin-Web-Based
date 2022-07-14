@@ -16,6 +16,8 @@ import { fetchDoctor, fetchFilter, fetchData } from '@/api/get'
 
 import { dataHead, field, initialData } from '@/constants/doctor'
 
+import { getToken } from '@/helpers/function/getToken'
+
 export default function Doctor() {
   const initialPagination = {
     page: 0,
@@ -47,7 +49,9 @@ export default function Doctor() {
     { keepPreviousData: true }
   )
 
-  const Department = useQuery('departments', () => fetchData('departments'))
+  const Department = useQuery(['departments', getToken().token], () =>
+    fetchData('departments', getToken().token)
+  )
 
   const filterData = useQuery(
     ['filterData', filterParam],
@@ -61,7 +65,6 @@ export default function Doctor() {
       ),
     { enabled: filterParam.enabled }
   )
-
   const handleChangeDepartment = (e) => {
     if (searchDoctor !== '') {
       setSearchDoctor('')
@@ -104,7 +107,7 @@ export default function Doctor() {
     setFilterParam({
       enabled: true,
       filter: 'names',
-      paramSearch: searchDoctor,
+      paramSearch: searchDoctor.toLowerCase(),
       paramFilter: '',
     })
     setManual(initialPagination)
@@ -188,7 +191,7 @@ export default function Doctor() {
         {!filterParam.enabled && !filterData.isFetching && (
           <TableBox
             dataHead={dataHead}
-            dataBody={data?.content}
+            dataBody={data?.data.content}
             isLoading={isLoad}
             endPoint='doctors'
             fieldEdit={field}
@@ -203,7 +206,7 @@ export default function Doctor() {
               onPageChange={handlePageChange}
               page={pagination.page}
               rowsPerPage={pagination.row}
-              count={data !== undefined ? data.totalElements : 0}
+              count={data !== undefined ? data?.data.totalElements : 0}
               component='div'
               rowsPerPageOptions={[5, 10]}
             />
