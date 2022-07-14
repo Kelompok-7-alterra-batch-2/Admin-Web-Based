@@ -119,3 +119,5 @@ export const dataHead = [
     path: '/patient/edit/',
   },
 ]
+
+export const fieldEdit = ['name', 'dob', 'phoneNumber', 'address', 'gender_id']

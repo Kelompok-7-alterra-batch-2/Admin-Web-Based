@@ -10,7 +10,7 @@ const NotesBox = () => {
   return (
     <Card
       sx={{
-        width: '25%',
+        width: '20%',
         borderRadius: '4px',
         bgcolor: 'neutral200',
         padding: '0 0 125px 0',
