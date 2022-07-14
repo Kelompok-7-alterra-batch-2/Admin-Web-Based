@@ -21,7 +21,7 @@ import { updateData } from '@/api/put'
 
 import { postData } from '@/api/post'
 
-import { CustomInput } from '@/components'
+import { CustomInput, CustomDateInput } from '@/components'
 
 import ModalSuccess from './components/ModalSuccess'
 import DepartmentInput from './components/DepartmentInput'
@@ -31,8 +31,12 @@ import SelectModalInput from './components/SelectInput'
 import RadioModalInput from './components/RadioModalInput'
 import SelectWithApi from './components/SelectWithApi'
 import RadioWithApi from './components/RadioWithApi'
+import ArrivalInput from './components/ArrivalInput'
+
 import { useQueryClient } from 'react-query'
 import moment from 'moment'
+
+import { getToken } from '@/helpers/function/getToken'
 
 export default function ModalInput(props) {
   const {
@@ -109,6 +113,7 @@ export default function ModalInput(props) {
         return { ...prev, [e.target.name]: false }
       })
     }
+
     setForm((prev) => {
       return {
         ...prev,
@@ -117,7 +122,19 @@ export default function ModalInput(props) {
     })
   }
 
-  const handleChangeDepartment = async (e) => {
+  const handleArrival = (e) => {
+    if (form.department_id !== '') {
+      setForm((prev) => {
+        return { ...prev, doctor_id: '' }
+      })
+      if (listDoctor) {
+        setListDoctor(null)
+      }
+      getDoctor(e, form.department_id)
+    }
+  }
+
+  const handleChangeDepartment = (e) => {
     handleChange(e)
     if (form.doctor_id || form.doctor_id === '') {
       if (!form.arrivalTime) {
@@ -131,28 +148,50 @@ export default function ModalInput(props) {
       if (listDoctor) {
         setListDoctor(null)
       }
+      getDoctor(form.arrivalTime, e.target.value)
+    }
+  }
 
-      let data
-      let error = false
-      let params = {
-        arrival_time: form.arrivalTime,
-        department_id: e.target.value,
-      }
-      await fetchData('outpatients/doctors', params)
-        .then((res) => {
-          data = res.data
-        })
-        .catch(() => {
-          error = true
-        })
+  const getDoctor = async (arrivalTime, departmentID) => {
+    let data
+    let error = false
+    await fetchData('doctors/schedules/available', getToken().token, {
+      arrivalTime: arrivalTime,
+      department_id: departmentID,
+    })
+      .then((res) => {
+        data = res.data
+      })
+      .catch(() => {
+        error = true
+      })
 
-      if (data) {
-        setListDoctor(data)
-      }
+    if (data) {
+      setListDoctor(data)
+    }
+    setIsError((prev) => {
+      return { ...prev, selectDoctor: error }
+    })
+  }
+
+  const handleChangeDate = (nameField, value) => {
+    if (value === '') {
       setIsError((prev) => {
-        return { ...prev, selectDoctor: error }
+        return { ...prev, [nameField]: true }
       })
     }
+    if (value !== '') {
+      setIsError((prev) => {
+        return { ...prev, [nameField]: false }
+      })
+    }
+
+    setForm((prev) => {
+      return {
+        ...prev,
+        [nameField]: value,
+      }
+    })
   }
 
   const handleSubmit = async () => {
@@ -398,6 +437,39 @@ export default function ModalInput(props) {
                         item={item}
                         error={isError[item.fieldname]}
                         param={item.param}
+                      />
+                    </Box>
+                  )
+                }
+
+                if (item.type === 'arrival-time') {
+                  return (
+                    <Box key={index}>
+                      <ArrivalInput
+                        value={form[item.fieldname]}
+                        onChange={handleChange}
+                        item={item}
+                        isError={isError[item.fieldname]}
+                        onSubmit={handleArrival}
+                        clearList={() => {
+                          setListDoctor(null)
+                        }}
+                      />
+                    </Box>
+                  )
+                }
+
+                if (item.type === 'date') {
+                  return (
+                    <Box key={index}>
+                      <CustomDateInput
+                        value={form[item.fieldname]}
+                        onChange={(value) => {
+                          handleChangeDate(item.fieldname, value)
+                        }}
+                        name={item.fieldname}
+                        label={item.title}
+                        isError={isError[item.fieldname]}
                       />
                     </Box>
                   )

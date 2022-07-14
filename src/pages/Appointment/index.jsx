@@ -1,22 +1,18 @@
-import { Box, Typography, Grid } from '@mui/material'
+import { Box, Typography, Grid, TablePagination } from '@mui/material'
 
 import { useState, useEffect } from 'react'
 
 import { useQuery } from 'react-query'
 
-import {
-  DefaultLayout,
-  CustomFilter,
-  SearchBox,
-  TableBox,
-  LoadingTable,
-} from '@/components'
+import { CustomFilter, SearchBox, TableBox, LoadingTable } from '@/components'
 
 import { toCapitalize } from '@/helpers/function/toCapitalize'
 
 import { dataHead, field } from '@/constants/appointment'
 
 import { fetchAppointment, fetchData } from '@/api/get'
+
+import { getToken } from '@/helpers/function/getToken'
 
 import ModalConfirm from './components/ModalConfirm'
 
@@ -29,7 +25,14 @@ export default function Appointment() {
 
   const [dataFilter, setDataFilter] = useState(null)
 
-  const dataDepartment = useQuery('departments', () => fetchData('departments'))
+  const [pagination, setPagination] = useState({
+    page: 0,
+    row: 5,
+  })
+
+  const dataDepartment = useQuery(['departments', getToken().token], () =>
+    fetchData('departments', getToken().token)
+  )
 
   const { data: dataAppointment, isFetching: isLoad } = useQuery(
     'outpatients',
@@ -68,125 +71,146 @@ export default function Appointment() {
   }
 
   const onChangeSearch = (e) => {
-    console.log()
+    console.log(e)
   }
 
   const handleSearch = () => {
-    console.log('click')
+    console.log(data)
+  }
+
+  const handlePageChange = (e, newPage) => {
+    setPagination((prev) => {
+      return { ...prev, page: newPage }
+    })
+  }
+
+  const handleRowsChange = (e) => {
+    setPagination({ page: 0, row: parseInt(e.target.value, 10) })
   }
 
   return (
-    <DefaultLayout>
+    <Box
+      sx={{
+        mb: '30px',
+      }}
+    >
+      <SearchBox
+        labelLeftButton='Add new appointment'
+        onClickLeftButton={handleOpenModal}
+        placeholder='Search here...'
+        onChangeSearch={onChangeSearch}
+        onClickSearch={handleSearch}
+      >
+        <Grid item xs={6}>
+          {!dataDepartment.isLoading && (
+            <CustomFilter
+              value={filterParam}
+              onChange={handleChangeDepartment}
+              placeholder='DEPARTMENT'
+              filters={dataDepartment.data?.data}
+              param={{ title: 'name', value: 'id' }}
+              sx={{
+                width: '175px',
+              }}
+            />
+          )}
+        </Grid>
+      </SearchBox>
       <Box
         sx={{
-          mb: '30px',
+          marginTop: '30px',
+          display: 'flex',
+          flexDirection: 'column',
+          rowGap: '30px',
         }}
       >
-        <SearchBox
-          labelLeftButton='Add new appointment'
-          onClickLeftButton={handleOpenModal}
-          placeholder='Search here...'
-          onChangeSearch={onChangeSearch}
-          onClickSearch={handleSearch}
-        >
-          <Grid item xs={6}>
-            {!dataDepartment.isLoading && (
-              <CustomFilter
-                value={filterParam}
-                onChange={handleChangeDepartment}
-                placeholder='DEPARTMENT'
-                filters={dataDepartment.data?.data}
-                param={{ title: 'name', value: 'id' }}
+        <Typography variant='h2'>Today Appointment</Typography>
+
+        {!data && <LoadingTable />}
+        {data &&
+          !dataFilter &&
+          data.map((item, index) => (
+            <Box
+              key={index}
+              sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                rowGap: '30px',
+              }}
+            >
+              <Typography
+                variant='h3'
                 sx={{
-                  width: '175px',
+                  textAlign: 'center',
                 }}
+              >
+                {toCapitalize(item.title)} Department
+              </Typography>
+
+              <TableBox
+                dataHead={dataHead}
+                dataBody={item.field}
+                isLoading={isLoad}
+                endPoint='outpatients'
+                fieldEdit={field}
+                queryKey='outpatients'
+                editParam=''
               />
-            )}
-          </Grid>
-        </SearchBox>
-        <Box
-          sx={{
-            marginTop: '30px',
-            display: 'flex',
-            flexDirection: 'column',
-            rowGap: '30px',
-          }}
-        >
-          <Typography variant='h2'>Today Appointment</Typography>
+            </Box>
+          ))}
 
-          {!data && <LoadingTable />}
-          {data &&
-            !dataFilter &&
-            data.map((item, index) => (
-              <Box
-                key={index}
+        {dataFilter &&
+          dataFilter.map((item, index) => (
+            <Box
+              key={index}
+              sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                rowGap: '30px',
+              }}
+            >
+              <Typography
+                variant='h3'
                 sx={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  rowGap: '30px',
+                  textAlign: 'center',
                 }}
               >
-                <Typography
-                  variant='h3'
-                  sx={{
-                    textAlign: 'center',
-                  }}
-                >
-                  {toCapitalize(item.title)} Department
-                </Typography>
+                {toCapitalize(item.title)} Department
+              </Typography>
 
-                <TableBox
-                  dataHead={dataHead}
-                  dataBody={item.field}
-                  isLoading={isLoad}
-                  endPoint='outpatients'
-                  fieldEdit={field}
-                  queryKey='outpatients'
-                  editParam=''
-                />
-              </Box>
-            ))}
-
-          {dataFilter &&
-            dataFilter.map((item, index) => (
-              <Box
-                key={index}
-                sx={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  rowGap: '30px',
-                }}
+              <TableBox
+                dataHead={dataHead}
+                dataBody={item.field.slice()}
+                isLoading={isLoad}
+                endPoint='outpatients'
+                fieldEdit={field}
+                queryKey='outpatients'
+                editParam=''
               >
-                <Typography
-                  variant='h3'
+                <TablePagination
                   sx={{
-                    textAlign: 'center',
+                    mt: '30px',
                   }}
-                >
-                  {toCapitalize(item.title)} Department
-                </Typography>
-
-                <TableBox
-                  dataHead={dataHead}
-                  dataBody={item.field}
-                  isLoading={isLoad}
-                  endPoint='outpatients'
-                  fieldEdit={field}
-                  queryKey='outpatients'
-                  editParam=''
+                  onRowsPerPageChange={handleRowsChange}
+                  onPageChange={handlePageChange}
+                  page={pagination.page}
+                  rowsPerPage={pagination.row}
+                  count={item.field.length}
+                  component='div'
+                  rowsPerPageOptions={[5, 10]}
                 />
-              </Box>
-            ))}
-        </Box>
-
-        <ModalConfirm
-          isOpen={openConfirm}
-          handleClose={() => {
-            setOpenConfirm(false)
-          }}
-          fieldInput={field}
-        />
+              </TableBox>
+            </Box>
+          ))}
       </Box>
-    </DefaultLayout>
+
+      <ModalConfirm
+        isOpen={openConfirm}
+        handleClose={() => {
+          setOpenConfirm(false)
+        }}
+        fieldInput={field}
+      />
+    </Box>
   )
 }

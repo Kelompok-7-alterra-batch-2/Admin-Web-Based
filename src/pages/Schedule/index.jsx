@@ -7,13 +7,7 @@ import {
   Box,
   TablePagination,
 } from '@mui/material'
-import {
-  CustomFilter,
-  DefaultLayout,
-  LoadingTable,
-  SearchBox,
-  TableBox,
-} from '@/components'
+import { CustomFilter, LoadingTable, SearchBox, TableBox } from '@/components'
 import { useState } from 'react'
 
 import { dayList, dataHead, field } from '@/constants/schedule'
@@ -71,7 +65,7 @@ const Schedule = () => {
     setPagination({ page: 0, row: parseInt(e.target.value, 10) })
   }
   return (
-    <DefaultLayout>
+    <>
       <SearchBox
         labelLeftButton='Add new schedule'
         onClickLeftButton={handleOpenSchedule}
@@ -161,7 +155,7 @@ const Schedule = () => {
           />
         </TableBox>
       )}
-    </DefaultLayout>
+    </>
   )
 }
 

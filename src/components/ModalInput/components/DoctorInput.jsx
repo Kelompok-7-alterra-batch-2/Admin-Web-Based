@@ -42,8 +42,8 @@ const DoctorInput = (props) => {
 
         {list &&
           list.map((option, index) => (
-            <MenuItem key={index} value={option.id}>
-              {option.name}
+            <MenuItem key={index} value={option.doctor.id}>
+              {option.doctor.name}
             </MenuItem>
           ))}
       </Select>

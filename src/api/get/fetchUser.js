@@ -1,8 +1,9 @@
 import axios from 'axios'
+import {host} from '@/api'
 
 const fetchUser = async (param) => {
   const data = await axios.get(
-    `https://62a18758cc8c0118ef4d691f.mockapi.io/user/${param}`
+    `${host}/admins/emails/${param}`
   )
 
   return data

@@ -1,19 +1,20 @@
-import axios from 'axios'
+import { axiosApiInstance } from '@/api'
 
-import host from '@/api'
+import { getToken } from '@/helpers/function/getToken'
 
 const postData = async (endPoint, dataPost) => {
   let data
   let error = false
 
-  await axios({
+  await axiosApiInstance({
     method: 'post',
-    url: `${host}/${endPoint}`,
+    url: `/${endPoint}`,
     data: {
       ...dataPost,
     },
     headers: {
       'Content-Type': 'application/json',
+      Authorization: `Bearer ${getToken().token}`,
     },
   })
     .then((res) => {

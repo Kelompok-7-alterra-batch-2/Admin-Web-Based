@@ -65,7 +65,7 @@ export default function OverviewBox(props) {
               />
 
               <Typography variant='h3'>
-                {appointment && !isLoading ? appointment.length : 0}
+                {appointment && !isLoading ? appointment : 0}
               </Typography>
 
               <Typography

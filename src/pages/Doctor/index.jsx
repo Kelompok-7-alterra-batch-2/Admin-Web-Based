@@ -7,7 +7,6 @@ import { useQuery } from 'react-query'
 import {
   SearchBox,
   TableBox,
-  DefaultLayout,
   ModalInput,
   CustomFilter,
   LoadingTable,
@@ -16,6 +15,8 @@ import {
 import { fetchDoctor, fetchFilter, fetchData } from '@/api/get'
 
 import { dataHead, field, initialData } from '@/constants/doctor'
+
+import { getToken } from '@/helpers/function/getToken'
 
 export default function Doctor() {
   const initialPagination = {
@@ -48,7 +49,9 @@ export default function Doctor() {
     { keepPreviousData: true }
   )
 
-  const Department = useQuery('departments', () => fetchData('departments'))
+  const Department = useQuery(['departments', getToken().token], () =>
+    fetchData('departments', getToken().token)
+  )
 
   const filterData = useQuery(
     ['filterData', filterParam],
@@ -62,7 +65,6 @@ export default function Doctor() {
       ),
     { enabled: filterParam.enabled }
   )
-
   const handleChangeDepartment = (e) => {
     if (searchDoctor !== '') {
       setSearchDoctor('')
@@ -105,7 +107,7 @@ export default function Doctor() {
     setFilterParam({
       enabled: true,
       filter: 'names',
-      paramSearch: searchDoctor,
+      paramSearch: searchDoctor.toLowerCase(),
       paramFilter: '',
     })
     setManual(initialPagination)
@@ -143,117 +145,115 @@ export default function Doctor() {
   }
 
   return (
-    <DefaultLayout>
-      <Box>
-        <SearchBox
-          labelLeftButton='Add New Doctor'
-          onClickLeftButton={handleOpenDoctor}
-          placeholder='Search doctor here...'
-          onChangeSearch={onChangeSearch}
-          onClickSearch={handleSearch}
-          valueSearch={searchDoctor}
-          onResetSearch={handleResetSearch}
-        >
-          <Grid item xs={6}>
-            {!Department.isLoading && (
-              <CustomFilter
-                value={filterParam.paramFilter}
-                onChange={handleChangeDepartment}
-                placeholder='DEPARTMENT'
-                filters={Department.data?.data}
-                param={{ title: 'name', value: 'id' }}
-                sx={{
-                  width: '175px',
-                }}
-              />
-            )}
-          </Grid>
-        </SearchBox>
-        {openModal && (
-          <ModalInput
-            isOpen={openModal}
-            handleClose={handleOpenDoctor}
-            field={field}
-            initialData={initialData}
-            title='New Doctor'
+    <Box>
+      <SearchBox
+        labelLeftButton='Add New Doctor'
+        onClickLeftButton={handleOpenDoctor}
+        placeholder='Search doctor here...'
+        onChangeSearch={onChangeSearch}
+        onClickSearch={handleSearch}
+        valueSearch={searchDoctor}
+        onResetSearch={handleResetSearch}
+      >
+        <Grid item xs={6}>
+          {!Department.isLoading && (
+            <CustomFilter
+              value={filterParam.paramFilter}
+              onChange={handleChangeDepartment}
+              placeholder='DEPARTMENT'
+              filters={Department.data?.data}
+              param={{ title: 'name', value: 'id' }}
+              sx={{
+                width: '175px',
+              }}
+            />
+          )}
+        </Grid>
+      </SearchBox>
+      {openModal && (
+        <ModalInput
+          isOpen={openModal}
+          handleClose={handleOpenDoctor}
+          field={field}
+          initialData={initialData}
+          title='New Doctor'
+          endPoint='doctors'
+          methodSubmit='post'
+          queryKey={filterParam.enabled ? 'filterData' : 'doctors'}
+        />
+      )}
+
+      <Box
+        sx={{
+          marginTop: '30px',
+        }}
+      >
+        {!filterParam.enabled && !filterData.isFetching && (
+          <TableBox
+            dataHead={dataHead}
+            dataBody={data?.data.content}
+            isLoading={isLoad}
             endPoint='doctors'
-            methodSubmit='post'
-            queryKey={filterParam.enabled ? 'filterData' : 'doctors'}
-          />
+            fieldEdit={field}
+            queryKey='doctors'
+            editParam=''
+          >
+            <TablePagination
+              sx={{
+                mt: '30px',
+              }}
+              onRowsPerPageChange={handleChangeRowsPerPage}
+              onPageChange={handlePageChange}
+              page={pagination.page}
+              rowsPerPage={pagination.row}
+              count={data !== undefined ? data?.data.totalElements : 0}
+              component='div'
+              rowsPerPageOptions={[5, 10]}
+            />
+          </TableBox>
         )}
 
-        <Box
-          sx={{
-            marginTop: '30px',
-          }}
-        >
-          {!filterParam.enabled && !filterData.isFetching && (
+        {filterData.isFetching && <LoadingTable />}
+
+        {filterParam.enabled &&
+          filterData.data !== undefined &&
+          !filterData.isFetching && (
             <TableBox
               dataHead={dataHead}
-              dataBody={data?.content}
-              isLoading={isLoad}
+              dataBody={filterData.data.data.slice(
+                manual.page * manual.row,
+                manual.page * manual.row + manual.row
+              )}
               endPoint='doctors'
               fieldEdit={field}
-              queryKey='doctors'
+              queryKey='filterData'
               editParam=''
             >
               <TablePagination
                 sx={{
                   mt: '30px',
                 }}
-                onRowsPerPageChange={handleChangeRowsPerPage}
-                onPageChange={handlePageChange}
-                page={pagination.page}
-                rowsPerPage={pagination.row}
-                count={data !== undefined ? data.totalElements : 0}
+                onRowsPerPageChange={handleManualRow}
+                onPageChange={handleManualPage}
+                page={manual.page}
+                rowsPerPage={manual.row}
+                count={filterData.data?.data.length}
                 component='div'
                 rowsPerPageOptions={[5, 10]}
               />
             </TableBox>
           )}
-
-          {filterData.isFetching && <LoadingTable />}
-
-          {filterParam.enabled &&
-            filterData.data !== undefined &&
-            !filterData.isFetching && (
-              <TableBox
-                dataHead={dataHead}
-                dataBody={filterData.data.data.slice(
-                  manual.page * manual.row,
-                  manual.page * manual.row + manual.row
-                )}
-                endPoint='doctors'
-                fieldEdit={field}
-                queryKey='filterData'
-                editParam=''
-              >
-                <TablePagination
-                  sx={{
-                    mt: '30px',
-                  }}
-                  onRowsPerPageChange={handleManualRow}
-                  onPageChange={handleManualPage}
-                  page={manual.page}
-                  rowsPerPage={manual.row}
-                  count={filterData.data?.data.length}
-                  component='div'
-                  rowsPerPageOptions={[5, 10]}
-                />
-              </TableBox>
-            )}
-        </Box>
-
-        <Snackbar
-          anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-          open={filterData.isError || isErr}
-          autoHideDuration={3000}
-        >
-          <Alert severity='error'>
-            Sorry, can't find your search, please try another again
-          </Alert>
-        </Snackbar>
       </Box>
-    </DefaultLayout>
+
+      <Snackbar
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+        open={filterData.isError || isErr}
+        autoHideDuration={3000}
+      >
+        <Alert severity='error'>
+          Sorry, can't find your search, please try another again
+        </Alert>
+      </Snackbar>
+    </Box>
   )
 }
