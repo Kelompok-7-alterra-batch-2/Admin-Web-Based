@@ -71,6 +71,7 @@ export const field = [
     type: 'doctor',
     value: 'doctor',
     valueChild: 'id',
+    disabled: false,
   },
   {
     title: 'Appointment Reason',

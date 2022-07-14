@@ -180,7 +180,10 @@ export default function Appointment() {
 
               <TableBox
                 dataHead={dataHead}
-                dataBody={item.field.slice()}
+                dataBody={item.field.slice(
+                  pagination.page * pagination.row,
+                  pagination.page * pagination.row + pagination.row
+                )}
                 isLoading={isLoad}
                 endPoint='outpatients'
                 fieldEdit={field}
