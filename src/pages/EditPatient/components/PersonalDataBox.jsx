@@ -1,4 +1,6 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
+
+import Swal from 'sweetalert2'
 
 import { fetchData } from '@/api/get'
 import { updateData } from '@/api/put'
@@ -19,6 +21,8 @@ const PersonalDataBox = () => {
 
   const { id } = useParams()
 
+  const refPrev = useRef()
+
   const dataPatient = useQuery([id, id], () =>
     fetchData(`patients/${id}`, getToken().token)
   )
@@ -34,13 +38,15 @@ const PersonalDataBox = () => {
   useEffect(() => {
     if (!dataPatient.isLoading) {
       const data = dataPatient.data?.data
-      setData({
+      const initialValue = {
         name: data.name,
         dob: data.dob,
         phoneNumber: data.phoneNumber,
         address: data.address,
         gender_id: data.gender.id,
-      })
+      }
+      refPrev.current = initialValue
+      setData(initialValue)
     }
   }, [dataPatient.data?.data, dataPatient.isLoading])
 
@@ -78,12 +84,33 @@ const PersonalDataBox = () => {
     }
 
     if (!paramError) {
-      await updateData('patients', id, '', {
-        ...data,
-        blood_type_id: dataPatient.data?.data.bloodType.id,
-        city: dataPatient.data?.data.city,
+      Swal.fire({
+        title: 'Confirmation',
+        text: 'Are you sure the data want to edit is correct?',
+        icon: 'info',
+        showCancelButton: true,
+        confirmButtonColor: '#4E89A8',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes',
+        cancelButtonText: 'No',
+      }).then(async (result) => {
+        if (result.isConfirmed) {
+          const { error } = await updateData('patients', id, '', {
+            ...data,
+            blood_type_id: dataPatient.data?.data.bloodType.id,
+            city: dataPatient.data?.data.city,
+          })
+          if (!error) {
+            Swal.fire({
+              title: 'Patient Data has been updated',
+              icon: 'success',
+              confirmButtonColor: '#4E89A8',
+              confirmButtonText: 'Close',
+            })
+            setIsEdit(false)
+          }
+        }
       })
-      setIsEdit(false)
     }
   }
 
@@ -105,6 +132,10 @@ const PersonalDataBox = () => {
           setIsEdit((prev) => {
             return !prev
           })
+        }}
+        onCancel={() => {
+          setIsEdit(false)
+          setData(refPrev.current)
         }}
         onSubmit={handleSubmit}
       />
