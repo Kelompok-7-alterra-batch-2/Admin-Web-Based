@@ -2,7 +2,7 @@ import Box from '@mui/material/Box'
 
 import PersonalDataBox from './components/PersonalDataBox'
 
-import OutpatientsBox from './components/OutpatietsBox'
+import OutpatientsBox from './components/OutpatientsBox'
 
 export default function EditPatient() {
   return (
@@ -22,8 +22,7 @@ export default function EditPatient() {
           display: 'flex',
           flexDirection: 'column',
           columnGap: '25px',
-          alignItems: 'start',
-          bgcolor: 'neutral100',
+          bgcolor: 'neutral200',
           marginTop: '50px',
           padding: '10px',
         }}

@@ -97,6 +97,7 @@ export default function CustomInput(props) {
           border: '1px solid',
           borderColor: isError ? 'red' : 'neutral500',
           borderRadius: '4px',
+          bgcolor: '#fff',
         }}
         onChange={handleChange}
         id='custom-input'
