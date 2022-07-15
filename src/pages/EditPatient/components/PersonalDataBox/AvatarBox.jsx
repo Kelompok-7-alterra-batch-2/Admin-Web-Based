@@ -23,21 +23,19 @@ const AvatarBox = (props) => {
   return (
     <Card
       sx={{
+        display: 'flex',
+        alignItems: 'center',
         width: '20%',
         borderRadius: '4px',
         bgcolor: 'neutral200',
       }}
     >
-      <CardContent
-        sx={{
-          display: 'flex',
-          alignItems: 'center',
-        }}
-      >
+      <CardContent>
         <Box
           sx={{
             display: 'flex',
             flexDirection: 'column',
+            rowGap: '20px',
             alignItems: 'center',
           }}
         >
@@ -50,6 +48,10 @@ const AvatarBox = (props) => {
           />
           <TextField
             error={isError}
+            sx={{
+              display: 'block',
+              m: 'auto',
+            }}
             name='name'
             variant='standard'
             value={name}

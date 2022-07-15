@@ -19,7 +19,8 @@ import {
 import moment from 'moment'
 
 const DataDetailBox = (props) => {
-  const { data, onChange, isError, isEdit, onChangeMode, onSubmit } = props
+  const { data, onChange, isError, isEdit, onChangeMode, onCancel, onSubmit } =
+    props
 
   const numberRegex = /^[0-9\b]+$/
   const format = 'YYYY[-]MM[-]DD'
@@ -169,7 +170,7 @@ const DataDetailBox = (props) => {
                   padding: '14px 16px',
                   color: 'error.main',
                 }}
-                onClick={onChangeMode}
+                onClick={onCancel}
               >
                 <CloseIcon />
               </IconButton>
