@@ -80,6 +80,7 @@ export default function Appointment() {
   }, [filterParam.department, data])
 
   const handleChangeDepartment = (e) => {
+    setDataSearch(null)
     if (e.target.value === 'all') {
       setDataFilter(null)
       return setFilterParam((prev) => {
@@ -89,10 +90,10 @@ export default function Appointment() {
     setFilterParam((prev) => {
       return { ...prev, department: e.target.value }
     })
-    setDataSearch(null)
   }
 
   const handleChangeStatus = (e) => {
+    setDataSearch(null)
     if (e.target.value === 'all') {
       return setFilterParam((prev) => {
         return { ...prev, status: '' }
@@ -101,7 +102,6 @@ export default function Appointment() {
     setFilterParam((prev) => {
       return { ...prev, status: e.target.value }
     })
-    setDataSearch(null)
   }
 
   const handleOpenModal = () => {
