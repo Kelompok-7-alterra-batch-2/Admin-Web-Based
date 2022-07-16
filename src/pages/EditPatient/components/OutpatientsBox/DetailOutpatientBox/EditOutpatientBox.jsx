@@ -1,8 +1,6 @@
 import Box from '@mui/material/Box'
 import TextField from '@mui/material/TextField'
 
-import { isError } from 'react-query'
-
 const EditOutpatientBox = (props) => {
   const { dataOutpatient, isEdit, onChange, isError } = props
 
@@ -25,6 +23,7 @@ const EditOutpatientBox = (props) => {
         onChange={handleChange}
         sx={{
           bgcolor: '#fff',
+          borderRadius: '8px',
         }}
         id='standard-textarea'
         label='Main Complaint'
@@ -38,12 +37,13 @@ const EditOutpatientBox = (props) => {
         }
       />
       <TextField
-        disabled={!isEdit}
+        disabled={!isEdit || dataOutpatient.outpatientCondition.id === 2}
         value={dataOutpatient.diagnosis ? dataOutpatient.diagnosis : ''}
         name='diagnosis'
         onChange={handleChange}
         sx={{
           bgcolor: '#fff',
+          borderRadius: '8px',
         }}
         id='standard-textarea'
         label='Diagnosis'
@@ -55,12 +55,13 @@ const EditOutpatientBox = (props) => {
         helperText={isError.diagnosis ? 'Diagnosis Cant Empty' : ''}
       />
       <TextField
-        disabled={!isEdit}
+        disabled={!isEdit || dataOutpatient.outpatientCondition.id === 2}
         value={dataOutpatient.prescription ? dataOutpatient.prescription : ''}
         name='prescription'
         onChange={handleChange}
         sx={{
           bgcolor: '#fff',
+          borderRadius: '8px',
         }}
         id='standard-textarea'
         label='Prescription'

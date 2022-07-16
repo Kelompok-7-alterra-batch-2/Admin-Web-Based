@@ -1,6 +1,8 @@
 import Box from '@mui/material/Box'
 import { useState } from 'react'
 
+import { DataNotFound } from '@/components'
+
 import ItemOutpatientBox from './ItemOutpatientBox'
 import DetailOutpatientBox from './DetailOutpatientBox'
 
@@ -31,6 +33,8 @@ const PastOutpatientBox = (props) => {
             />
           </Box>
         ))}
+
+      {data.length === 0 && <DataNotFound />}
 
       {dataDetail && (
         <DetailOutpatientBox

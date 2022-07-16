@@ -24,7 +24,8 @@ export default function EditPatient() {
           columnGap: '25px',
           bgcolor: 'neutral200',
           marginTop: '50px',
-          padding: '10px',
+          padding: '30px',
+          borderRadius: '8px',
         }}
       >
         <OutpatientsBox />

@@ -56,6 +56,7 @@ const ItemOutpatientBox = (props) => {
 
         <Box
           sx={{
+            display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
           }}
@@ -75,6 +76,33 @@ const ItemOutpatientBox = (props) => {
             }}
           >
             {toCapitalize(data.doctor.name)}
+          </Typography>
+        </Box>
+
+        <Divider orientation='vertical' flexItem />
+
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+          }}
+        >
+          <Typography
+            sx={{
+              fontSize: '14px',
+              fontWeight: '600',
+            }}
+          >
+            Status 
+          </Typography>
+          <Typography
+            sx={{
+              fontSize: '16px',
+              fontWeight: '600',
+            }}
+          >
+            {toCapitalize(data.outpatientCondition.conditions)}
           </Typography>
         </Box>
 
