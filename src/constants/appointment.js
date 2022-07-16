@@ -117,3 +117,18 @@ export const initialData = {
   doctor_id: '',
   appointmentReason: '',
 }
+
+export const filterStatus = [
+  {
+    name: 'Done',
+    value: '/done',
+  },
+  {
+    name: 'Process',
+    value: '/process',
+  },
+  {
+    name: 'Pending',
+    value: '/pending',
+  },
+]
