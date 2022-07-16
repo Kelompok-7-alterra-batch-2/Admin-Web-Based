@@ -7,11 +7,20 @@ const ArrivalInput = (props) => {
 
   const [arrivalTerm, setArrivalTerm] = useState('')
 
+  const [disable, setDisable] = useState(true)
+
+  const handleChange = (e) => {
+    setDisable(false)
+    onChange(e)
+  }
+
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setArrivalTerm(value)
-    }, 2000)
-    return () => clearTimeout(timer)
+    if (!disable) {
+      const timer = setTimeout(() => {
+        setArrivalTerm(value)
+      }, 2000)
+      return () => clearTimeout(timer)
+    }
   }, [value])
 
   useEffect(() => {
@@ -27,7 +36,7 @@ const ArrivalInput = (props) => {
       name={item.fieldname}
       value={value}
       label={item.title}
-      onChange={onChange}
+      onChange={handleChange}
       type='time'
       isError={isError}
       errorMessage={`Field ${item.title} is empty`}
