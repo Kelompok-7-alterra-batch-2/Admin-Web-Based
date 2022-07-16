@@ -74,23 +74,30 @@ export default function Appointment() {
   ])
 
   useEffect(() => {
-    if (filterParam.department !== '' && filterParam.department !== 'all') {
+    if (filterParam.department !== '') {
       setDataFilter(data.filter((item) => item.id === filterParam.department))
     }
   }, [filterParam.department, data])
 
   const handleChangeDepartment = (e) => {
+    if (e.target.value === 'all') {
+      setDataFilter(null)
+      return setFilterParam((prev) => {
+        return { ...prev, department: '' }
+      })
+    }
     setFilterParam((prev) => {
       return { ...prev, department: e.target.value }
     })
     setDataSearch(null)
-
-    if (e.target.value === 'all') {
-      setDataFilter(null)
-    }
   }
 
   const handleChangeStatus = (e) => {
+    if (e.target.value === 'all') {
+      return setFilterParam((prev) => {
+        return { ...prev, status: '' }
+      })
+    }
     setFilterParam((prev) => {
       return { ...prev, status: e.target.value }
     })
