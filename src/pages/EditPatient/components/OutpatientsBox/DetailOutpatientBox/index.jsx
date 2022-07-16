@@ -43,6 +43,17 @@ const DetailOutpatientBox = (props) => {
   }
 
   const handleChange = (e) => {
+    if (e.target.value === '') {
+      setIsError((prev) => {
+        return { ...prev, [e.target.name]: true }
+      })
+    }
+    if (e.target.value !== '') {
+      setIsError((prev) => {
+        return { ...prev, [e.target.name]: false }
+      })
+    }
+
     setDataOutpatient((prev) => {
       return { ...prev, [e.target.name]: e.target.value }
     })
@@ -89,7 +100,7 @@ const DetailOutpatientBox = (props) => {
         })
       }
       if (
-        dataOutpatient[fieldOutpatient[i]] !== '' ||
+        dataOutpatient[fieldOutpatient[i]] !== '' &&
         dataOutpatient[fieldOutpatient[i]] !== null
       ) {
         setIsError((prev) => {

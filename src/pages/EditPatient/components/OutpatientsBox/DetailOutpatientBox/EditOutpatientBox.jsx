@@ -4,6 +4,8 @@ import TextField from '@mui/material/TextField'
 const EditOutpatientBox = (props) => {
   const { dataOutpatient, isEdit, onChange, isError } = props
 
+  console.log(isError)
+
   const handleChange = (e) => {
     onChange(e)
   }
