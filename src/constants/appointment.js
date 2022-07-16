@@ -32,6 +32,34 @@ export const dataHead = [
   },
 ]
 
+export const dataHeadFilter = [
+  {
+    headerName: 'Time',
+    fieldname: 'arrivalTime',
+    noCap: true,
+  },
+  {
+    headerName: 'Patient',
+    fieldname: 'patient',
+    fieldChild: 'name',
+  },
+  {
+    headerName: 'Doctor',
+    fieldname: 'doctor',
+    fieldChild: 'name',
+  },
+  {
+    headerName: 'Status',
+    fieldname: 'outpatientCondition',
+    fieldChild: 'conditions',
+  },
+  {
+    headerName: 'Edit',
+    fieldname: 'edit',
+    delete: true,
+  },
+]
+
 export const field = [
   {
     title: 'Patient',

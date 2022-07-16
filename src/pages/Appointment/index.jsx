@@ -8,7 +8,7 @@ import { CustomFilter, SearchBox, TableBox, LoadingTable } from '@/components'
 
 import { toCapitalize } from '@/helpers/function/toCapitalize'
 
-import { dataHead, field } from '@/constants/appointment'
+import { dataHead, field, dataHeadFilter } from '@/constants/appointment'
 
 import { fetchAppointment, fetchData } from '@/api/get'
 
@@ -24,6 +24,10 @@ export default function Appointment() {
   const [filterParam, setFilterParam] = useState('')
 
   const [dataFilter, setDataFilter] = useState(null)
+
+  const [searchAppointment, setSearchAppointment] = useState('')
+
+  const [dataSearch, setDataSearch] = useState(null)
 
   const [pagination, setPagination] = useState({
     page: 0,
@@ -58,6 +62,7 @@ export default function Appointment() {
 
   const handleChangeDepartment = (e) => {
     setFilterParam(e.target.value)
+    setDataSearch(null)
 
     if (e.target.value === 'all') {
       return setDataFilter(null)
@@ -71,11 +76,21 @@ export default function Appointment() {
   }
 
   const onChangeSearch = (e) => {
-    console.log(e)
+    setSearchAppointment(e.target.value)
+  }
+
+  const handleResetSearch = () => {
+    setSearchAppointment('')
+    setDataSearch(null)
   }
 
   const handleSearch = () => {
-    console.log(data)
+    fetchData('outpatients/patients/today', getToken().token, {
+      name: searchAppointment,
+    }).then((result) => {
+      console.log(result.data)
+      setDataSearch(result.data)
+    })
   }
 
   const handlePageChange = (e, newPage) => {
@@ -99,6 +114,8 @@ export default function Appointment() {
         onClickLeftButton={handleOpenModal}
         placeholder='Search here...'
         onChangeSearch={onChangeSearch}
+        valueSearch={searchAppointment}
+        onResetSearch={handleResetSearch}
         onClickSearch={handleSearch}
       >
         <Grid item xs={6}>
@@ -129,6 +146,7 @@ export default function Appointment() {
         {!data && <LoadingTable />}
         {data &&
           !dataFilter &&
+          !dataSearch &&
           data.map((item, index) => (
             <Box
               key={index}
@@ -160,6 +178,7 @@ export default function Appointment() {
           ))}
 
         {dataFilter &&
+          !dataSearch &&
           dataFilter.map((item, index) => (
             <Box
               key={index}
@@ -205,6 +224,41 @@ export default function Appointment() {
               </TableBox>
             </Box>
           ))}
+        {dataSearch && (
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              rowGap: '30px',
+            }}
+          >
+            <TableBox
+              dataHead={dataHeadFilter}
+              dataBody={dataSearch.slice(
+                pagination.page * pagination.row,
+                pagination.page * pagination.row + pagination.row
+              )}
+              isLoading={isLoad}
+              endPoint='outpatients'
+              fieldEdit={field}
+              queryKey='outpatients'
+              editParam=''
+            >
+              <TablePagination
+                sx={{
+                  mt: '30px',
+                }}
+                onRowsPerPageChange={handleRowsChange}
+                onPageChange={handlePageChange}
+                page={pagination.page}
+                rowsPerPage={pagination.row}
+                count={dataSearch.length}
+                component='div'
+                rowsPerPageOptions={[5, 10]}
+              />
+            </TableBox>
+          </Box>
+        )}
       </Box>
 
       <ModalConfirm
