@@ -7,7 +7,7 @@ import { updateData } from '@/api/put'
 
 import AvatarBox from './AvatarBox'
 import DataDetailBox from './DataDetailBox'
-import NotesBox from './NotesBox'
+
 import { useQuery } from 'react-query'
 import { useParams } from 'react-router-dom'
 
@@ -139,7 +139,6 @@ const PersonalDataBox = () => {
         }}
         onSubmit={handleSubmit}
       />
-      <NotesBox />
     </>
   )
 }

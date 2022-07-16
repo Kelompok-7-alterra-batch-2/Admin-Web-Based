@@ -25,7 +25,8 @@ const AvatarBox = (props) => {
       sx={{
         display: 'flex',
         alignItems: 'center',
-        width: '20%',
+        justifyContent: 'center',
+        width: '30%',
         borderRadius: '4px',
         bgcolor: 'neutral200',
       }}
@@ -48,10 +49,6 @@ const AvatarBox = (props) => {
           />
           <TextField
             error={isError}
-            sx={{
-              display: 'block',
-              m: 'auto',
-            }}
             name='name'
             variant='standard'
             value={name}
