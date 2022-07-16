@@ -101,6 +101,7 @@ export default function Appointment() {
     setFilterParam((prev) => {
       return { ...prev, status: e.target.value }
     })
+    setDataSearch(null)
   }
 
   const handleOpenModal = () => {
