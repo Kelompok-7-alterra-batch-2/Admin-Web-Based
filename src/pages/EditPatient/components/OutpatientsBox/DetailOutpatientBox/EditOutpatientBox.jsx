@@ -4,8 +4,6 @@ import TextField from '@mui/material/TextField'
 const EditOutpatientBox = (props) => {
   const { dataOutpatient, isEdit, onChange, isError } = props
 
-  console.log(isError)
-
   const handleChange = (e) => {
     onChange(e)
   }
@@ -39,7 +37,7 @@ const EditOutpatientBox = (props) => {
         }
       />
       <TextField
-        disabled={!isEdit}
+        disabled={!isEdit || dataOutpatient.outpatientCondition.id === 2}
         value={dataOutpatient.diagnosis ? dataOutpatient.diagnosis : ''}
         name='diagnosis'
         onChange={handleChange}
@@ -57,7 +55,7 @@ const EditOutpatientBox = (props) => {
         helperText={isError.diagnosis ? 'Diagnosis Cant Empty' : ''}
       />
       <TextField
-        disabled={!isEdit}
+        disabled={!isEdit || dataOutpatient.outpatientCondition.id === 2}
         value={dataOutpatient.prescription ? dataOutpatient.prescription : ''}
         name='prescription'
         onChange={handleChange}

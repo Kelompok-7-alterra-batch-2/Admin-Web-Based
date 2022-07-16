@@ -74,38 +74,50 @@ const DetailOutpatientBox = (props) => {
         appointmentReason: dataOutpatient.appointmentReason,
       }
     )
-    const { error: errorDiagnosis } = await updateData(
-      'outpatients/diagnosis',
-      data.id,
-      '',
-      {
+
+    let errorDiagnosis = false
+
+    if (data.outpatientCondition.id !== 2) {
+      errorDiagnosis = await updateData('outpatients/diagnosis', data.id, '', {
         diagnosis: dataOutpatient.diagnosis,
         prescription: dataOutpatient.prescription,
-      }
-    )
+      })
+    }
 
-    return errorOutpatient || errorDiagnosis
+    return errorOutpatient || errorDiagnosis.error
   }
 
   const handleSubmit = async () => {
     let paramError
-    for (let i = 0; i < fieldOutpatient.length; i++) {
-      if (
-        dataOutpatient[fieldOutpatient[i]] === '' ||
-        dataOutpatient[fieldOutpatient[i]] === null
-      ) {
+
+    if (data.outpatientCondition.id === 2) {
+      if (dataOutpatient.appointmentReason === '') {
         paramError = true
         setIsError((prev) => {
-          return { ...prev, [fieldOutpatient[i]]: true }
+          return { ...prev, appointmentReason: true }
         })
       }
-      if (
-        dataOutpatient[fieldOutpatient[i]] !== '' &&
-        dataOutpatient[fieldOutpatient[i]] !== null
-      ) {
-        setIsError((prev) => {
-          return { ...prev, [fieldOutpatient[i]]: false }
-        })
+    }
+
+    if (data.outpatientCondition.id !== 2) {
+      for (let i = 0; i < fieldOutpatient.length; i++) {
+        if (
+          dataOutpatient[fieldOutpatient[i]] === '' ||
+          dataOutpatient[fieldOutpatient[i]] === null
+        ) {
+          paramError = true
+          setIsError((prev) => {
+            return { ...prev, [fieldOutpatient[i]]: true }
+          })
+        }
+        if (
+          dataOutpatient[fieldOutpatient[i]] !== '' &&
+          dataOutpatient[fieldOutpatient[i]] !== null
+        ) {
+          setIsError((prev) => {
+            return { ...prev, [fieldOutpatient[i]]: false }
+          })
+        }
       }
     }
 
@@ -130,6 +142,7 @@ const DetailOutpatientBox = (props) => {
               confirmButtonText: 'Close',
             }).then((result) => {
               if (result.isConfirmed) {
+                setIsEdit(false)
                 queryClient.invalidateQueries('outpatients-patient')
               }
             })
