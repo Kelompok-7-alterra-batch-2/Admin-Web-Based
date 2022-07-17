@@ -67,8 +67,7 @@ export const Login = () => {
 
   // Helper Password
   const validatePassword = (value) => {
-    // return value.match(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/gm);
-    return value.match(/(.*)/)
+    return value.match(/.{8,}$/gm);
   }
   const helperPassword = useMemo(() => {
     if (!values.password)
