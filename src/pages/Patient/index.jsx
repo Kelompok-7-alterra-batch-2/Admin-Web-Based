@@ -9,6 +9,8 @@ import { dataHead, initialData, field } from '@/constants/patient'
 import { fetchPatient, fetchSearch } from '@/api/get'
 
 import { SearchBox, TableBox, ModalInput, LoadingTable } from '@/components'
+import { useNavigate } from 'react-router-dom'
+import { getModalExpired } from '@/helpers/function/getModalExpired'
 
 export default function Patient() {
   const initialPagination = {
@@ -44,6 +46,14 @@ export default function Patient() {
     () => fetchSearch('patients', searchPatient.value),
     { enabled: searchPatient.enabled }
   )
+
+  const navigate = useNavigate()
+
+  if (isErr) {
+    getModalExpired().then(() => {
+      navigate('/login')
+    })
+  }
 
   const handleOpenPatient = () => {
     setSearchPatient(initialSearch)

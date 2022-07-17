@@ -18,6 +18,9 @@ import { dataHead, field, initialData } from '@/constants/doctor'
 
 import { getToken } from '@/helpers/function/getToken'
 
+import { getModalExpired } from '@/helpers/function/getModalExpired'
+import { useNavigate } from 'react-router-dom'
+
 export default function Doctor() {
   const initialPagination = {
     page: 0,
@@ -65,6 +68,15 @@ export default function Doctor() {
       ),
     { enabled: filterParam.enabled }
   )
+
+  const navigate = useNavigate()
+
+  if (isErr) {
+    getModalExpired().then(() => {
+      navigate('/login')
+    })
+  }
+
   const handleChangeDepartment = (e) => {
     if (searchDoctor !== '') {
       setSearchDoctor('')

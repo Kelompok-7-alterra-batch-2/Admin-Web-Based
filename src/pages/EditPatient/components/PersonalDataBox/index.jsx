@@ -9,10 +9,11 @@ import AvatarBox from './AvatarBox'
 import DataDetailBox from './DataDetailBox'
 
 import { useQuery } from 'react-query'
-import { useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 
 import { fieldEdit } from '@/constants/patient'
 import { getToken } from '@/helpers/function/getToken'
+import { getModalExpired } from '@/helpers/function/getModalExpired'
 
 const PersonalDataBox = () => {
   const [isError, setIsError] = useState({})
@@ -35,6 +36,8 @@ const PersonalDataBox = () => {
     gender_id: 1,
   })
 
+  const navigate = useNavigate()
+
   useEffect(() => {
     if (!dataPatient.isLoading) {
       const data = dataPatient.data?.data
@@ -49,6 +52,12 @@ const PersonalDataBox = () => {
       setData(initialValue)
     }
   }, [dataPatient.data?.data, dataPatient.isLoading])
+
+  if (dataPatient.isError) {
+    getModalExpired().then(() => {
+      navigate('/login')
+    })
+  }
 
   const handleChange = (e) => {
     if (e.target.value === '') {

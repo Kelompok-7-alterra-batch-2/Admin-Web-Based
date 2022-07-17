@@ -20,7 +20,7 @@ const PastOutpatientBox = (props) => {
       sx={{
         display: 'flex',
         flexDirection: 'column',
-        columnGap: '25px',
+        gap: '25px',
       }}
     >
       {data.length !== 0 &&

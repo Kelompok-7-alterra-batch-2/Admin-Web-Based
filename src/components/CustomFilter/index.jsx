@@ -21,11 +21,12 @@ export default function CustomFilter(props) {
 
         <MenuItem value='all'>All</MenuItem>
 
-        {filters.map((filter, index) => (
-          <MenuItem key={index} value={filter[param.value]}>
-            {filter[param.title]}
-          </MenuItem>
-        ))}
+        {filters &&
+          filters.map((filter, index) => (
+            <MenuItem key={index} value={filter[param.value]}>
+              {filter[param.title]}
+            </MenuItem>
+          ))}
       </Select>
     </FormControl>
   )

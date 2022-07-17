@@ -21,7 +21,7 @@ const UpcomingOutpatientsBox = (props) => {
       sx={{
         display: 'flex',
         flexDirection: 'column',
-        columnGap: '25px',
+        gap : '20px',
       }}
     >
       {data.length !== 0 &&
