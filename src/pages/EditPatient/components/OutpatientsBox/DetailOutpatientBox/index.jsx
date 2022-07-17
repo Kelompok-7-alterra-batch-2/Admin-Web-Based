@@ -9,7 +9,7 @@ import InfoOupatientBox from './InfoOutpatientBox'
 import EditOutpatientBox from './EditOutpatientBox'
 
 import { updateData } from '@/api/put'
-import { fieldOutpatient } from '@/constants/patient'
+import { fieldOutpatient, initialPatientError } from '@/constants/patient'
 import { useQueryClient } from 'react-query'
 
 const DetailOutpatientBox = (props) => {
@@ -19,11 +19,7 @@ const DetailOutpatientBox = (props) => {
 
   const [dataOutpatient, setDataOutpatient] = useState(data)
 
-  const [isError, setIsError] = useState({
-    appointmentReason: false,
-    diagnosis: false,
-    prescription: false,
-  })
+  const [isError, setIsError] = useState(initialPatientError)
 
   const queryClient = useQueryClient()
 
@@ -38,6 +34,7 @@ const DetailOutpatientBox = (props) => {
   }
 
   const handleCancel = () => {
+    setIsError(initialPatientError)
     setDataOutpatient(data)
     handleChangeMode()
   }
