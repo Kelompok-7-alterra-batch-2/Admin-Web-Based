@@ -158,7 +158,9 @@ const Schedule = () => {
           />
         </TableBox>
       )}
-      <ModalInput open={openModal} onClose={handleOpenSchedule} />
+      {openModal && (
+        <ModalInput open={openModal} onClose={handleOpenSchedule} />
+      )}
     </>
   )
 }
