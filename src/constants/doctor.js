@@ -44,6 +44,7 @@ export const field = [
 export const initialData = {
   name: '',
   nid: '',
+  dob: '',
   department_id: '',
   email: '',
   password: '',
