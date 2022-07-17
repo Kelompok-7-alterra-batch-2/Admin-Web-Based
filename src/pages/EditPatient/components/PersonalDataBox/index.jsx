@@ -145,6 +145,7 @@ const PersonalDataBox = () => {
         onCancel={() => {
           setIsEdit(false)
           setData(refPrev.current)
+          setIsError({})
         }}
         onSubmit={handleSubmit}
       />

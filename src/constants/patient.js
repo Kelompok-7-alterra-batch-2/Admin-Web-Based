@@ -127,3 +127,9 @@ export const fieldOutpatient = [
   'diagnosis',
   'prescription',
 ]
+
+export const initialPatientError = {
+  appointmentReason: false,
+  diagnosis: false,
+  prescription: false,
+}
