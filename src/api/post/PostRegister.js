@@ -2,13 +2,14 @@ import axios from 'axios'
 
 import { host } from '@/api'
 
-const postLogin = async (dataPost) => {
+const postRegister = async (dataPost) => {
   let data
   let error = false
 
+   console.log(host)
   await axios({
     method: 'post',
-    url: `${host}/users/login`,
+    url: `${host}/admins`,
     data: {
       ...dataPost,
     },
@@ -26,4 +27,4 @@ const postLogin = async (dataPost) => {
   return { data, error }
 }
 
-export default postLogin
+export default postRegister
