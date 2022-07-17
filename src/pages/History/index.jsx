@@ -9,6 +9,9 @@ import { TableBox, SearchBox, CustomFilter } from '@/components'
 
 import { dataHead } from '@/constants/history'
 
+import { getModalExpired } from '@/helpers/function/getModalExpired'
+import { useNavigate } from 'react-router-dom'
+
 const History = () => {
   const [endPoint, setEndPoint] = useState('outpatients')
 
@@ -19,6 +22,14 @@ const History = () => {
   const dataHistory = useQuery(['history', endPoint], () => fetchData(endPoint))
 
   const dataDepartment = useQuery('departments', () => fetchData('departments'))
+
+  const navigate = useNavigate()
+
+  if (dataHistory.isError) {
+    getModalExpired().then(() => {
+      navigate('/login')
+    })
+  }
 
   const onChangeSearch = (e) => {
     setSearch(e.target.value)

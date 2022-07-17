@@ -6,6 +6,9 @@ import DoctorBox from './components/DoctorBox'
 import { useQuery } from 'react-query'
 import { fetchData, fetchUser } from '@/api/get'
 import { getToken } from '@/helpers/function/getToken'
+import { useNavigate } from 'react-router-dom'
+
+import { getModalExpired } from '@/helpers/function/getModalExpired'
 
 export default function Dashboard() {
   const usersQuery = useQuery([getToken().email, getToken().email], () =>
@@ -21,6 +24,14 @@ export default function Dashboard() {
   const patientQuery = useQuery(['patients', getToken().token], () =>
     fetchData('patients', getToken().token)
   )
+
+  const navigate = useNavigate()
+
+  if (usersQuery.isError) {
+    getModalExpired().then(() => {
+      navigate('/login')
+    })
+  }
 
   return (
     <Box

@@ -20,6 +20,8 @@ import { fetchData } from '@/api/get'
 import { getToken } from '@/helpers/function/getToken'
 
 import ModalConfirm from './components/ModalConfirm'
+import { useNavigate } from 'react-router-dom'
+import { getModalExpired } from '@/helpers/function/getModalExpired'
 
 export default function Appointment() {
   const [data, setData] = useState(null)
@@ -46,10 +48,21 @@ export default function Appointment() {
     fetchData('departments', getToken().token)
   )
 
-  const { data: dataAppointment, isFetching: isLoad } = useQuery(
-    ['outpatients-today', filterParam.status],
-    () => fetchData(`outpatients${filterParam.status}/today`, getToken().token)
+  const {
+    data: dataAppointment,
+    isFetching: isLoad,
+    isError,
+  } = useQuery(['outpatients-today', filterParam.status], () =>
+    fetchData(`outpatients${filterParam.status}/today`, getToken().token)
   )
+
+  const navigate = useNavigate()
+
+  if (isError) {
+    getModalExpired().then(() => {
+      navigate('/login')
+    })
+  }
 
   useEffect(() => {
     if (!isLoad && !dataDepartment.isLoading) {

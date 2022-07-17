@@ -10,14 +10,15 @@ import {
 import { CustomFilter, LoadingTable, SearchBox, TableBox } from '@/components'
 import { useState } from 'react'
 
-import { dayList, dataHead, field } from '@/constants/schedule'
-import { toCapitalize } from '@/helpers/function/toCapitalize'
+import { dataHead, field } from '@/constants/schedule'
 import { useQuery } from 'react-query'
 import { fetchData } from '@/api/get'
 
 import { getToken } from '@/helpers/function/getToken'
+import { getModalExpired } from '@/helpers/function/getModalExpired'
 
 import ModalInput from './components/ModalInput'
+import { useNavigate } from 'react-router-dom'
 
 const Schedule = () => {
   const initialPagination = {
@@ -40,6 +41,14 @@ const Schedule = () => {
   const dataSchedule = useQuery(['schedule', getToken().token], () =>
     fetchData('doctors/schedule', getToken().token)
   )
+
+  const navigate = useNavigate()
+
+  if (dataSchedule.isError) {
+    getModalExpired().then(() => {
+      navigate('/login')
+    })
+  }
 
   const handleOpenSchedule = () => {
     setOpenModal((prev) => {
