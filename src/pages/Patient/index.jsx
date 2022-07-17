@@ -108,18 +108,18 @@ export default function Patient() {
         valueSearch={searchPatient.value}
         onResetSearch={handleResetSearch}
       />
-
-      <ModalInput
-        isOpen={openModal}
-        handleClose={handleOpenPatient}
-        field={field}
-        initialData={initialData}
-        title='New Patient'
-        endPoint='patients'
-        methodSubmit='post'
-        queryKey='patients'
-      />
-
+      {openModal && (
+        <ModalInput
+          isOpen={openModal}
+          handleClose={handleOpenPatient}
+          field={field}
+          initialData={initialData}
+          title='New Patient'
+          endPoint='patients'
+          methodSubmit='post'
+          queryKey='patients'
+        />
+      )}
       <Box
         sx={{
           marginTop: '30px',
