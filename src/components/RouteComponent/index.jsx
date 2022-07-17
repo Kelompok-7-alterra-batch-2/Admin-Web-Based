@@ -10,10 +10,9 @@ import {
   Schedule,
   EditPatient,
   History,
-  ForgotPassword,
-  NotFound
+  NotFound,
+  Register,
 } from '@/pages'
-
 
 import { DefaultLayout, PrivateRoute } from '@/components'
 
@@ -22,8 +21,8 @@ export default function RouteComponent() {
     <Routes>
       <Route path='login' element={<Login />} />
 
-      <Route path='forgotpassword' element={<ForgotPassword />} />
-      
+      <Route path='register' element={<Register />} />
+
       <Route element={<PrivateRoute />}>
         <Route path='/' element={<DefaultLayout />}>
           <Route index element={<Dashboard />} />
@@ -40,12 +39,10 @@ export default function RouteComponent() {
           <Route path='schedule' element={<Schedule />} />
 
           <Route path='history' element={<History />} />
-
         </Route>
       </Route>
 
       <Route path='*' element={<NotFound />} />
-    
     </Routes>
   )
 }

@@ -1,9 +1,11 @@
 import React, { useEffect, useMemo, useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
+import moment from 'moment'
 
 // components
 import { Box } from '@mui/system'
 import {
+  Typography,
   Button,
   FormHelperText,
   IconButton,
@@ -11,7 +13,6 @@ import {
   InputLabel,
   OutlinedInput,
   TextField,
-  Typography,
 } from '@mui/material'
 
 import Visibility from '@mui/icons-material/Visibility'
@@ -23,14 +24,17 @@ import Swal from 'sweetalert2'
 import Logo from '@/assets/svg/Logo2.svg'
 
 // api
-import { postLogin } from '@/api/post'
+import { postRegister } from '@/api/post'
 
-export const Login = () => {
+const Register = () => {
   // States & Variable
   const [values, setValues] = useState({
     showPassword: false,
     email: '',
     password: '',
+    name: '',
+    phoneNumber: '',
+    dob: '',
   })
   const navigate = useNavigate()
 
@@ -46,6 +50,38 @@ export const Login = () => {
       toast.addEventListener('mouseleave', Swal.resumeTimer)
     },
   })
+
+  const validateName = (value) => {
+    return value.match(/[A-Za-z'.,\s].{4,}$/)
+  }
+  const helperName = useMemo(() => {
+    if (!values.name)
+      return {
+        text: ' ',
+        error: false,
+      }
+    const isValid = validateName(values.name)
+    return {
+      text: isValid ? ' ' : 'Enter a valid name',
+      error: isValid ? false : true,
+    }
+  }, [values.name])
+
+  const validatePhone = (value) => {
+    return value.match(/^[0-9+\b].{6,}/g)
+  }
+  const helperPhone = useMemo(() => {
+    if (!values.phoneNumber)
+      return {
+        text: ' ',
+        error: false,
+      }
+    const isValid = validatePhone(values.phoneNumber)
+    return {
+      text: isValid ? ' ' : 'Enter a valid phone number',
+      error: isValid ? false : true,
+    }
+  }, [values.phoneNumber])
 
   // Helper Email
   const validateEmail = (value) => {
@@ -83,41 +119,44 @@ export const Login = () => {
     }
   }, [values.password])
 
+  const handleChangeDate = (e) => {
+    const format = 'YYYY[-]MM[-]DD'
+    const max = moment().add(1, 'M')
+    const min = moment('1920-01-01')
+    const maxCheck = moment.min(moment(e.target.value), max)
+    const minCheck = moment.max(maxCheck, min).format(format)
+    if (minCheck === 'Invalid date') {
+      return onChange('')
+    }
+    setValues((prev) => {
+      return { ...prev, dob: minCheck }
+    })
+  }
+
   // Function
   const handleSubmit = async (e) => {
     e.preventDefault()
-    if (!helperEmail.error || !helperPassword.error) {
-      const formData = {
-        email: values.email,
-        password: values.password,
-      }
-      const { data, error } = await postLogin(formData)
+    if (
+      !helperEmail.error ||
+      !helperPassword.error ||
+      !helperName.error ||
+      !helperPhone.error
+    ) {
+      const { error } = await postRegister(values)
       if (!error) {
-        localStorage.setItem('token', JSON.stringify(data))
+        navigate('/login')
         setTimeout(() => {
-          if (localStorage.getItem('token')) {
-            Toast.fire({
-              icon: 'success',
-              title: 'Signed in successfully',
-            })
-          } else {
-            Toast.fire({
-              icon: 'error',
-              title: 'Signed in Error',
-            })
-          }
+          Toast.fire({
+            icon: 'success',
+            title: 'Registered successfully',
+          })
         }, 100)
       } else {
         Toast.fire({
           icon: 'error',
-          title: 'Signed in Error',
+          title: 'Registered Error',
         })
       }
-      setValues({
-        showPassword: false,
-        email: '',
-        password: '',
-      })
     }
   }
 
@@ -130,13 +169,12 @@ export const Login = () => {
         localStorage.removeItem('token')
       }
     }
-  })
+  }, [])
 
   return (
     <Box
       sx={{
         width: '100%',
-        height: '100vh',
         bgcolor: 'primary.main',
         display: 'flex',
         justifyContent: 'center',
@@ -145,10 +183,9 @@ export const Login = () => {
     >
       <Box
         sx={{
-          width: '23rem',
-          height: '33rem',
+          width: '25rem',
           bgcolor: 'white',
-          margin: '1.2rem',
+          my: '6rem',
           borderRadius: '24px',
           boxShadow: '0px 4px 4px 0px rgba(0,0,0,0.25)',
           padding: '2rem 2.5rem',
@@ -180,7 +217,72 @@ export const Login = () => {
         <Box component='form' onSubmit={handleSubmit}>
           <InputLabel
             shrink
-            htmlFor='login-email'
+            htmlFor='register-name'
+            sx={{ fontSize: '18px', color: 'black' }}
+          >
+            Name
+          </InputLabel>
+          <TextField
+            fullWidth
+            required
+            id='register-name'
+            size='small'
+            type='text'
+            value={values.name}
+            onChange={(e) => setValues({ ...values, name: e.target.value })}
+            error={helperName.error}
+          />
+          {helperName.error ? (
+            <FormHelperText error>{helperName.text}</FormHelperText>
+          ) : (
+            <FormHelperText> </FormHelperText>
+          )}
+          <InputLabel
+            shrink
+            htmlFor='register-dob'
+            sx={{ fontSize: '18px', color: 'black' }}
+          >
+            Date of Birth
+          </InputLabel>
+          <TextField
+            sx={{
+              mb: '25px',
+            }}
+            fullWidth
+            required
+            id='register-dob'
+            size='small'
+            type='date'
+            value={values.dob}
+            onChange={handleChangeDate}
+          />
+          <InputLabel
+            shrink
+            htmlFor='register-phone'
+            sx={{ fontSize: '18px', color: 'black' }}
+          >
+            Phone Number
+          </InputLabel>
+          <TextField
+            fullWidth
+            required
+            id='register-phone'
+            size='small'
+            type='text'
+            value={values.phoneNumber}
+            onChange={(e) =>
+              setValues({ ...values, phoneNumber: e.target.value })
+            }
+            error={helperPhone.error}
+          />
+          {helperPhone.error ? (
+            <FormHelperText error>{helperPhone.text}</FormHelperText>
+          ) : (
+            <FormHelperText> </FormHelperText>
+          )}
+          <InputLabel
+            shrink
+            htmlFor='register-email'
             sx={{ fontSize: '18px', color: 'black' }}
           >
             Email
@@ -188,7 +290,7 @@ export const Login = () => {
           <TextField
             fullWidth
             required
-            id='login-email'
+            id='register-email'
             size='small'
             type='text'
             value={values.email}
@@ -202,7 +304,7 @@ export const Login = () => {
           )}
           <InputLabel
             shrink
-            htmlFor='login-password'
+            htmlFor='register-password'
             sx={{ fontSize: '18px', color: 'black' }}
           >
             Password
@@ -238,14 +340,6 @@ export const Login = () => {
           ) : (
             <></>
           )}
-          <Box
-            sx={{
-              display: 'flex',
-              justifyContent: 'end',
-              fontSize: '14px',
-              paddingTop: '0.3rem',
-            }}
-          ></Box>
           <Button
             sx={{
               mt: '30px',
@@ -253,35 +347,39 @@ export const Login = () => {
             type='submit'
             fullWidth
             variant='contained'
-            disabled={helperEmail.error || helperPassword.error}
+            disabled={
+              helperEmail.error ||
+              helperPassword.error ||
+              helperPhone.error ||
+              helperName.error
+            }
           >
-            Sign in
+            Register
           </Button>
         </Box>
         <Typography
           sx={{
             textAlign: 'center',
-            mt: '10px',
+            mt: '20px',
             color: 'neutral700',
           }}
         >
-          Or
+          Have Account already?
         </Typography>
         <Button
           sx={{
-            mt: '10px',
+            mt: '20px',
           }}
           fullWidth
           variant='contained'
           onClick={() => {
-            navigate('/register')
+            navigate('/login')
           }}
         >
-          Register
+          Sign In
         </Button>
       </Box>
     </Box>
   )
 }
-
-export default Login
+export default Register
