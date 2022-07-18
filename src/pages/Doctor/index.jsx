@@ -14,7 +14,7 @@ import {
 
 import { fetchDoctor, fetchFilter, fetchData } from '@/api/get'
 
-import { dataHead, field, initialData } from '@/constants/doctor'
+import { dataHead, field, initialData, fieldEdit } from '@/constants/doctor'
 
 import { getToken } from '@/helpers/function/getToken'
 
@@ -205,8 +205,9 @@ export default function Doctor() {
             dataHead={dataHead}
             dataBody={data?.data.content}
             isLoading={isLoad}
+            endPointEdit='doctors/admin'
             endPoint='doctors'
-            fieldEdit={field}
+            fieldEdit={fieldEdit}
             queryKey='doctors'
             editParam=''
           >
@@ -236,8 +237,9 @@ export default function Doctor() {
                 manual.page * manual.row,
                 manual.page * manual.row + manual.row
               )}
+              endPointEdit='doctors/admin'
               endPoint='doctors'
-              fieldEdit={field}
+              fieldEdit={fieldEdit}
               queryKey='filterData'
               editParam=''
             >

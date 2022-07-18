@@ -41,7 +41,7 @@ const OutpatientsBox = () => {
       data.filter((item) => {
         const dateNow = moment().format('YYYY[-]MM[-]DD')
         if (moment(item.date).isAfter(dateNow)) {
-          return upcoming.push(item)
+          return upcomingData.push(item)
         }
         return pastData.push(item)
       })

@@ -33,6 +33,7 @@ export default function TableBox(props) {
     queryKey,
     children,
     editParam,
+    endPointEdit,
   } = props
 
   const [openModal, setOpenModal] = useState({
@@ -232,7 +233,7 @@ export default function TableBox(props) {
           field={fieldEdit}
           initialData={param.edit}
           title={'Edit ' + toCapitalize(endPoint)}
-          endPoint={endPoint}
+          endPoint={endPointEdit !== undefined ? endPointEdit : endPoint}
           methodSubmit='put'
           queryKey={queryKey}
           editParam={editParam}
