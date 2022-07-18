@@ -14,9 +14,12 @@ import {
 
 import { fetchDoctor, fetchFilter, fetchData } from '@/api/get'
 
-import { dataHead, field, initialData } from '@/constants/doctor'
+import { dataHead, field, initialData, fieldEdit } from '@/constants/doctor'
 
 import { getToken } from '@/helpers/function/getToken'
+
+import { getModalExpired } from '@/helpers/function/getModalExpired'
+import { useNavigate } from 'react-router-dom'
 
 export default function Doctor() {
   const initialPagination = {
@@ -65,6 +68,15 @@ export default function Doctor() {
       ),
     { enabled: filterParam.enabled }
   )
+
+  const navigate = useNavigate()
+
+  if (isErr) {
+    getModalExpired().then(() => {
+      navigate('/login')
+    })
+  }
+
   const handleChangeDepartment = (e) => {
     if (searchDoctor !== '') {
       setSearchDoctor('')
@@ -194,7 +206,7 @@ export default function Doctor() {
             dataBody={data?.data.content}
             isLoading={isLoad}
             endPoint='doctors'
-            fieldEdit={field}
+            fieldEdit={fieldEdit}
             queryKey='doctors'
             editParam=''
           >
@@ -225,7 +237,7 @@ export default function Doctor() {
                 manual.page * manual.row + manual.row
               )}
               endPoint='doctors'
-              fieldEdit={field}
+              fieldEdit={fieldEdit}
               queryKey='filterData'
               editParam=''
             >

@@ -46,19 +46,19 @@ export const field = [
     option: [
       {
         id: 1,
-        type: 'A',
+        type: 'O',
       },
       {
         id: 2,
-        type: 'AB',
+        type: 'A',
       },
       {
         id: 3,
-        type: 'B',
+        type: 'AB',
       },
       {
         id: 4,
-        type: 'O',
+        type: 'B',
       },
     ],
   },
@@ -119,3 +119,17 @@ export const dataHead = [
     path: '/patient/edit/',
   },
 ]
+
+export const fieldEdit = ['name', 'dob', 'phoneNumber', 'address', 'gender_id']
+
+export const fieldOutpatient = [
+  'appointmentReason',
+  'diagnosis',
+  'prescription',
+]
+
+export const initialPatientError = {
+  appointmentReason: false,
+  diagnosis: false,
+  prescription: false,
+}

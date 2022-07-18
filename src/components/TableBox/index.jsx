@@ -9,13 +9,12 @@ import {
   TableRow,
   IconButton,
   Box,
-  Typography,
 } from '@mui/material'
 
 import Edit from '@mui/icons-material/Edit'
 import Delete from '@mui/icons-material/Delete'
 
-import { LoadingTable, ModalInput } from '@/components'
+import { LoadingTable, ModalInput, DataNotFound } from '@/components'
 
 import ModalDelete from './ModalDelete'
 import CustomChip from './CustomChip'
@@ -172,6 +171,18 @@ export default function TableBox(props) {
                         )
                       }
 
+                      if (itemCell.fieldGrandChild) {
+                        return (
+                          <TableCell key={indexCell} align='center'>
+                            {toCapitalize(
+                              itemRow[itemCell.fieldname][itemCell.fieldChild][
+                                itemCell.fieldGrandChild
+                              ]
+                            )}
+                          </TableCell>
+                        )
+                      }
+
                       if (itemCell.fieldChild) {
                         return (
                           <TableCell key={indexCell} align='center'>
@@ -199,18 +210,7 @@ export default function TableBox(props) {
           {isLoading && <LoadingTable />}
 
           {!isLoading && (!dataBody || dataBody.length === 0) && (
-            <Box
-              sx={{
-                width: '100%',
-                textAlign: 'center',
-                my: '30px',
-              }}
-            >
-              <Typography variant='body1' color='neutral500'>
-                {' '}
-                No data in this table{' '}
-              </Typography>
-            </Box>
+            <DataNotFound />
           )}
         </TableContainer>
         {children}

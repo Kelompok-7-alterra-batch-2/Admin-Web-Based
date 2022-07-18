@@ -32,6 +32,34 @@ export const dataHead = [
   },
 ]
 
+export const dataHeadFilter = [
+  {
+    headerName: 'Time',
+    fieldname: 'arrivalTime',
+    noCap: true,
+  },
+  {
+    headerName: 'Patient',
+    fieldname: 'patient',
+    fieldChild: 'name',
+  },
+  {
+    headerName: 'Doctor',
+    fieldname: 'doctor',
+    fieldChild: 'name',
+  },
+  {
+    headerName: 'Status',
+    fieldname: 'outpatientCondition',
+    fieldChild: 'conditions',
+  },
+  {
+    headerName: 'Edit',
+    fieldname: 'edit',
+    delete: true,
+  },
+]
+
 export const field = [
   {
     title: 'Patient',
@@ -71,6 +99,7 @@ export const field = [
     type: 'doctor',
     value: 'doctor',
     valueChild: 'id',
+    disabled: false,
   },
   {
     title: 'Appointment Reason',
@@ -88,3 +117,18 @@ export const initialData = {
   doctor_id: '',
   appointmentReason: '',
 }
+
+export const filterStatus = [
+  {
+    name: 'Done',
+    value: '/done',
+  },
+  {
+    name: 'Process',
+    value: '/process',
+  },
+  {
+    name: 'Pending',
+    value: '/pending',
+  },
+]

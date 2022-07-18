@@ -1,4 +1,4 @@
-import { Box, Typography, Grid, TablePagination } from '@mui/material'
+import { Box, Typography, Grid, TablePagination, Divider } from '@mui/material'
 
 import { useState, useEffect } from 'react'
 
@@ -8,22 +8,36 @@ import { CustomFilter, SearchBox, TableBox, LoadingTable } from '@/components'
 
 import { toCapitalize } from '@/helpers/function/toCapitalize'
 
-import { dataHead, field } from '@/constants/appointment'
+import {
+  dataHead,
+  field,
+  dataHeadFilter,
+  filterStatus,
+} from '@/constants/appointment'
 
-import { fetchAppointment, fetchData } from '@/api/get'
+import { fetchData } from '@/api/get'
 
 import { getToken } from '@/helpers/function/getToken'
 
 import ModalConfirm from './components/ModalConfirm'
+import { useNavigate } from 'react-router-dom'
+import { getModalExpired } from '@/helpers/function/getModalExpired'
 
 export default function Appointment() {
   const [data, setData] = useState(null)
 
   const [openConfirm, setOpenConfirm] = useState(false)
 
-  const [filterParam, setFilterParam] = useState('')
+  const [filterParam, setFilterParam] = useState({
+    department: '',
+    status: '',
+  })
 
   const [dataFilter, setDataFilter] = useState(null)
+
+  const [searchAppointment, setSearchAppointment] = useState('')
+
+  const [dataSearch, setDataSearch] = useState(null)
 
   const [pagination, setPagination] = useState({
     page: 0,
@@ -34,16 +48,27 @@ export default function Appointment() {
     fetchData('departments', getToken().token)
   )
 
-  const { data: dataAppointment, isFetching: isLoad } = useQuery(
-    'outpatients',
-    fetchAppointment
+  const {
+    data: dataAppointment,
+    isFetching: isLoad,
+    isError,
+  } = useQuery(['outpatients-today', filterParam.status], () =>
+    fetchData(`outpatients${filterParam.status}/today`, getToken().token)
   )
+
+  const navigate = useNavigate()
+
+  if (isError) {
+    getModalExpired().then(() => {
+      navigate('/login')
+    })
+  }
 
   useEffect(() => {
     if (!isLoad && !dataDepartment.isLoading) {
       let totalFilter = []
       for (let i = 0; i < dataDepartment.data?.data.length; i++) {
-        let filter = dataAppointment.filter(
+        let filter = dataAppointment?.data.filter(
           (item) => item.department.id === dataDepartment.data?.data[i].id
         )
         totalFilter.push({
@@ -54,16 +79,42 @@ export default function Appointment() {
       }
       setData(totalFilter)
     }
-  }, [isLoad, dataAppointment, dataDepartment.isLoading, dataDepartment.data])
+  }, [
+    isLoad,
+    dataAppointment?.data,
+    dataDepartment.isLoading,
+    dataDepartment.data,
+  ])
+
+  useEffect(() => {
+    if (filterParam.department !== '') {
+      setDataFilter(data.filter((item) => item.id === filterParam.department))
+    }
+  }, [filterParam.department, data])
 
   const handleChangeDepartment = (e) => {
-    setFilterParam(e.target.value)
-
+    setDataSearch(null)
     if (e.target.value === 'all') {
-      return setDataFilter(null)
+      setDataFilter(null)
+      return setFilterParam((prev) => {
+        return { ...prev, department: '' }
+      })
     }
+    setFilterParam((prev) => {
+      return { ...prev, department: e.target.value }
+    })
+  }
 
-    return setDataFilter(data.filter((item) => item.id === e.target.value))
+  const handleChangeStatus = (e) => {
+    setDataSearch(null)
+    if (e.target.value === 'all') {
+      return setFilterParam((prev) => {
+        return { ...prev, status: '' }
+      })
+    }
+    setFilterParam((prev) => {
+      return { ...prev, status: e.target.value }
+    })
   }
 
   const handleOpenModal = () => {
@@ -71,11 +122,24 @@ export default function Appointment() {
   }
 
   const onChangeSearch = (e) => {
-    console.log(e)
+    setSearchAppointment(e.target.value)
+  }
+
+  const handleResetSearch = () => {
+    setSearchAppointment('')
+    setDataSearch(null)
   }
 
   const handleSearch = () => {
-    console.log(data)
+    fetchData('outpatients/patients/today', getToken().token, {
+      name: searchAppointment,
+    }).then((result) => {
+      setPagination({
+        page: 0,
+        row: 5,
+      })
+      setDataSearch(result.data)
+    })
   }
 
   const handlePageChange = (e, newPage) => {
@@ -99,21 +163,34 @@ export default function Appointment() {
         onClickLeftButton={handleOpenModal}
         placeholder='Search here...'
         onChangeSearch={onChangeSearch}
+        valueSearch={searchAppointment}
+        onResetSearch={handleResetSearch}
         onClickSearch={handleSearch}
       >
         <Grid item xs={6}>
           {!dataDepartment.isLoading && (
             <CustomFilter
-              value={filterParam}
+              value={filterParam.department}
               onChange={handleChangeDepartment}
               placeholder='DEPARTMENT'
               filters={dataDepartment.data?.data}
               param={{ title: 'name', value: 'id' }}
               sx={{
                 width: '175px',
+                mr: '30px',
               }}
             />
           )}
+          <CustomFilter
+            value={filterParam.status}
+            onChange={handleChangeStatus}
+            placeholder='STATUS'
+            filters={filterStatus}
+            param={{ title: 'name', value: 'value' }}
+            sx={{
+              width: '175px',
+            }}
+          />
         </Grid>
       </SearchBox>
       <Box
@@ -129,6 +206,7 @@ export default function Appointment() {
         {!data && <LoadingTable />}
         {data &&
           !dataFilter &&
+          !dataSearch &&
           data.map((item, index) => (
             <Box
               key={index}
@@ -148,7 +226,11 @@ export default function Appointment() {
               </Typography>
 
               <TableBox
-                dataHead={dataHead}
+                dataHead={
+                  filterParam.status !== '' && filterParam.status !== 'all'
+                    ? dataHeadFilter
+                    : dataHead
+                }
                 dataBody={item.field}
                 isLoading={isLoad}
                 endPoint='outpatients'
@@ -156,10 +238,12 @@ export default function Appointment() {
                 queryKey='outpatients'
                 editParam=''
               />
+              <Divider />
             </Box>
           ))}
 
         {dataFilter &&
+          !dataSearch &&
           dataFilter.map((item, index) => (
             <Box
               key={index}
@@ -180,7 +264,10 @@ export default function Appointment() {
 
               <TableBox
                 dataHead={dataHead}
-                dataBody={item.field.slice()}
+                dataBody={item.field.slice(
+                  pagination.page * pagination.row,
+                  pagination.page * pagination.row + pagination.row
+                )}
                 isLoading={isLoad}
                 endPoint='outpatients'
                 fieldEdit={field}
@@ -202,6 +289,41 @@ export default function Appointment() {
               </TableBox>
             </Box>
           ))}
+        {dataSearch && (
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              rowGap: '30px',
+            }}
+          >
+            <TableBox
+              dataHead={dataHeadFilter}
+              dataBody={dataSearch.slice(
+                pagination.page * pagination.row,
+                pagination.page * pagination.row + pagination.row
+              )}
+              isLoading={isLoad}
+              endPoint='outpatients'
+              fieldEdit={field}
+              queryKey='outpatients'
+              editParam=''
+            >
+              <TablePagination
+                sx={{
+                  mt: '30px',
+                }}
+                onRowsPerPageChange={handleRowsChange}
+                onPageChange={handlePageChange}
+                page={pagination.page}
+                rowsPerPage={pagination.row}
+                count={dataSearch.length}
+                component='div'
+                rowsPerPageOptions={[5, 10]}
+              />
+            </TableBox>
+          </Box>
+        )}
       </Box>
 
       <ModalConfirm

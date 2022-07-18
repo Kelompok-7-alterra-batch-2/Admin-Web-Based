@@ -8,6 +8,8 @@ import 'swiper/css/bundle'
 
 import { toCapitalize } from '@/helpers/function/toCapitalize'
 
+import doctorAvatar from '@/assets/image/avatar_doctor.jpg'
+
 export default function DoctorBox(props) {
   const { doctor, isLoading } = props
   return (
@@ -57,7 +59,7 @@ export default function DoctorBox(props) {
                     <CardMedia
                       component='img'
                       height='250px'
-                      image='https://imgs.search.brave.com/F8PsUWmSwHQBYnhSQedec-qE1biVfOnOUpXz62mAuic/rs:fit:918:832:1/g:ce/aHR0cHM6Ly9yZXF1/aXJlbWVudHNpbmMu/Y29tL3dwLWNvbnRl/bnQvdXBsb2Fkcy8y/MDE4LzEwL2RvY3Rv/ci5wbmc'
+                      image={doctorAvatar}
                       alt={item.name + 'image'}
                       sx={{
                         width: '250px',

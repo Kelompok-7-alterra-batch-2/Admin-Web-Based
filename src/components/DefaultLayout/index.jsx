@@ -14,98 +14,98 @@ import {
 } from '@mui/material'
 import { useState, useEffect } from 'react'
 
-import { useLocation, Outlet, useNavigate } from "react-router-dom";
+import { useLocation, Outlet, useNavigate } from 'react-router-dom'
 
 //Dashboard Icon
-import Dashboard from "@mui/icons-material/Dashboard";
-import DashboardOutlined from "@mui/icons-material/DashboardOutlined";
+import Dashboard from '@mui/icons-material/Dashboard'
+import DashboardOutlined from '@mui/icons-material/DashboardOutlined'
 //Appoinment Icon
-import ContentPasteTwoToneIcon from "@mui/icons-material/ContentPasteTwoTone";
-import ContentPasteOutlined from "@mui/icons-material/ContentPasteOutlined";
+import ContentPasteTwoToneIcon from '@mui/icons-material/ContentPasteTwoTone'
+import ContentPasteOutlined from '@mui/icons-material/ContentPasteOutlined'
 //Schedule Icon
-import DateRange from "@mui/icons-material/DateRange";
-import DateRangeOutlined from "@mui/icons-material/DateRangeOutlined";
+import DateRange from '@mui/icons-material/DateRange'
+import DateRangeOutlined from '@mui/icons-material/DateRangeOutlined'
 //Patient Icon
-import AssignmentIndIcon from "@mui/icons-material/AssignmentInd";
-import AssignmentIndOutlined from "@mui/icons-material/AssignmentIndOutlined";
+import AssignmentIndIcon from '@mui/icons-material/AssignmentInd'
+import AssignmentIndOutlined from '@mui/icons-material/AssignmentIndOutlined'
 //Doctor Icon
-import PersonIcon from "@mui/icons-material/Person";
-import PersonOutlined from "@mui/icons-material/PersonOutline";
+import PersonIcon from '@mui/icons-material/Person'
+import PersonOutlined from '@mui/icons-material/PersonOutline'
 //History Icon
-import WorkHistoryOutlinedIcon from "@mui/icons-material/WorkHistoryOutlined";
-import WorkHistoryIcon from "@mui/icons-material/WorkHistory";
+import WorkHistoryOutlinedIcon from '@mui/icons-material/WorkHistoryOutlined'
+import WorkHistoryIcon from '@mui/icons-material/WorkHistory'
 
-import LogoutIcon from "@mui/icons-material/Logout";
+import LogoutIcon from '@mui/icons-material/Logout'
 
-import ItemList from "./components/ItemList";
+import ItemList from './components/ItemList'
 
-import Logo from "@/assets/svg/Logo.svg";
+import Logo from '@/assets/svg/Logo.svg'
 
 import { fetchUser } from '@/api/get'
 
 import { getToken } from '@/helpers/function/getToken'
 import { toCapitalize } from '@/helpers/function/toCapitalize'
 
-const drawerWidth = 272;
+const drawerWidth = 272
 
 const listSideBar = [
   {
-    title: "Dashboard",
+    title: 'Dashboard',
     iconActive: <Dashboard />,
     iconDefault: <DashboardOutlined />,
-    path: "/",
+    path: '/',
   },
   {
-    title: "Appointment",
+    title: 'Appointment',
     iconActive: <ContentPasteTwoToneIcon />,
     iconDefault: <ContentPasteOutlined />,
-    path: "/appointment",
+    path: '/appointment',
   },
   {
-    title: "Schedule",
+    title: 'Schedule',
     iconActive: <DateRange />,
     iconDefault: <DateRangeOutlined />,
-    path: "/schedule",
+    path: '/schedule',
   },
   {
-    title: "Patient",
+    title: 'Patient',
     iconActive: <AssignmentIndIcon />,
     iconDefault: <AssignmentIndOutlined />,
-    path: "/patient",
+    path: '/patient',
   },
   {
-    title: "Doctor",
+    title: 'Doctor',
     iconActive: <PersonIcon />,
     iconDefault: <PersonOutlined />,
-    path: "/doctor",
+    path: '/doctor',
   },
   {
-    title: "History",
+    title: 'History',
     iconActive: <WorkHistoryIcon />,
     iconDefault: <WorkHistoryOutlinedIcon />,
-    path: "/history",
+    path: '/history',
   },
   {
-    title: "Sign Out",
+    title: 'Sign Out',
     iconDefault: <LogoutIcon />,
-    path: "",
+    path: '',
   },
-];
+]
 
 export default function DefaultLayout() {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState(null)
 
-  const [isError, setIsError] = useState(false);
+  const [isError, setIsError] = useState(false)
 
-  const [isLoadUser, setIsLoadUser] = useState(false);
+  const [isLoadUser, setIsLoadUser] = useState(false)
 
-  const location = useLocation();
+  const location = useLocation()
 
   const indexBar = listSideBar.findIndex(
     (item) => item.path === location.pathname
-  );
+  )
 
-  const navigate = useNavigate();
+  const navigate = useNavigate()
 
   useEffect(() => {
     getUser()
@@ -113,15 +113,15 @@ export default function DefaultLayout() {
 
   const getUser = async () => {
     setIsLoadUser(true)
-    fetchUser(getToken().email)
+    fetchUser(getToken().email,getToken().token)
       .then((res) => {
-        setUser(res.data);
+        setUser(res.data)
       })
       .catch(() => {
-        setIsError(true);
-      });
-    setIsLoadUser(false);
-  };
+        setIsError(true)
+      })
+    setIsLoadUser(false)
+  }
 
   if (!JSON.parse(localStorage.getItem('token'))) {
     navigate('/login')
@@ -133,41 +133,41 @@ export default function DefaultLayout() {
   }
 
   return (
-    <Box sx={{ display: "flex" }}>
+    <Box sx={{ display: 'flex' }}>
       <Drawer
-        variant="permanent"
-        anchor="left"
+        variant='permanent'
+        anchor='left'
         sx={{
           width: drawerWidth,
           flexShrink: 0,
-          "& .MuiDrawer-paper": {
+          '& .MuiDrawer-paper': {
             width: drawerWidth,
-            boxSizing: "border-box",
+            boxSizing: 'border-box',
           },
           zIndex: 999,
         }}
       >
         <Toolbar
           sx={{
-            bgcolor: "primary.main",
-            color: "white",
-            gap: "8px",
-            justifyContent: "center",
-            padding: "24px 0",
+            bgcolor: 'primary.main',
+            color: 'white',
+            gap: '8px',
+            justifyContent: 'center',
+            padding: '24px 0',
           }}
         >
-          <img src={Logo} alt="logo" />
+          <img src={Logo} alt='logo' />
 
-          <Typography variant="h3">Care Hospital</Typography>
+          <Typography variant='h3'>Care Hospital</Typography>
         </Toolbar>
 
         <Divider />
 
         <List
           sx={{
-            bgcolor: "primary.main",
-            color: "white",
-            height: "100vh",
+            bgcolor: 'primary.main',
+            color: 'white',
+            height: '100vh',
           }}
         >
           {listSideBar.map((list, index) => (
@@ -186,51 +186,51 @@ export default function DefaultLayout() {
       >
         <Box
           sx={{
-            display: "flex",
-            height: "88px",
-            padding: "0 50px",
-            bgcolor: "neutral200",
-            justifyContent: "space-between",
-            alignItems: "center",
-            marginBottom: "30px",
+            display: 'flex',
+            height: '88px',
+            padding: '0 50px',
+            bgcolor: 'neutral200',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            marginBottom: '30px',
           }}
-          maxWidth="xl"
+          maxWidth='xl'
         >
-          <Typography variant="h3">
+          <Typography variant='h3'>
             {listSideBar[indexBar] === undefined
-              ? "Edit Patient"
+              ? 'Edit Patient'
               : listSideBar[indexBar].title}
           </Typography>
 
           {isLoadUser && (
             <Box
               sx={{
-                display: "flex",
-                gap: "20px",
+                display: 'flex',
+                gap: '20px',
               }}
             >
               <Skeleton
-                variant="circular"
-                animation="wave"
+                variant='circular'
+                animation='wave'
                 width={48}
                 height={48}
               />
 
-              <Skeleton animation="wave" width={100} height={48} />
+              <Skeleton animation='wave' width={100} height={48} />
             </Box>
           )}
 
           {user && (
             <Box
               sx={{
-                display: "flex",
-                gap: "20px",
+                display: 'flex',
+                gap: '20px',
               }}
             >
               <Avatar
                 sx={{
-                  width: "48px",
-                  height: "48px",
+                  width: '48px',
+                  height: '48px',
                 }}
                 src={user.avatar_url}
               />
@@ -246,18 +246,18 @@ export default function DefaultLayout() {
             </Box>
           )}
         </Box>
-        <Container maxWidth="xl">
+        <Container maxWidth='xl'>
           <Outlet />
         </Container>
       </Box>
       <Snackbar
-        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
         open={isError}
         onClose={() => setIsError(false)}
         autoHideDuration={3000}
       >
-        <Alert severity="error">Sorry, error</Alert>
+        <Alert severity='error'>Sorry, error</Alert>
       </Snackbar>
     </Box>
-  );
+  )
 }

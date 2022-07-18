@@ -1,65 +1,89 @@
 import { useState } from 'react'
 import { useQuery } from 'react-query'
 
-import { Grid } from '@mui/material'
-
 import { fetchData } from '@/api/get'
 
-import { TableBox, SearchBox, CustomFilter } from '@/components'
+import { TableBox } from '@/components'
 
-import { dataHead } from '@/constants/history'
+import { dataHead, field } from '@/constants/history'
+
+import { getModalExpired } from '@/helpers/function/getModalExpired'
+import { getToken } from '@/helpers/function/getToken'
+import { useNavigate } from 'react-router-dom'
+import { TablePagination, Typography } from '@mui/material'
 
 const History = () => {
-  const [endPoint, setEndPoint] = useState('outpatients')
+  const [paginate, setPaginate] = useState({
+    page: 0,
+    row: 5,
+  })
+   
+  const Department = useQuery(['departments', getToken().token], () =>
+    fetchData('departments', getToken().token)
+  )
 
-  const [search, setSearch] = useState('')
 
-  const [filterParam, setFilterParam] = useState('')
+  const dataHistory = useQuery(['history', paginate], () =>
+    fetchData(`outpatients/page`, getToken().token, {
+      page: paginate.page,
+      size: paginate.row,
+    })
+  )
 
-  const dataHistory = useQuery(['history', endPoint], () => fetchData(endPoint))
+  const navigate = useNavigate()
 
-  const dataDepartment = useQuery('departments', () => fetchData('departments'))
-
-  const onChangeSearch = (e) => {
-    setSearch(e.target.value)
+  if (dataHistory.isError) {
+    getModalExpired().then(() => {
+      navigate('/login')
+    })
   }
 
-  const handleSearch = () => {}
+  const handlePageChange = (e, newPage) => {
+    setPaginate((prev) => {
+      return { ...prev, page: newPage }
+    })
+  }
 
-  const handleResetSearch = () => {}
-
-  const handleChangeDepartment = () => {}
+  const handleChangeRowsPerPage = (e) => {
+    setPaginate({ page: 0, row: parseInt(e.target.value, 10) })
+  }
 
   return (
     <>
-      <SearchBox
-        placeholder='Search here...'
-        onChangeSearch={onChangeSearch}
-        onClickSearch={handleSearch}
-        valueSearch={search}
-        onResetSearch={handleResetSearch}
+      <Typography
+        variant='h3'
+        sx={{
+          mb: '30px',
+        }}
       >
-        <Grid item xs={6}>
-          {!dataDepartment.isLoading && (
-            <CustomFilter
-              value={filterParam}
-              onChange={handleChangeDepartment}
-              placeholder='DEPARTMENT'
-              filters={dataDepartment.data?.data}
-              param={{ title: 'name', value: 'id' }}
-              sx={{
-                width: '175px',
-              }}
-            />
-          )}
-        </Grid>
-      </SearchBox>
-
+        History Outpatients
+      </Typography>
       <TableBox
         dataHead={dataHead}
-        dataBody={dataHistory.data?.data}
+        dataBody={dataHistory.data?.data.content}
         isLoading={dataHistory.isFetching}
-      ></TableBox>
+        endPoint='outpatients'
+        fieldEdit={field}
+        queryKey='history'
+        editParam=''
+      >
+        <TablePagination
+          sx={{
+            mt: '30px',
+          }}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+          onPageChange={handlePageChange}
+          page={paginate.page}
+          rowsPerPage={paginate.row}
+          count={
+            dataHistory.data !== undefined
+              ? dataHistory.data?.data.totalElements
+              : 0
+          }
+          component='div'
+          rowsPerPageOptions={[5, 10]}
+        />
+      </TableBox>
     </>
   )
 }

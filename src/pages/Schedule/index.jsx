@@ -1,19 +1,16 @@
-import {
-  Grid,
-  FormControl,
-  FormControlLabel,
-  RadioGroup,
-  Radio,
-  Box,
-  TablePagination,
-} from '@mui/material'
+import { Box, Grid, TablePagination } from '@mui/material'
 import { CustomFilter, LoadingTable, SearchBox, TableBox } from '@/components'
 import { useState } from 'react'
 
-import { dayList, dataHead, field } from '@/constants/schedule'
-import { toCapitalize } from '@/helpers/function/toCapitalize'
+import { dataHead, field } from '@/constants/schedule'
 import { useQuery } from 'react-query'
-import { fetchData, fetchDoctor } from '@/api/get'
+import { fetchData } from '@/api/get'
+
+import { getToken } from '@/helpers/function/getToken'
+import { getModalExpired } from '@/helpers/function/getModalExpired'
+
+import ModalInput from './components/ModalInput'
+import { useNavigate } from 'react-router-dom'
 
 const Schedule = () => {
   const initialPagination = {
@@ -23,36 +20,62 @@ const Schedule = () => {
 
   const [openModal, setOpenModal] = useState(false)
 
+  const [filterParam, setFilterParam] = useState({
+    filter: '',
+    valueFilter: '',
+  })
+
   const [searchSchedule, setSearchSchedule] = useState('')
-
-  const [filterParam, setFilterParam] = useState('')
-
-  const [day, setDay] = useState('')
 
   const [pagination, setPagination] = useState(initialPagination)
 
-  const dataDepartment = useQuery('departments', () => fetchData('departments'))
-
-  const dataSchedule = useQuery(['doctors', pagination], () =>
-    fetchDoctor(pagination.page, pagination.row)
+  const dataDepartment = useQuery('departments', () =>
+    fetchData('departments', getToken().token)
   )
 
-  const handleOpenSchedule = () => {}
+  const dataSchedule = useQuery(['schedule', filterParam], () =>
+    fetchData(
+      `doctors/schedule/${filterParam.filter}${filterParam.valueFilter}`,
+      getToken().token,
+      { name: searchSchedule }
+    )
+  )
 
-  const onChangeSearch = () => {}
+  const navigate = useNavigate()
 
-  const handleSearch = () => {}
-
-  const handleResetSearch = () => {}
-
-  const handleChangeDepartment = (e) => {
-    setFilterParam(e.target.value)
+  if (dataSchedule.isError) {
+    getModalExpired().then(() => {
+      navigate('/login')
+    })
   }
 
-  const handleChangeDate = () => {}
+  const handleOpenSchedule = () => {
+    setOpenModal((prev) => {
+      return !prev
+    })
+  }
 
-  const onChangeDay = (e) => {
-    setDay(e.target.value)
+  const onChangeSearch = (e) => {
+    setSearchSchedule(e.target.value)
+  }
+
+  const handleSearch = () => {
+    setFilterParam({ filter: 'doctor', valueFilter: '' })
+  }
+
+  const handleResetSearch = () => {
+    setSearchSchedule('')
+    setFilterParam({ filter: '', valueFilter: '' })
+  }
+
+  const handleChangeDepartment = (e) => {
+    setSearchSchedule('')
+     if (e.target.value === 'all') {
+        return setFilterParam({filter : '' , valueFilter: ''})
+     }
+    setFilterParam((prev) => {
+      return { ...prev, filter: 'departments/', valueFilter: e.target.value }
+    })
   }
 
   const handlePageChange = (e, newPage) => {
@@ -76,84 +99,58 @@ const Schedule = () => {
         onResetSearch={handleResetSearch}
       >
         <Grid item xs={6}>
-          {!dataDepartment.isLoading && (
-            <CustomFilter
-              sx={{
-                mr: '30px',
-                width: '175px',
-              }}
-              value={filterParam}
-              onChange={handleChangeDepartment}
-              placeholder='DEPARTMENT'
-              filters={dataDepartment.data?.data}
-              param={{ title: 'name', value: 'id' }}
-            />
-          )}
           <CustomFilter
             sx={{
+              mr: '30px',
               width: '175px',
             }}
-            value=''
-            onChange={handleChangeDate}
-            placeholder='DATE'
-            filters={[
-              {
-                date: '18-10-2022',
-                id: 1,
-              },
-            ]}
-            param={{ title: 'date', value: 'id' }}
+            value={filterParam.valueFilter}
+            onChange={handleChangeDepartment}
+            placeholder='DEPARTMENT'
+            filters={dataDepartment.data?.data}
+            param={{ title: 'name', value: 'id' }}
           />
         </Grid>
       </SearchBox>
-      <FormControl
+      <Box
         sx={{
-          mt: '20px',
+          mt: '30px',
         }}
       >
-        <RadioGroup
-          aria-labelledby='radio-button-group-label'
-          value={day}
-          onChange={onChangeDay}
-          row
-        >
-          {dayList.map((option, indexRadio) => (
-            <FormControlLabel
-              key={indexRadio}
-              value={option}
-              control={<Radio />}
-              label={toCapitalize(option)}
+        {dataSchedule.isFetching && <LoadingTable />}
+        {!dataSchedule.isFetching && (
+          <TableBox
+            dataHead={dataHead}
+            dataBody={dataSchedule.data?.data.slice(
+              pagination.page * pagination.row,
+              pagination.page * pagination.row + pagination.row
+            )}
+            endPoint='doctors/schedule'
+            fieldEdit={field}
+            editParam=''
+            queryKey='schedule'
+          >
+            <TablePagination
+              sx={{
+                mt: '30px',
+              }}
+              onRowsPerPageChange={handleChangeRowsPerPage}
+              onPageChange={handlePageChange}
+              page={pagination.page}
+              rowsPerPage={pagination.row}
+              count={
+                dataSchedule.data !== undefined
+                  ? dataSchedule.data?.data.length
+                  : 0
+              }
+              component='div'
+              rowsPerPageOptions={[5, 10]}
             />
-          ))}
-        </RadioGroup>
-      </FormControl>
-      {dataSchedule.isFetching && <LoadingTable />}
-      {!dataSchedule.isFetching && (
-        <TableBox
-          dataHead={dataHead}
-          dataBody={dataSchedule.data?.content}
-          endPoint='doctors'
-          editParam='/schedule'
-          fieldEdit={field}
-          queryKey='doctors'
-        >
-          <TablePagination
-            sx={{
-              mt: '30px',
-            }}
-            onRowsPerPageChange={handleChangeRowsPerPage}
-            onPageChange={handlePageChange}
-            page={pagination.page}
-            rowsPerPage={pagination.row}
-            count={
-              dataSchedule.data !== undefined
-                ? dataSchedule.data.totalElements
-                : 0
-            }
-            component='div'
-            rowsPerPageOptions={[5, 10]}
-          />
-        </TableBox>
+          </TableBox>
+        )}
+      </Box>
+      {openModal && (
+        <ModalInput open={openModal} onClose={handleOpenSchedule} />
       )}
     </>
   )

@@ -10,8 +10,9 @@ import {
 
 const DoctorInput = (props) => {
   const { onChange, value, item, initialData, list, error } = props
+
   return (
-    <FormControl fullWidth error={error}>
+    <FormControl fullWidth error={error} disabled={item.disabled}>
       <Typography
         sx={{
           color: error ? 'error.main' : '',

@@ -197,16 +197,29 @@ export default function ModalInput(props) {
   const handleSubmit = async () => {
     let paramError
     for (let i = 0; i < field.length; i++) {
-      if (form[field[i].fieldname] === '') {
-        paramError = true
-        setIsError((prev) => {
-          return { ...prev, [field[i].fieldname]: true }
-        })
-      }
-      if (form[field[i].fieldname] !== '') {
-        setIsError((prev) => {
-          return { ...prev, [field[i].fieldname]: false }
-        })
+      if (field[i].type === 'password') {
+        if (form[field[i].fieldname].length < 9) {
+          paramError = true
+          setIsError((prev) => {
+            return { ...prev, [field[i].fieldname]: true }
+          })
+        } else {
+          setIsError((prev) => {
+            return { ...prev, [field[i].fieldname]: false }
+          })
+        }
+      } else {
+        if (form[field[i].fieldname] === '') {
+          paramError = true
+          setIsError((prev) => {
+            return { ...prev, [field[i].fieldname]: true }
+          })
+        }
+        if (form[field[i].fieldname] !== '') {
+          setIsError((prev) => {
+            return { ...prev, [field[i].fieldname]: false }
+          })
+        }
       }
     }
 

@@ -8,4 +8,4 @@ export { default as CustomFilter } from './CustomFilter'
 export { default as LoadingTable } from './LoadingTable'
 export { default as PrivateRoute } from './PrivateRoute'
 export { default as CustomDateInput } from './CustomDateInput'
-
+export { default as DataNotFound } from './DataNotFound'
