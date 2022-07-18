@@ -113,7 +113,7 @@ export default function DefaultLayout() {
 
   const getUser = async () => {
     setIsLoadUser(true)
-    fetchUser(getToken().email)
+    fetchUser(getToken().email,getToken().token)
       .then((res) => {
         setUser(res.data)
       })
