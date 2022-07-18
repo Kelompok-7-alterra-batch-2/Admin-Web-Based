@@ -52,7 +52,7 @@ const Register = () => {
   })
 
   const validateName = (value) => {
-    return value.match(/[A-Za-z'.,\s].{4,}$/)
+    return value.match(/^[a-zA-Z ,.'-]+$/i)
   }
   const helperName = useMemo(() => {
     if (!values.name)
@@ -61,14 +61,19 @@ const Register = () => {
         error: false,
       }
     const isValid = validateName(values.name)
+    let isEnough = true
+    if (values.name.length < 6) {
+      isEnough = false
+    }
     return {
-      text: isValid ? ' ' : 'Enter a valid name',
-      error: isValid ? false : true,
+      text: isValid && isEnough ? ' ' : 'Enter a valid name',
+      error: isValid && isEnough ? false : true,
     }
   }, [values.name])
 
   const validatePhone = (value) => {
-    return value.match(/^[0-9+\b].{6,}/g)
+    return value.match(/^[0-9+\b]+$/)
+
   }
   const helperPhone = useMemo(() => {
     if (!values.phoneNumber)
@@ -77,9 +82,13 @@ const Register = () => {
         error: false,
       }
     const isValid = validatePhone(values.phoneNumber)
+    let isEnough = true
+    if (values.phoneNumber.length < 6) {
+      isEnough = false
+    }
     return {
-      text: isValid ? ' ' : 'Enter a valid phone number',
-      error: isValid ? false : true,
+      text: isValid && isEnough ? ' ' : 'Enter a valid phone number',
+      error: isValid && isEnough ? false : true,
     }
   }, [values.phoneNumber])
 
