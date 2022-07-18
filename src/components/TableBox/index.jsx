@@ -9,7 +9,6 @@ import {
   TableRow,
   IconButton,
   Box,
-  Typography,
 } from '@mui/material'
 
 import Edit from '@mui/icons-material/Edit'
@@ -33,7 +32,6 @@ export default function TableBox(props) {
     queryKey,
     children,
     editParam,
-    endPointEdit,
   } = props
 
   const [openModal, setOpenModal] = useState({
@@ -233,7 +231,7 @@ export default function TableBox(props) {
           field={fieldEdit}
           initialData={param.edit}
           title={'Edit ' + toCapitalize(endPoint)}
-          endPoint={endPointEdit !== undefined ? endPointEdit : endPoint}
+          endPoint={endPoint}
           methodSubmit='put'
           queryKey={queryKey}
           editParam={editParam}

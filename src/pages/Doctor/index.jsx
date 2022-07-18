@@ -205,7 +205,6 @@ export default function Doctor() {
             dataHead={dataHead}
             dataBody={data?.data.content}
             isLoading={isLoad}
-            endPointEdit='doctors/admin'
             endPoint='doctors'
             fieldEdit={fieldEdit}
             queryKey='doctors'
@@ -237,7 +236,6 @@ export default function Doctor() {
                 manual.page * manual.row,
                 manual.page * manual.row + manual.row
               )}
-              endPointEdit='doctors/admin'
               endPoint='doctors'
               fieldEdit={fieldEdit}
               queryKey='filterData'
