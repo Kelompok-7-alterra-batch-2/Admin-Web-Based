@@ -41,6 +41,45 @@ export const field = [
   },
 ]
 
+export const fieldEdit = [
+  {
+    title: 'NID',
+    fieldname: 'nid',
+    type: 'text',
+    typeInput: 'number',
+  },
+  {
+    title: 'Doctor Name',
+    fieldname: 'name',
+    type: 'text',
+    typeInput: 'noNumber',
+  },
+  {
+    title: 'Date of Birth',
+    fieldname: 'dob',
+    type: 'date',
+  },
+  {
+    title: 'Department',
+    fieldname: 'department_id',
+    type: 'department',
+    value: 'department',
+    valueChild: 'id',
+  },
+  {
+    title: 'Email',
+    fieldname: 'email',
+    type: 'email',
+  },
+  {
+    title: 'Phone Number',
+    fieldname: 'phoneNumber',
+    type: 'text',
+    typeInput: 'number',
+  },
+]
+
+
 export const initialData = {
   name: '',
   nid: '',
