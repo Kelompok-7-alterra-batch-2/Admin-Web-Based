@@ -27,7 +27,7 @@ export default function Dashboard() {
 
   const navigate = useNavigate()
 
-  if (usersQuery.isError) {
+  if (doctorQuery.isError) {
     getModalExpired().then(() => {
       navigate('/login')
     })

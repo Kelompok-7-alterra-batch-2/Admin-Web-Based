@@ -1,4 +1,4 @@
-import { Box, Typography, Grid, TablePagination } from '@mui/material'
+import { Box, Typography, Grid, TablePagination, Divider } from '@mui/material'
 
 import { useState, useEffect } from 'react'
 
@@ -238,6 +238,7 @@ export default function Appointment() {
                 queryKey='outpatients'
                 editParam=''
               />
+              <Divider />
             </Box>
           ))}
 
