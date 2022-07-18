@@ -17,6 +17,11 @@ const History = () => {
     page: 0,
     row: 5,
   })
+   
+  const Department = useQuery(['departments', getToken().token], () =>
+    fetchData('departments', getToken().token)
+  )
+
 
   const dataHistory = useQuery(['history', paginate], () =>
     fetchData(`outpatients/page`, getToken().token, {
