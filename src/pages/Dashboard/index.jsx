@@ -11,8 +11,8 @@ import { useNavigate } from 'react-router-dom'
 import { getModalExpired } from '@/helpers/function/getModalExpired'
 
 export default function Dashboard() {
-  const usersQuery = useQuery([getToken().email, getToken().email], () =>
-    fetchUser(getToken().email)
+  const usersQuery = useQuery([getToken().email, getToken()], () =>
+    fetchUser(getToken().email,getToken().token)
   )
   const doctorQuery = useQuery(['doctors', getToken().token], () =>
     fetchData('doctors', getToken().token)
