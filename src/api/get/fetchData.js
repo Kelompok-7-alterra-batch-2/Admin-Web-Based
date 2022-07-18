@@ -4,7 +4,7 @@ const fetchData = async (endPoint, token, params) => {
   const config = {
     method: 'get',
     url: `/${endPoint}`,
-    params: params === undefined ? {} : params,
+    params: params === undefined || params === ''? {} : params,
     headers: {
       Authorization: `Bearer ${token}`,
     },
